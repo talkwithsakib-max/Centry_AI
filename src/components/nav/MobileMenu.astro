@@ -1,0 +1,213 @@
+---
+/**
+ * Compact-nav menu (< 900px): a glass sheet that drops below the navbar pill,
+ * in the same glass language (white gradient, 12px blur, inner highlight).
+ */
+import StoreBadge from '../ui/StoreBadge.astro';
+import chevron from '../../assets/icons/chevron-down.svg?url';
+import { anchors, links, linkAttrs } from '../../config/links';
+import { features } from '../../data/features';
+---
+
+<div class="mm" data-mobile-menu>
+  <button
+    class="toggle"
+    type="button"
+    aria-expanded="false"
+    aria-controls="mobile-menu-sheet"
+    aria-label="Open menu"
+    data-mm-toggle
+  >
+    <span class="bars" aria-hidden="true"><span></span><span></span></span>
+  </button>
+
+  <div class="sheet" id="mobile-menu-sheet" data-mm-sheet hidden>
+    <ul class="items">
+      <li>
+        <button class="row sub-toggle" type="button" aria-expanded="false" aria-controls="mm-features" data-mm-sub>
+          Features
+          <img src={chevron} alt="" width="10" height="10" />
+        </button>
+        <div class="sub" id="mm-features" data-mm-subpanel>
+          <ul class="sub-inner">
+            {
+              features.map((f) => (
+                <li>
+                  <a class="sub-link" href={f.href} data-mm-link>
+                    {f.name}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </li>
+      <li><a class="row" href={anchors.howItWorks} data-mm-link>How it works</a></li>
+      <li><a class="row" href={anchors.pricing} data-mm-link>Pricing</a></li>
+      <li><a class="row" href={anchors.faq} data-mm-link>FAQ</a></li>
+      <li><a class="row" {...linkAttrs(links.logIn)} data-mm-link>Log in</a></li>
+    </ul>
+    <div class="badges">
+      <StoreBadge store="google" size="md" />
+      <StoreBadge store="apple" size="md" />
+    </div>
+  </div>
+</div>
+
+<script>
+  import { initMobileMenu } from '../../scripts/mobile-menu';
+  initMobileMenu();
+</script>
+
+<style>
+  .mm {
+    display: none;
+  }
+  @media (max-width: 899px) {
+    .mm {
+      display: block;
+    }
+  }
+  .toggle {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius-pill);
+    transition: background var(--dur-base) var(--ease-out);
+  }
+  .toggle:hover,
+  .toggle[aria-expanded='true'] {
+    background: var(--color-fill-1);
+  }
+  .bars {
+    position: relative;
+    width: 16px;
+    height: 10px;
+  }
+  .bars span {
+    position: absolute;
+    left: 0;
+    width: 16px;
+    height: 1.5px;
+    border-radius: 1px;
+    background: var(--color-ink);
+    transition:
+      transform var(--dur-base) var(--ease-out),
+      top var(--dur-base) var(--ease-out);
+  }
+  .bars span:first-child {
+    top: 1px;
+  }
+  .bars span:last-child {
+    top: 7.5px;
+  }
+  .toggle[aria-expanded='true'] .bars span:first-child {
+    top: 4.25px;
+    transform: rotate(45deg);
+  }
+  .toggle[aria-expanded='true'] .bars span:last-child {
+    top: 4.25px;
+    transform: rotate(-45deg);
+  }
+
+  .sheet {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    right: 0;
+    padding: 8px;
+    border-radius: 24px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 255, 255, 0.84) 100%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow:
+      0 30px 60px -20px rgba(28, 36, 70, 0.1),
+      0 14px 32px -8px rgba(28, 36, 70, 0.14),
+      0 4px 10px -2px rgba(28, 36, 70, 0.08),
+      0 1px 2px 0 rgba(28, 36, 70, 0.08),
+      inset 0 1px 0 0 var(--hl-100);
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+    transform-origin: top center;
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
+  }
+  .sheet[data-open] {
+    opacity: 1;
+    transform: none;
+  }
+  .row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 14px;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: var(--fw-medium);
+    letter-spacing: -0.2px;
+    color: var(--color-ink);
+    text-align: left;
+  }
+  .row:hover,
+  .row:focus-visible {
+    background: var(--color-fill-1);
+  }
+  .row:focus-visible,
+  .sub-link:focus-visible {
+    outline-offset: -2px;
+  }
+  .sub-toggle img {
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  .sub-toggle[aria-expanded='true'] img {
+    transform: rotate(180deg);
+  }
+  .sub {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--dur-base) var(--ease-out);
+  }
+  .sub[data-open] {
+    grid-template-rows: 1fr;
+  }
+  .sub-inner {
+    overflow: hidden;
+    padding-left: 12px;
+  }
+  .sub-link {
+    display: block;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: var(--fw-medium);
+    color: var(--color-link);
+  }
+  .sub-link:hover {
+    color: var(--color-ink);
+    background: var(--color-fill-1);
+  }
+  .sub:not([data-open]) .sub-link {
+    visibility: hidden;
+  }
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px 14px 8px;
+    margin-top: 4px;
+    border-top: 1px solid var(--color-fill-3);
+  }
+  /* Dark glass (matches the dark navbar) */
+  :global([data-theme='dark']) .sheet {
+    background: linear-gradient(180deg, rgba(22, 24, 29, 0.94) 0%, rgba(22, 24, 29, 0.84) 100%);
+    box-shadow:
+      0 30px 60px -20px rgba(0, 0, 0, 0.3),
+      0 14px 32px -8px rgba(0, 0, 0, 0.42),
+      0 4px 10px -2px rgba(0, 0, 0, 0.24),
+      0 1px 2px 0 rgba(0, 0, 0, 0.24),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  }
+</style>

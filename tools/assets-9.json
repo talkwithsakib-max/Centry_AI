@@ -1,0 +1,13 @@
+{
+ "icons/screens/s1-calendar-btn.svg": "https://www.figma.com/api/mcp/asset/90f07947-1519-42db-adf2-ad08ed963fc4.svg",
+ "icons/screens/arc-streaming.svg": "https://www.figma.com/api/mcp/asset/c5e8e299-c848-4367-bd77-a4cf5044609c.svg",
+ "icons/screens/arc-wellness.svg": "https://www.figma.com/api/mcp/asset/337d5c6d-574f-4ae6-8ee8-92cb2e9e5ad6.svg",
+ "icons/screens/arc-ai.svg": "https://www.figma.com/api/mcp/asset/723c5bb7-27ba-4351-990e-110b1b4d2641.svg",
+ "icons/screens/arc-music.svg": "https://www.figma.com/api/mcp/asset/080ed834-11db-4414-b397-9d80342d1235.svg",
+ "icons/screens/arc-learning.svg": "https://www.figma.com/api/mcp/asset/14df5aaf-e496-4d8f-bc1a-88688e5c4750.svg",
+ "icons/screens/arc-other.svg": "https://www.figma.com/api/mcp/asset/12c40866-4f14-43c9-b605-e9c27a7f2ed4.svg",
+ "icons/screens/cat-streaming.svg": "https://www.figma.com/api/mcp/asset/a27e6ccc-076b-4960-8f23-bfcd0dc71028.svg",
+ "icons/screens/cat-wellness.svg": "https://www.figma.com/api/mcp/asset/586ce879-b281-4d07-b800-ceb023f31037.svg",
+ "icons/screens/cat-ai.svg": "https://www.figma.com/api/mcp/asset/2648f9ae-17e1-4bc2-8c27-11d47c93e0f9.svg",
+ "icons/screens/cat-music.svg": "https://www.figma.com/api/mcp/asset/91755f50-e4f0-4427-a6ff-0ed6c91d7582.svg"
+}

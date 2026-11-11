@@ -1,0 +1,100 @@
+---
+/** Floating glass tab bar (Home / Calendar / Insights / Settings) + home indicator. */
+import home from '../../assets/icons/phone/tab-home.svg?url';
+import calendar from '../../assets/icons/phone/tab-calendar.svg?url';
+import insights from '../../assets/icons/phone/tab-insights.svg?url';
+import settings from '../../assets/icons/phone/tab-settings.svg?url';
+
+interface Props {
+  active?: 'home' | 'calendar' | 'insights' | 'settings';
+}
+const { active = 'home' } = Astro.props;
+const tabs = [
+  { id: 'home', label: 'Home', icon: home, inset: '15.91% 15.91% 13.64% 15.91%', img: 'left:-5.67%;top:-5.48%;width:111.34%;height:110.96%' },
+  { id: 'calendar', label: 'Calendar', icon: calendar, inset: '13.64% 15.91% 15.91% 15.91%', img: 'left:-5.67%;top:-5.48%;width:111.34%;height:110.96%' },
+  { id: 'insights', label: 'Insights', icon: insights, inset: '18.18% 13.64% 18.18% 18.18%', img: 'left:-5.67%;top:-6.07%;width:111.34%;height:112.14%' },
+  { id: 'settings', label: 'Settings', icon: settings, inset: '11.36%', img: 'left:-5%;top:-5%;width:110%;height:110%' },
+] as const;
+---
+
+<div class="tabbar">
+  {
+    tabs.map((t, i) => (
+      <span class:list={['tab', active === t.id && 'on']} style={`left:${5.72 + i * 60.965}px`}>
+        <span class="icon">
+          <span class="grp" style={`inset:${t.inset}`}>
+            <img src={t.icon} alt="" style={t.img} />
+          </span>
+        </span>
+        <span class="label">{t.label}</span>
+      </span>
+    ))
+  }
+</div>
+<span class="home-indicator"></span>
+
+<style>
+  .tabbar {
+    position: absolute;
+    left: 14.3px;
+    top: 542.08px;
+    width: 252.447px;
+    height: 45.769px;
+    border-radius: 22.885px;
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(7.151px);
+    -webkit-backdrop-filter: blur(7.151px);
+    box-shadow: 0 5.721px 8.582px rgba(0, 0, 0, 0.1);
+  }
+  .tab {
+    position: absolute;
+    top: 4.29px;
+    width: 58.106px;
+    height: 37.188px;
+    border-radius: 18.594px;
+    text-align: center;
+  }
+  .tab.on {
+    background: rgba(29, 29, 31, 0.06);
+  }
+  .icon {
+    position: absolute;
+    left: 21.19px;
+    top: 5.01px;
+    width: 15.733px;
+    height: 15.733px;
+    overflow: hidden;
+  }
+  .grp {
+    position: absolute;
+  }
+  .grp img {
+    position: absolute;
+    max-width: none;
+  }
+  /* Figma: the selected tab's icon is ink (#1d1d1f), the others grey */
+  .tab.on .grp img {
+    filter: brightness(0) opacity(0.89);
+  }
+  .label {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 22.88px;
+    font-size: 7.151px;
+    font-weight: var(--fw-semibold);
+    color: var(--color-ink-3);
+  }
+  .on .label {
+    color: var(--color-ink);
+  }
+  .home-indicator {
+    position: absolute;
+    left: 90.47px;
+    top: 600.01px;
+    width: 100.121px;
+    height: 3.576px;
+    border-radius: 2.145px;
+    background: #111;
+  }
+</style>

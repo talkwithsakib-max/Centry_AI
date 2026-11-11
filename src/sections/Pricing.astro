@@ -1,0 +1,467 @@
+---
+/** Figma "Pricing" (499:15677). Monthly only — see data/pricing.ts. */
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import Button from '../components/ui/Button.astro';
+import SubTile from '../components/brand/SubTile.astro';
+import PriceTag from '../components/brand/PriceTag.astro';
+import CentryMark from '../components/brand/CentryMark.astro';
+import proSmoke from '../assets/textures/pro-smoke-blur.webp';
+import checkFree from '../assets/icons/check-free.svg?url';
+import checkPro from '../assets/icons/check-pro.svg?url';
+import { plans, trust, annualBilling } from '../data/pricing';
+import { links, linkAttrs } from '../config/links';
+
+const { free, pro } = plans;
+---
+
+<section class="pricing" id="pricing" aria-labelledby="pricing-title" data-reveal>
+  <div class="container">
+    <SectionHeading eyebrow="Pricing" line1="Start free, upgrade" line2="when it pays off." align="center" id="pricing-title">
+      Free forever for up to 3 subscriptions, or try Pro<br class="br" /> free for 7 days. No credit card required.
+    </SectionHeading>
+
+    <div class="plans">
+      <article class="plan free" aria-labelledby="plan-free" data-r style="--rd:0ms">
+        <div class="title-row"><h3 id="plan-free">{free.name}</h3></div>
+        <p class="tagline">{free.tagline}</p>
+        <p class="price"><span class="amount">{free.price}</span><span class="period">{free.period}</span></p>
+        <p class="note">{free.note}</p>
+        <Button {...linkAttrs(links.downloadApp)} block class="plan-btn" data-magnetic>{free.cta}</Button>
+        <p class="list-title">{free.listTitle}</p>
+        <ul class="features">
+          {
+            free.features.map((f, k) => (
+              <li data-r="left" style={`--rd:${450 + k * 70}ms`}>
+                <span class="check free-check"><img src={checkFree} alt="" /></span>
+                {f}
+              </li>
+            ))
+          }
+        </ul>
+        <span class="tile fx-loop" aria-hidden="true">
+          <SubTile brand="duolingo" size={48} style="transform:rotate(8deg)" />
+        </span>
+      </article>
+
+      <article class="plan pro" aria-labelledby="plan-pro" data-r style="--rd:120ms">
+        <img class="pro-smoke only-light" src={proSmoke.src} alt="" aria-hidden="true" />
+        <span class="pro-smoke dark-smoke only-dark" style={`--mask:url(${proSmoke.src})`} aria-hidden="true"></span>
+        <div class="title-row">
+          <h3 id="plan-pro">{pro.name}</h3>
+          <span class="badge">{pro.badge}</span>
+        </div>
+        <p class="tagline">{pro.tagline}</p>
+        <p class="price"><span class="amount">{pro.price}</span><span class="period">{pro.period}</span></p>
+        {
+          annualBilling.enabled ? (
+            <p class="note save">
+              Save <strong>37%</strong> with annual billing
+            </p>
+          ) : (
+            <p class="note save" aria-hidden="true" style="visibility:hidden">
+              &nbsp;
+            </p>
+          )
+        }
+        <Button variant="mint" {...linkAttrs(links.downloadApp)} block class="plan-btn" data-magnetic>{pro.cta}</Button>
+        <p class="list-title">{pro.listTitle}</p>
+        <ul class="features">
+          {
+            pro.features.map((f, k) => (
+              <li data-r="left" style={`--rd:${570 + k * 70}ms`}>
+                <span class="check pro-check"><img src={checkPro} alt="" /></span>
+                {f}
+              </li>
+            ))
+          }
+        </ul>
+        <span class="tiles fx-loop" aria-hidden="true">
+          <SubTile brand="headspace" size={40} style="position:absolute;left:108px;top:22px;transform:rotate(-12deg)" />
+          <SubTile brand="spotify" size={44} style="position:absolute;left:58px;top:12px;transform:rotate(-6deg)" />
+          <SubTile brand="netflix" size={48} style="position:absolute;left:4px;top:16px;transform:rotate(8deg)" />
+          <PriceTag price="-$15.49" scale={0.85} style="position:absolute;left:20.4px;top:61.3px;transform:rotate(6deg)" />
+        </span>
+      </article>
+    </div>
+
+    <div class="pays" data-r style="--rd:300ms">
+      <CentryMark size={40} />
+      <div class="pays-copy">
+        <p class="p1">Pro pays for itself with one cancellation.</p>
+        <p class="p2">Cancel one $9.99 zombie and you’re already ahead.</p>
+      </div>
+      <div class="net">
+        <p class="n1"><span data-count="2" data-format="+${int}.{dec}/mo" data-at="0.9" data-for="1">+$2.00/mo</span></p>
+        <p class="n2">left over after Pro pays for itself</p>
+      </div>
+    </div>
+
+    <ul class="trust">
+      {trust.map((t) => <li>{t}</li>)}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .pricing {
+    padding: 120px 0;
+  }
+  .container {
+    max-width: calc(860px + 2 * var(--gutter));
+  }
+  .pricing :global(.heading .sub) {
+    margin-top: 20px;
+  }
+  .plans {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 20px;
+    margin-top: 48px;
+  }
+  .plan {
+    transition:
+      translate var(--dur-slow) var(--ease-out),
+      box-shadow var(--dur-slow) var(--ease-out);
+    position: relative;
+    min-height: 576px;
+    padding: 32px;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .plan > * {
+    position: relative;
+  }
+  .free {
+    background: linear-gradient(180deg, #fff 0%, #faf8f5 100%);
+    box-shadow: var(--elevation-large);
+  }
+  .pro {
+    --pro-shadow:
+      0 20px 44px -12px rgba(14, 42, 34, 0.25), inset 0 -30px 60px 0 rgba(63, 227, 166, 0.18),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.16);
+    color: #fff;
+    background: linear-gradient(126.1deg, #26272d 0%, #0e0f12 71.43%);
+    box-shadow: var(--pro-shadow);
+  }
+  /* ---- Dark theme (Figma "Home 2 — Dark") ---- */
+  :global([data-theme='dark']) .free {
+    background: linear-gradient(180deg, #16181d 0%, #1e2026 100%);
+  }
+  :global([data-theme='dark']) .pro {
+    --pro-shadow:
+      0 20px 44px -12px rgba(0, 0, 0, 0.6), inset 0 -30px 60px 0 rgba(63, 227, 166, 0.18),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  }
+  :global([data-theme='dark']) .pro-smoke.dark-smoke {
+    opacity: 0.75;
+  }
+  :global([data-theme='dark']) .free-check {
+    background: linear-gradient(180deg, #16181d 0%, #1e2026 100%);
+  }
+  :global([data-theme='dark']) .free-check img {
+    filter: brightness(0) invert(0.96);
+  }
+  .pro-smoke {
+    position: absolute !important;
+    left: -20px;
+    top: 218.88px;
+    width: 460px;
+    height: 403.2px;
+    max-width: none;
+    object-fit: cover;
+    opacity: 0.22;
+    pointer-events: none;
+  }
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h3 {
+    font-size: 22px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.5px;
+  }
+  .badge {
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(90deg, #6bf0c0 0%, #22c98a 100%);
+    color: #0b3b2a;
+    font-size: 12px;
+    font-weight: var(--fw-semibold);
+  }
+  .tagline {
+    margin-top: 6px;
+    font-size: 15px;
+    line-height: 22px;
+    letter-spacing: -0.2px;
+    color: var(--color-ink-2);
+  }
+  .pro .tagline {
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .price {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-top: 24px;
+  }
+  .amount {
+    font-size: 52px;
+    font-weight: var(--fw-bold);
+    letter-spacing: -2px;
+    line-height: 62px;
+  }
+  .period {
+    font-size: 15px;
+    font-weight: var(--fw-medium);
+    letter-spacing: -0.2px;
+    color: var(--color-ink-3);
+  }
+  .pro .period {
+    color: rgba(255, 255, 255, 0.5);
+  }
+  .note {
+    margin-top: 4px;
+    font-size: 13px;
+    letter-spacing: -0.2px;
+    line-height: 16px;
+    color: var(--color-ink-3);
+  }
+  .save {
+    color: #a1a1a6;
+  }
+  .save strong {
+    font-weight: var(--fw-semibold);
+    color: #3ccf96;
+  }
+  .plan :global(.plan-btn) {
+    margin-top: 24px;
+    font-size: 16px;
+    letter-spacing: -0.2px;
+  }
+  .list-title {
+    margin-top: 28px;
+    font-size: 11px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+  }
+  .pro .list-title {
+    color: rgba(255, 255, 255, 0.5);
+  }
+  .features {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 14px;
+  }
+  .features li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    font-weight: var(--fw-medium);
+    letter-spacing: -0.2px;
+  }
+  .pro .features li {
+    color: rgba(255, 255, 255, 0.92);
+  }
+  .check {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .check img {
+    width: 20px;
+    height: 20px;
+  }
+  .free-check {
+    background: linear-gradient(180deg, #fff 0%, #e6e4e8 100%);
+    box-shadow: var(--elevation-small);
+  }
+  .pro-check {
+    background: var(--gradient-mint);
+    box-shadow: 0 2px 6px 0 rgba(34, 201, 138, 0.35);
+  }
+  .tile {
+    position: absolute !important;
+    right: 31px;
+    top: 109px;
+  }
+  .tiles {
+    position: absolute !important;
+    right: 24px;
+    top: 93px;
+    width: 150px;
+    height: 90px;
+  }
+
+  .pays {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 20px;
+    padding: 20px 24px;
+    border-radius: 20px;
+    background: var(--color-surface);
+    box-shadow: var(--elevation-medium);
+  }
+  .pays-copy {
+    flex: 1;
+    min-width: 0;
+    letter-spacing: -0.2px;
+  }
+  .p1 {
+    font-size: 16px;
+    font-weight: var(--fw-semibold);
+  }
+  .p2 {
+    margin-top: 2px;
+    font-size: 14px;
+    color: var(--color-ink-2);
+  }
+  .net {
+    text-align: right;
+    white-space: nowrap;
+  }
+  .n1 {
+    font-size: 20px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.2px;
+    color: #0f7a52;
+  }
+  .n2 {
+    margin-top: 2px;
+    font-size: 12px;
+    color: var(--color-ink-2);
+  }
+  .trust {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px 28px;
+    margin-top: 43px;
+  }
+  .trust li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: var(--fw-medium);
+    letter-spacing: -0.2px;
+    color: var(--color-ink-3);
+  }
+  .trust li::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-mint-2);
+  }
+
+  @media (max-width: 1023px) {
+    .pricing {
+      padding: 88px 0;
+    }
+  }
+  @media (max-width: 767px) {
+    .pricing {
+      padding: 72px 0;
+    }
+    .plans {
+      grid-template-columns: minmax(0, 1fr);
+      margin-top: 36px;
+    }
+    .plan {
+      min-height: 0;
+      padding: 28px 24px;
+    }
+    .tile {
+      right: 24px;
+      top: 92px;
+    }
+    .tiles {
+      right: 8px;
+      transform: scale(0.85);
+      transform-origin: right top;
+    }
+    .pays {
+      flex-wrap: wrap;
+      gap: 12px 16px;
+    }
+    .net {
+      flex-basis: 100%;
+      text-align: left;
+      padding-left: 56px;
+    }
+    .trust {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      justify-items: start;
+      gap: 10px 16px;
+      margin-top: 32px;
+    }
+    .br {
+      display: none;
+    }
+  }
+
+  /* ---- Motion (user brief 2026-11-10): cards rise in, checkmarks tick in one by
+     one, cards lift on hover, Pro (recommended) carries a soft breathing green
+     glow, plan buttons are magnetic (reveal.ts). ---- */
+  @media (hover: hover) {
+    .plan:hover {
+      translate: 0 -6px;
+    }
+    .free:hover {
+      box-shadow: var(--elevation-large-hover);
+    }
+  }
+  :global(.fx) .pricing:global(.is-in) .pro::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow:
+      inset 0 0 0 1px rgba(63, 227, 166, 0.28),
+      0 0 0 0 rgba(63, 227, 166, 0);
+    animation: pro-glow 4.5s ease-in-out 1s infinite;
+  }
+  @keyframes pro-glow {
+    50% {
+      box-shadow:
+        inset 0 0 0 1px rgba(63, 227, 166, 0.5),
+        inset 0 0 40px 0 rgba(63, 227, 166, 0.12);
+    }
+  }
+  :global(.fx) .pricing:global(.is-in) .plan.pro {
+    animation-name: fx-r-up, pro-halo;
+    animation-duration: 0.85s, 4.5s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1), ease-in-out;
+    animation-delay: var(--rd), 1s;
+    animation-iteration-count: 1, infinite;
+    animation-fill-mode: backwards, none;
+  }
+  @keyframes pro-halo {
+    50% {
+      box-shadow:
+        var(--pro-shadow),
+        0 0 46px -6px rgba(63, 227, 166, 0.38);
+    }
+  }
+  :global(.fx) .pricing:global(.is-in) .tile,
+  :global(.fx) .pricing:global(.is-in) .tiles {
+    animation: fx-bob 4s ease-in-out 1.2s infinite;
+  }
+  :global(.fx) .pricing:global(.is-in) .tiles {
+    animation-delay: 1.8s;
+  }
+</style>

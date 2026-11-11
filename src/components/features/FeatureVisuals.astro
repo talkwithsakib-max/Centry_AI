@@ -1,0 +1,611 @@
+---
+/** The four Features bento visuals (Figma 468:5930 / 5938 / 5943 / 5948). */
+import BentoPanel from './BentoPanel.astro';
+import SubTile from '../brand/SubTile.astro';
+import CentryMark from '../brand/CentryMark.astro';
+import silkInbox from '../../assets/icons/features/silk-inbox.svg?url';
+import silkZombie from '../../assets/icons/features/silk-zombie.svg?url';
+import silkSpend from '../../assets/icons/features/silk-spend.svg?url';
+import silkCancel from '../../assets/icons/features/silk-cancel.svg?url';
+import gmail36 from '../../assets/icons/features/gmail-36.svg?url';
+import check18 from '../../assets/icons/check-18.svg?url';
+import check16 from '../../assets/icons/check-16.svg?url';
+import check30 from '../../assets/icons/check-30.svg?url';
+import spinner from '../../assets/icons/features/spinner.svg?url';
+import ellipse from '../../assets/icons/features/ellipse.svg?url';
+import flow from '../../assets/icons/features/flow-arrow.svg?url';
+import gauge from '../../assets/icons/features/gauge.svg?url';
+import gaugeDark from '../../assets/icons/features/gauge-dark.svg?url';
+import linkIcon from '../../assets/icons/features/link.svg?url';
+import arrow from '../../assets/icons/arrow-up-right-sm.svg?url';
+import type { Brand } from '../brand/brands';
+
+interface Props {
+  kind: 'inbox' | 'zombie' | 'spend' | 'cancel';
+}
+const { kind } = Astro.props;
+
+const found: { b: Brand; x: number; y: number }[] = [
+  { b: 'netflix', x: 16, y: 44 },
+  { b: 'spotify', x: 84, y: 44 },
+  { b: 'prime-video', x: 152, y: 44 },
+  { b: 'hbo-max', x: 16, y: 106 },
+  { b: 'duolingo', x: 84, y: 106 },
+  { b: 'midjourney', x: 152, y: 106 },
+];
+const bars = [
+  { m: 'Jun', x: 26.56, h: 101, c: 'var(--bar-past)' },
+  { m: 'Jul', x: 65.67, h: 107, c: 'var(--bar-past)' },
+  { m: 'Aug', x: 104.78, h: 118, c: 'var(--bar-past)' },
+  { m: 'Sep', x: 143.89, h: 109, c: 'var(--bar-past)' },
+  { m: 'Oct', x: 183, h: 129, c: 'var(--bar-past)' },
+  { m: 'Nov', x: 222.11, h: 113, c: '#1d1d1f', on: true },
+  { m: 'Dec', x: 261.22, h: 96, c: 'rgba(63,227,166,.55)' },
+  { m: 'Jan', x: 300.33, h: 96, c: 'rgba(63,227,166,.55)' },
+  { m: 'Feb', x: 339.44, h: 103, c: 'rgba(63,227,166,.55)' },
+];
+---
+
+{
+  kind === 'inbox' && (
+    <BentoPanel w={716} h={307} silk={silkInbox} bleed={[81.24, 29.94, 41.04, 34.75]} angle={156.79} smoke="a" dark={{ mint: [36, -66, 430, 231], aqua: [339, 50, 358, 215], spotlight: [107, 31, 501, 276] }}>
+      <div class="mock-card scan" style="left:40px;top:38.5px;width:300px;height:230px;border-radius:22px">
+        <span class="gmail">
+          <img src={gmail36} alt="" />
+        </span>
+        <span class="t15" style="left:64px;top:18px">
+          Scanning Gmail…
+        </span>
+        <span class="t12 grey" style="left:64px;top:38px">
+          you@gmail.com · read-only
+        </span>
+        <span class="track">
+          <span class="fill" />
+        </span>
+        <span class="t12 medium muted" style="left:18px;top:92px" data-count="1284" data-format="{n} emails read" data-at="0.3" data-for="1.6">
+          1,284 emails read
+        </span>
+        <span class="t12 semibold mint" style="right:18px;top:92px" data-count="72" data-format="{n}%" data-at="0.3" data-for="1.6">
+          72%
+        </span>
+        <span class="hair" style="left:18px;top:118px;width:264px" />
+        {[
+          { y: 132, t: 'Reading receipts', s: 'done' },
+          { y: 155, t: 'Matching 90+ services', s: 'done' },
+          { y: 178, t: 'Scoring zombies', s: 'active' },
+          { y: 201, t: 'Building your list', s: 'todo' },
+        ].map((r, i) => (
+          <>
+            {r.s === 'done' && (
+              <span class="step-check" style={`left:18px;top:${r.y}px;--i:${i}`}>
+                <img src={check16} alt="" />
+              </span>
+            )}
+            {r.s === 'active' && <img class="spin" src={spinner} alt="" style={`left:18px;top:${r.y + 0.4}px`} />}
+            {r.s === 'todo' && <img src={ellipse} alt="" style={`left:18px;top:${r.y}px;width:16px;height:16px`} />}
+            <span class:list={['t13', r.s]} style={`left:44px;top:${r.y}px`}>
+              {r.t}
+            </span>
+          </>
+        ))}
+      </div>
+      <span class="mock-chip-white flow" style="left:378px;top:138.5px;width:30px;height:30px">
+        <img src={flow} alt="" style="width:30px;height:30px" />
+      </span>
+      <div class="mock-card found" style="left:446px;top:65.5px;width:230px;height:176px">
+        <span class="t13 semibold" style="left:16px;top:14px">
+          9 subscriptions found
+        </span>
+        <span class="mock-pill more" style="left:159px;top:14px;padding:2px 7px;font-size:10px;background:rgba(34,201,138,.14);color:var(--color-mint-ink)">
+          +3 more
+        </span>
+        {found.map((f, i) => (
+          <>
+            <SubTile brand={f.b} size={46} class="ft" style={`position:absolute;left:${f.x}px;top:${f.y}px;--i:${i}`} />
+            <span class="mock-check fc" style={`left:${f.x + 34}px;top:${f.y - 6}px;width:18px;height:18px;--i:${i}`}>
+              <img src={check18} alt="" />
+            </span>
+          </>
+        ))}
+      </div>
+    </BentoPanel>
+  )
+}
+
+{
+  kind === 'zombie' && (
+    <BentoPanel w={464} h={307} silk={silkZombie} bleed={[43.8, 34.16, 32.8, 37.33]} angle={146.51} smoke="b" dark={{ mint: [3, -61, 278, 215], aqua: [218, 46, 232, 200], spotlight: [70, 31, 325, 276] }}>
+      <img class="only-light gauge" src={gauge} alt="" style="left:107px;top:28px;width:250px;height:135px" />
+      <img class="only-dark gauge" src={gaugeDark} alt="" style="left:107px;top:28px;width:250px;height:135px" />
+      <span class="marker" style="left:327.75px;top:135.68px" />
+      <span class="score" data-count="99" data-at="0.2" data-for="1.4">99</span>
+      <span class="score-label">ZOMBIE SCORE</span>
+      <div class="mock-card hs" style="left:82px;top:217px;width:300px;height:60px;border-radius:18px">
+        <SubTile brand="headspace" size={38} style="position:absolute;left:12px;top:11px" />
+        <span class="t14 semibold" style="left:60px;top:11px">
+          Headspace
+        </span>
+        <span class="t12 danger" style="left:60px;top:31px">
+          Not opened in 91 days
+        </span>
+        <span class="mock-pill price" style="right:12px;top:20px;padding:3px 8px;font-size:11px;background:var(--color-danger-soft);color:var(--color-danger)">
+          $12.99/mo
+        </span>
+      </div>
+    </BentoPanel>
+  )
+}
+
+{
+  kind === 'spend' && (
+    <BentoPanel w={464} h={312} silk={silkSpend} bleed={[42.44, 34.16, 32.44, 37.33]} angle={146.08} smoke="a" dark={{ mint: [23, -62, 278, 218], aqua: [221, 47, 232, 203], spotlight: [70, 31, 325, 281] }}>
+      <div class="mock-card spend" style="left:38px;top:28px;width:388px;height:256px">
+        <span class="t12 medium grey" style="left:18px;top:16px">
+          Spent this month
+        </span>
+        <span class="amount" style="left:18px;top:32px" data-count="86.94" data-format="${int}<span>.{dec}</span>" data-at="0.25" data-for="1.1">
+          $86<span>.94</span>
+        </span>
+        <span class="seg" style="left:222px;top:18px">
+          <span style="left:11px">1M</span>
+          <span style="left:47px">3M</span>
+          <span class="sel" />
+          <span class="on" style="left:84px">
+            6M
+          </span>
+          <span style="left:123px">1Y</span>
+        </span>
+        {bars.map((b, i) => (
+          <>
+            <span class="bar" style={`left:${b.x}px;top:${222 - b.h}px;height:${b.h}px;background:${b.c};--i:${i}`} />
+            <span class:list={['month', b.on && 'on']} style={`left:${b.x + 11}px`}>
+              {b.m}
+            </span>
+          </>
+        ))}
+        <span class="tooltip">$86.94</span>
+      </div>
+    </BentoPanel>
+  )
+}
+
+{
+  kind === 'cancel' && (
+    <BentoPanel w={716} h={312} silk={silkCancel} bleed={[82.36, 29.94, 32.44, 34.75]} angle={156.45} smoke="b" dark={{ mint: [45, -62, 430, 218], aqua: [346, 47, 358, 203], spotlight: [107, 31, 501, 281] }}>
+      <span class="bubble">How do I cancel Headspace?</span>
+      <div class="mock-card finder" style="left:200px;top:84px;width:320px;height:206px">
+        <CentryMark size={22} class="cf-mark" />
+        <span class="t13 semibold" style="left:44px;top:17px">
+          Cancel finder
+        </span>
+        <span class="app-row">
+          <SubTile brand="headspace" size={30} style="position:absolute;left:9px;top:9px" />
+          <span class="t13 semibold" style="position:absolute;left:48px;top:8px">
+            Headspace
+          </span>
+          <span class="t11 grey" style="position:absolute;left:48px;top:26px">
+            $12.99/mo · App Store
+          </span>
+        </span>
+        <span class="mock-pill link-pill">
+          <img src={linkIcon} alt="" width="13" height="13" />
+          Direct cancel link found
+        </span>
+        <span class="open-btn">
+          Open cancel page <img class="on-dark-btn" src={arrow} alt="" width="13" height="13" />
+        </span>
+      </div>
+      <svg class="cursor" width="20" height="24" viewBox="0 0 20 24" aria-hidden="true">
+        <path d="M2 1.5v18.2l4.6-4.4 2.9 6.9 3.3-1.4-2.9-6.8 6.4-.3z" fill="#fff" stroke="#111113" stroke-width="1.4" stroke-linejoin="round" />
+      </svg>
+      <div class="mock-card toast">
+        <span class="mock-check" style="left:14px;top:14px;width:30px;height:30px;box-shadow:0 3px 18px rgba(34,201,138,.38),inset 0 1px 0 rgba(255,255,255,.55)">
+          <img src={check30} alt="" />
+        </span>
+        <span class="t13 semibold" style="left:54px;top:11px">
+          Headspace canceled
+        </span>
+        <span class="t12 mint" style="left:54px;top:30px">
+          Saving $155.88 a year
+        </span>
+      </div>
+    </BentoPanel>
+  )
+}
+
+<style>
+  .t11,
+  .t12,
+  .t13,
+  .t14,
+  .t15 {
+    position: absolute;
+    letter-spacing: -0.2px;
+    white-space: nowrap;
+  }
+  .t11 {
+    font-size: 11px;
+  }
+  .t12 {
+    font-size: 12px;
+  }
+  .t13 {
+    font-size: 13px;
+    font-weight: var(--fw-medium);
+  }
+  .t14 {
+    font-size: 14px;
+  }
+  .t15 {
+    font-size: 15px;
+    font-weight: var(--fw-semibold);
+  }
+  .semibold {
+    font-weight: var(--fw-semibold);
+  }
+  .medium {
+    font-weight: var(--fw-medium);
+  }
+  .grey {
+    color: var(--color-ink-3);
+  }
+  .muted {
+    color: var(--color-ink-2);
+  }
+  .mint {
+    color: var(--color-mint-ink);
+  }
+  .danger {
+    color: var(--color-danger);
+  }
+  .t13.done {
+    color: rgba(var(--mock-ink-rgb), 0.6);
+  }
+  .t13.active {
+    font-weight: var(--fw-semibold);
+  }
+  .t13.todo {
+    color: rgba(var(--mock-ink-rgb), 0.35);
+  }
+
+  .gmail {
+    left: 18px;
+    top: 18px;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--color-surface);
+    box-shadow: var(--elevation-small);
+  }
+  .gmail img {
+    width: 36px;
+    height: 36px;
+  }
+  .track {
+    left: 18px;
+    top: 76px;
+    width: 264px;
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(118, 118, 128, 0.12);
+  }
+  .fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 190px;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #6bf0c0 0%, #22c98a 100%);
+    box-shadow:
+      0 2px 8px 0 rgba(34, 201, 138, 0.45),
+      inset 0 1px 0 0 var(--hl-50);
+  }
+  .hair {
+    height: 0.5px;
+    background: var(--mock-hair);
+  }
+  .step-check {
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    background: var(--color-mint-2);
+    filter: drop-shadow(0 1px 2px rgba(34, 201, 138, 0.35));
+  }
+  .step-check img {
+    width: 16px;
+    height: 16px;
+  }
+  .spin {
+    width: 16px;
+    height: 15.6px;
+  }
+
+  .marker {
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    border: 4px solid #ff3b30;
+    background: var(--color-surface);
+    box-shadow: var(--elevation-small);
+  }
+  .score {
+    left: 0;
+    right: 0;
+    top: 87px;
+    text-align: center;
+    font-size: 56px;
+    font-weight: var(--fw-bold);
+    letter-spacing: -0.04em;
+    color: var(--color-danger);
+  }
+  .score-label {
+    left: 0;
+    right: 0;
+    top: 151px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: 1.2px;
+    color: var(--color-ink-3);
+  }
+
+  .amount {
+    font-size: 30px;
+    font-weight: var(--fw-bold);
+    letter-spacing: -1px;
+  }
+  .amount span {
+    color: rgba(var(--mock-ink-rgb), 0.32);
+  }
+  .seg {
+    width: 148px;
+    height: 26px;
+    border-radius: 8px;
+    background: rgba(118, 118, 128, 0.12);
+  }
+  .seg > span {
+    position: absolute;
+    top: 6px;
+    font-size: 11px;
+    font-weight: var(--fw-medium);
+    letter-spacing: -0.2px;
+  }
+  .seg .sel {
+    left: 76px;
+    top: 2px;
+    width: 33px;
+    height: 22px;
+    border-radius: 6px;
+    background: var(--color-surface);
+    box-shadow: var(--elevation-small);
+  }
+  .seg .on {
+    font-weight: var(--fw-semibold);
+  }
+  .bar {
+    width: 22px;
+    border-radius: 6px;
+  }
+  .month {
+    top: 230px;
+    transform: translateX(-50%);
+    font-size: 10px;
+    font-weight: var(--fw-medium);
+    letter-spacing: -0.2px;
+    color: var(--color-ink-3);
+  }
+  .month.on {
+    font-weight: var(--fw-semibold);
+    color: var(--color-ink);
+  }
+  .tooltip {
+    left: 206px;
+    top: 83px;
+    padding: 3px 7px;
+    border-radius: 7px;
+    background: #1d1d1f;
+    color: #fff;
+    font-size: 11px;
+    font-weight: var(--fw-semibold);
+  }
+
+  .bubble {
+    left: 40px;
+    top: 38px;
+    padding: 9px 14px;
+    border-radius: 18px 18px 6px 18px;
+    background: linear-gradient(180deg, #2a2a2e 0%, #111113 100%);
+    color: #fff;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  .mock-card :global(.cf-mark) {
+    position: absolute;
+    left: 16px;
+    top: 14px;
+  }
+  .app-row {
+    left: 16px;
+    top: 48px;
+    width: 288px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--mock-row);
+  }
+  .link-pill {
+    left: 16px;
+    top: 108px;
+    gap: 6px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: var(--fw-medium);
+    background: rgba(34, 201, 138, 0.12);
+    color: var(--color-mint-ink);
+  }
+  .open-btn {
+    left: 16px;
+    top: 146px;
+    width: 288px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border-radius: 12px;
+    background: var(--gradient-btn);
+    color: var(--color-btn-ink);
+    font-size: 14px;
+    font-weight: var(--fw-semibold);
+  }
+  .toast {
+    left: 460.33px;
+    top: 41.56px;
+    width: 214px;
+    height: 58px;
+    border-radius: 18px;
+    transform: rotate(3deg);
+  }
+  :global([data-theme='dark']) .on-dark-btn {
+    filter: brightness(0) invert(0.07);
+  }
+  :global([data-theme='dark']) .muted {
+    color: var(--color-ink-2);
+  }
+  /* ---------- Play-once intro (user, 2026-11-09) ----------
+     scripts/feature-fx.ts arms each tile ([data-fx]) and plays it ([data-fx='play'])
+     once it scrolls into view. Armed tiles hold every animation at its first frame
+     (paused + fill both); without JS or with reduced motion nothing is armed, so the
+     static Figma frame shows. Each card acts out its feature (Mobbin refs: Ease's
+     product card with a demo cursor, Attio's live UI widgets). */
+  .cursor {
+    position: absolute;
+    left: 372px;
+    top: 250px;
+    opacity: 0;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+    pointer-events: none;
+  }
+  :global([data-fx='play'] *) {
+    animation-play-state: running !important;
+  }
+
+  /* Inbox scanner: card rises → bar fills while the count ticks → steps tick →
+     arrow → result card with the apps popping in, each checked */
+  :global([data-fx]) .scan { animation: fx-rise 0.6s var(--fx-out) 0s both paused; }
+  :global([data-fx]) .fill { transform-origin: left center; animation: fx-fill 1.6s var(--fx-soft) 0.3s both paused; }
+  :global([data-fx]) .step-check { animation: fx-pop 0.4s var(--fx-pop) calc(0.6s + var(--i) * 0.4s) both paused; }
+  :global([data-fx]) .spin { animation: fx-spin 0.8s linear 0.3s 3 both paused; }
+  :global([data-fx]) .flow { animation: fx-pop 0.45s var(--fx-pop) 1.45s both paused; }
+  :global([data-fx]) .found { animation: fx-slide 0.6s var(--fx-out) 1.55s both paused; }
+  :global([data-fx]) .found :global(.ft) { animation: fx-pop 0.45s var(--fx-pop) calc(1.8s + var(--i) * 0.08s) both paused; }
+  :global([data-fx]) .fc { animation: fx-pop 0.35s var(--fx-pop) calc(2.05s + var(--i) * 0.08s) both paused; }
+  :global([data-fx]) .more { animation: fx-fade 0.4s var(--fx-out) 2.55s both paused; }
+
+  /* Zombie detector: gauge draws with the marker riding its tip while the score
+     counts to 99 → app card slides up → price pill pulses once */
+  :global([data-fx]) .gauge {
+    -webkit-mask-image: conic-gradient(from 270deg at 50% 87%, #000 var(--sweep), transparent 0);
+    mask-image: conic-gradient(from 270deg at 50% 87%, #000 var(--sweep), transparent 0);
+    animation: fx-sweep 1.4s var(--fx-soft) 0.2s both paused;
+  }
+  :global([data-fx]) .marker {
+    transform-origin: -95.75px 10px;
+    animation: fx-orbit 1.4s var(--fx-soft) 0.2s both paused;
+  }
+  :global([data-fx]) .score { animation: fx-fade 0.3s var(--fx-out) 0.2s both paused; }
+  :global([data-fx]) .score-label { animation: fx-fade 0.5s var(--fx-out) 0.5s both paused; }
+  :global([data-fx]) .hs { animation: fx-rise 0.6s var(--fx-out) 1.35s both paused; }
+  :global([data-fx]) .price { animation: fx-pulse 0.6s var(--fx-out) 1.95s both paused; }
+
+  /* Spending dashboard: bars grow left to right while the total counts up →
+     selector slides to 6M → tooltip pops over Nov */
+  :global([data-fx]) .spend { animation: fx-rise 0.6s var(--fx-out) 0s both paused; }
+  :global([data-fx]) .bar { transform-origin: bottom; animation: fx-grow 0.7s var(--fx-out) calc(0.25s + var(--i) * 0.07s) both paused; }
+  :global([data-fx]) .sel { animation: fx-seg 0.5s var(--fx-out) 0.5s both paused; }
+  :global([data-fx]) .tooltip { transform-origin: 50% 100%; animation: fx-pop 0.45s var(--fx-pop) 1.3s both paused; }
+
+  /* Cancel finder: question pops → finder card rises → link found → cursor glides
+     in and taps "Open cancel page" → "Headspace canceled" toast lands */
+  :global([data-fx]) .bubble { transform-origin: 100% 100%; animation: fx-pop 0.45s var(--fx-pop) 0.1s both paused; }
+  :global([data-fx]) .finder { animation: fx-rise 0.6s var(--fx-out) 0.45s both paused; }
+  :global([data-fx]) .link-pill { animation: fx-pop 0.4s var(--fx-pop) 1s both paused; }
+  :global([data-fx]) .open-btn { animation: fx-press 0.3s var(--fx-out) 1.95s both paused; }
+  :global([data-fx]) .cursor { animation: fx-cursor 1.7s var(--fx-out) 1.15s both paused; }
+  :global([data-fx]) .toast { animation: fx-toast 0.6s var(--fx-pop) 2.15s both paused; }
+
+  :global([data-fx]) {
+    --fx-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --fx-soft: cubic-bezier(0.45, 0, 0.2, 1);
+    --fx-pop: cubic-bezier(0.34, 1.5, 0.64, 1);
+  }
+
+  @property --sweep {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 360deg;
+  }
+  @keyframes fx-rise {
+    from { opacity: 0; translate: 0 18px; scale: 0.97; }
+    to { opacity: 1; translate: 0 0; scale: 1; }
+  }
+  @keyframes fx-slide {
+    from { opacity: 0; translate: -16px 0; }
+    to { opacity: 1; translate: 0 0; }
+  }
+  @keyframes fx-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes fx-pop {
+    from { opacity: 0; scale: 0.4; }
+    60% { opacity: 1; }
+    to { opacity: 1; scale: 1; }
+  }
+  @keyframes fx-fill {
+    from { scale: 0 1; }
+    to { scale: 1 1; }
+  }
+  @keyframes fx-spin {
+    to { rotate: 360deg; }
+  }
+  @keyframes fx-sweep {
+    from { --sweep: 0deg; }
+    99.9% { --sweep: 182deg; }
+    to { --sweep: 360deg; }
+  }
+  @keyframes fx-orbit {
+    from { rotate: -180deg; opacity: 0; }
+    8% { opacity: 1; }
+    to { rotate: 0deg; opacity: 1; }
+  }
+  @keyframes fx-pulse {
+    40% { scale: 1.12; }
+    to { scale: 1; }
+  }
+  @keyframes fx-grow {
+    from { scale: 1 0; }
+    to { scale: 1 1; }
+  }
+  @keyframes fx-seg {
+    from { translate: -72px 0; }
+    to { translate: 0 0; }
+  }
+  @keyframes fx-press {
+    50% { scale: 0.96; filter: brightness(0.92); }
+    to { scale: 1; filter: none; }
+  }
+  @keyframes fx-cursor {
+    from { opacity: 0; translate: 170px 80px; }
+    12% { opacity: 1; }
+    45% { translate: 0 0; scale: 1; }
+    52% { scale: 0.85; }
+    60% { scale: 1; opacity: 1; }
+    85% { opacity: 1; translate: 0 0; }
+    to { opacity: 0; translate: 10px 14px; }
+  }
+  @keyframes fx-toast {
+    from { opacity: 0; translate: 0 -14px; rotate: -6deg; scale: 0.9; }
+    to { opacity: 1; translate: 0 0; rotate: 0deg; scale: 1; }
+  }
+</style>

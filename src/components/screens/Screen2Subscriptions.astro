@@ -1,0 +1,149 @@
+---
+/** Screen 2 "Every subscription" (451:10139) — also shown on the CTA flat-lay phone. */
+import ScreenFrame from './ScreenFrame.astro';
+import AppIcon from '../brand/AppIcon.astro';
+import add from '../../assets/icons/screens/s2-add.svg?url';
+import type { Brand } from '../brand/brands';
+
+type Row = { b: Brand; name: string; meta: string; price: string; score: string; tone: 'red' | 'amber' | 'green'; bg?: string };
+const zombies: Row[] = [
+  { b: 'headspace', name: 'Headspace', meta: 'Not opened in 91 days', price: '$12.99', score: 'Score 99', tone: 'red', bg: '#fff' },
+  { b: 'duolingo', name: 'Duolingo', meta: 'Not opened in 62 days', price: '$6.99', score: 'Score 94', tone: 'red' },
+  { b: 'midjourney', name: 'Midjourney', meta: 'Not opened in 47 days', price: '$10.00', score: 'Score 87', tone: 'red', bg: '#fff' },
+];
+const active: Row[] = [
+  { b: 'hbo-max', name: 'HBO Max', meta: 'Renews Nov 27', price: '$15.99', score: 'Score 35', tone: 'amber', bg: '#5a17d6' },
+  { b: 'netflix', name: 'Netflix', meta: 'Renews Nov 5', price: '$15.49', score: 'Score 12', tone: 'green' },
+  { b: 'prime-video', name: 'Prime Video', meta: 'Renews Nov 18', price: '$8.99', score: 'Score 21', tone: 'green' },
+  { b: 'spotify', name: 'Spotify', meta: 'Renews Nov 8', price: '$9.99', score: 'Score 8', tone: 'green' },
+];
+const lists = [
+  { label: 'Zombies', dot: '#ff3b30', sum: '3 · $29.98/mo', top: 125.87, listTop: 149.47, rows: zombies },
+  { label: 'Active', dot: '#22c98a', sum: '6 · $56.96/mo', top: 317.81, listTop: 341.41, rows: active },
+];
+---
+
+<ScreenFrame tab="home">
+  <div class="scr">
+    <span class="title-xl" style="left:15.73px;top:44.05px">Subscriptions</span>
+    <span class="add" style="left:265.1px;top:48.77px"><img src={add} alt="" /></span>
+    <span class="seg" style="left:15.73px;top:84.96px;width:277.691px">
+      <span class="sel" style="left:1.57px;width:89.417px"></span>
+      <span class="on" style="left:33.83px;white-space:pre">All  9</span>
+      <span style="left:114.85px;white-space:pre;color:var(--color-danger)">Zombie  3</span>
+      <span style="left:210.04px;white-space:pre">Active  6</span>
+    </span>
+
+    {
+      lists.map((l) => (
+        <>
+          <span class="section" style={`left:15.73px;top:${l.top}px`}>
+            <span class="dot" style={`background:${l.dot}`} />
+            <span class="t-name">{l.label}</span>
+            <span class="sum">{l.sum}</span>
+          </span>
+          <div class="row-card" style={`left:15.73px;top:${l.listTop}px;width:277.691px;height:${l.rows.length * 50.346}px`}>
+            {l.rows.map((r, k) => (
+              <div class="sub-row" style={`top:${k * 50.346}px`}>
+                <AppIcon brand={r.b} size={31.466} radius={7.867} bg={r.bg} style="position:absolute;left:11.01px;top:9.44px" />
+                <span class="n">{r.name}</span>
+                <span class:list={['m', r.tone === 'red' && 'danger']}>{r.meta}</span>
+                <span class="p">{r.price}</span>
+                <span class:list={['pill', 'score', r.tone]}>{r.score}</span>
+                {k < l.rows.length - 1 && <span class="hair" style="left:51.92px;top:49.95px;width:225.772px" />}
+              </div>
+            ))}
+          </div>
+        </>
+      ))
+    }
+  </div>
+</ScreenFrame>
+
+<style>
+  .add {
+    width: 28.32px;
+    height: 28.32px;
+    border-radius: 14.16px;
+    background: #1d1d1f;
+  }
+  .add img {
+    width: 28.32px;
+    height: 28.32px;
+  }
+  .section {
+    width: 277.691px;
+    height: 15.733px;
+  }
+  .section > * {
+    position: absolute;
+  }
+  .dot {
+    left: 1.57px;
+    top: 4.72px;
+    width: 6.293px;
+    height: 6.293px;
+    border-radius: 3.147px;
+  }
+  .section .t-name {
+    left: 12.59px;
+    top: 0;
+  }
+  .sum {
+    right: 0;
+    top: 0.79px;
+    font-size: 10.227px;
+    font-weight: var(--fw-medium);
+    letter-spacing: -0.157px;
+    color: var(--color-ink-3);
+  }
+  .sub-row {
+    left: 0;
+    width: 277.691px;
+    height: 50.346px;
+  }
+  .sub-row > * {
+    position: absolute;
+  }
+  .n,
+  .p {
+    top: 9.44px;
+    font-size: 12.587px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.157px;
+  }
+  .n,
+  .m {
+    left: 51.92px;
+  }
+  .p {
+    right: 14.2px;
+  }
+  .m {
+    top: 26.75px;
+    font-size: 10.227px;
+    letter-spacing: -0.157px;
+    color: var(--color-ink-3);
+  }
+  .m.danger {
+    color: var(--color-danger);
+  }
+  .score {
+    right: 14.2px;
+    top: 28.32px;
+    padding: 0.787px 5.507px;
+    font-size: 8.653px;
+  }
+  .score.red {
+    background: rgba(255, 59, 48, 0.1);
+    color: var(--color-danger);
+  }
+  .score.amber {
+    background: rgba(255, 149, 0, 0.14);
+    color: #b86200;
+  }
+  .score.green {
+    background: rgba(52, 199, 89, 0.14);
+    color: #1a8f3c;
+  }
+</style>

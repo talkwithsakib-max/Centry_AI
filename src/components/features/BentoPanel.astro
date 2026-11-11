@@ -1,0 +1,77 @@
+---
+/**
+ * Visual panel inside each Features bento tile: gradient + exported "Silk" glow
+ * SVG (with its blur bleed) + subtle smoke (40%, 2px blur) + inner edge.
+ */
+import smokeA from '../../assets/textures/panel-smoke-a-soft.webp';
+import smokeB from '../../assets/textures/panel-smoke-b-soft.webp';
+import DarkPanelBg from '../ui/DarkPanelBg.astro';
+
+type Box = [number, number, number, number];
+
+interface Props {
+  w: number;
+  h: number;
+  silk: string;
+  /** Figma bleed of the silk SVG: [top, right, bottom, left] in % of the panel */
+  bleed: [number, number, number, number];
+  angle: number;
+  smoke: 'a' | 'b';
+  radius?: number;
+  /** gradient start colour (Zombie Alert uses a warm #FBEFEC) */
+  from?: string;
+  /** dark theme glows (Figma "Home 2 — Dark"): mint, aqua, spotlight boxes */
+  dark: { mint: Box; aqua: Box; spotlight: Box; dots?: boolean };
+}
+const { w, h, silk, bleed, angle, smoke, radius = 20, from = '#ecf8f2', dark } = Astro.props;
+const smokeSrc = (smoke === 'a' ? smokeA : smokeB).src;
+const [t, r, b, l] = bleed;
+const silkStyle = `left:${-l}%;top:${-t}%;width:${100 + l + r}%;height:${100 + t + b}%`;
+---
+
+<div class="panel" style={`width:${w}px;height:${h}px;--angle:${angle}deg;--r:${radius}px;--from:${from}`}>
+  <div class="bg" aria-hidden="true">
+    <img class="silk only-light" src={silk} alt="" style={silkStyle} />
+    <img class="smoke only-light" src={smokeSrc} alt="" style={`width:${w + 40}px;height:${h + 40}px`} />
+    <DarkPanelBg w={w} h={h} smoke={smokeSrc} {...dark} />
+    <span class="edge"></span>
+  </div>
+  <slot />
+</div>
+
+<style>
+  .panel {
+    position: relative;
+    border-radius: var(--r);
+  }
+  .bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: var(--r);
+    background: linear-gradient(var(--angle), var(--from) 0%, #f7f3ee 71.43%);
+  }
+  .bg > * {
+    position: absolute;
+    max-width: none;
+  }
+  .smoke {
+    left: -20px;
+    top: -20px;
+    object-fit: cover;
+    opacity: 0.4;
+  }
+  .edge {
+    inset: 0;
+    border-radius: inherit;
+    box-shadow:
+      inset 0 1px 0 0 var(--hl-90),
+      inset 0 0 12px 0 rgba(0, 0, 0, 0.04);
+  }
+  :global([data-theme='dark']) .bg {
+    background: #1e2026;
+  }
+  .panel > :global(:not(.bg)) {
+    position: absolute;
+  }
+</style>

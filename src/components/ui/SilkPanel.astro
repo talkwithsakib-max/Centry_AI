@@ -1,0 +1,115 @@
+---
+/**
+ * "Pearl mint silk" panel used behind product mock-ups (How it works visuals,
+ * Features bento). Figma layers: gradient → Mint/Aqua/Cream/Sage blurred blobs
+ * → two white sheens at -24° → subtle smoke (14%, 5px blur) → content.
+ * Blob positions are Figma box coords (top-left of the un-blurred ellipse box).
+ */
+import mint from '../../assets/icons/blobs/mint.svg?url';
+import aqua from '../../assets/icons/blobs/aqua.svg?url';
+import cream from '../../assets/icons/blobs/cream.svg?url';
+import sage from '../../assets/icons/blobs/sage.svg?url';
+import smokeA from '../../assets/textures/panel-smoke-a-silk.webp';
+import smokeB from '../../assets/textures/panel-smoke-b-soft.webp';
+import smokeASoft from '../../assets/textures/panel-smoke-a-soft.webp';
+import DarkPanelBg from './DarkPanelBg.astro';
+
+type XY = [number, number];
+interface Props {
+  w: number;
+  h: number;
+  blobs: { mint: XY; aqua: XY; cream: XY; sage: XY };
+  sheen?: { center: XY; fine: XY };
+  smoke?: 'a' | 'b';
+  radius?: number;
+  class?: string;
+}
+const {
+  w,
+  h,
+  blobs,
+  sheen = { center: [274.18, 17.98], fine: [261.16, 101.59] },
+  smoke = 'a',
+  radius = 22,
+  class: className,
+} = Astro.props;
+
+// Each blob SVG includes its blur bleed (m px on every side).
+const blob = (src: string, [x, y]: XY, bw: number, bh: number, m: number) =>
+  ({ src, style: `left:${x - m}px;top:${y - m}px;width:${bw + 2 * m}px;height:${bh + 2 * m}px` });
+const layers = [
+  blob(mint, blobs.mint, 441, 269.08, 70),
+  blob(aqua, blobs.aqua, 352.8, 238.7, 80),
+  blob(cream, blobs.cream, 411.6, 217, 70),
+  blob(sage, blobs.sage, 264.6, 173.6, 60),
+];
+const smokeSrc = (smoke === 'a' ? smokeA : smokeB).src;
+---
+
+<div class:list={['silk', className]} style={`width:${w}px;height:${h}px;border-radius:${radius}px`}>
+  <div class="bg only-light" aria-hidden="true">
+    {layers.map((l) => <img class="blob" src={l.src} alt="" style={l.style} />)}
+    <span class="sheen" style={`left:${sheen.center[0] - 441}px;top:${sheen.center[1] - 45}px`}></span>
+    <span class="sheen fine" style={`left:${sheen.fine[0] - 441}px;top:${sheen.fine[1] - 13}px`}></span>
+    <img class="smoke" src={smokeSrc} alt="" style={`width:${w + 40}px;height:${h + 40}px`} />
+  </div>
+  <!-- Dark (Figma): Mint 14% + Aqua 6% at the same boxes, spotlight, dot grid, vignette, dark smoke -->
+  <DarkPanelBg
+    w={w}
+    h={h}
+    smoke={smokeASoft.src}
+    mint={[blobs.mint[0], blobs.mint[1], 441, 269.08]}
+    aqua={[blobs.aqua[0], blobs.aqua[1], 352.8, 238.7]}
+    spotlight={[(w - 412) / 2, 65, 412, 304]}
+  />
+  <slot />
+  <span class="edge" aria-hidden="true"></span>
+</div>
+
+<style>
+  .silk {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background: linear-gradient(143.57deg, #eaf8f2 0%, #f7f2eb 71.43%);
+  }
+  .bg,
+  .edge {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .bg > * {
+    position: absolute;
+    max-width: none;
+  }
+  .sheen {
+    width: 882px;
+    height: 90px;
+    background: rgba(255, 255, 255, 0.75);
+    filter: blur(19px);
+    opacity: 0.6;
+    transform: rotate(-24deg);
+  }
+  .sheen.fine {
+    height: 26px;
+    background: rgba(255, 255, 255, 0.6);
+    filter: blur(7px);
+  }
+  .smoke {
+    left: -20px;
+    top: -20px;
+    object-fit: cover;
+    opacity: 0.14;
+  }
+  .edge {
+    z-index: 2;
+    border-radius: inherit;
+    box-shadow:
+      inset 0 1px 0 0 var(--hl-90),
+      inset 0 0 14px 0 rgba(0, 0, 0, 0.05);
+  }
+  :global([data-theme='dark']) .silk {
+    background: #1e2026;
+  }
+</style>

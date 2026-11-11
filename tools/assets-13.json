@@ -1,0 +1,11 @@
+{
+ "images/s5-orbit.png": "https://www.figma.com/api/mcp/asset/bf876baf-155b-4999-bf50-3e7624c63b15.png",
+ "icons/screens/s5-close.svg": "https://www.figma.com/api/mcp/asset/f9278d6b-2bec-4604-811f-6f60d5017bfa.svg",
+ "icons/screens/s5-glow.svg": "https://www.figma.com/api/mcp/asset/d65c92fb-bddf-43cf-8cf1-db455e31be6f.svg",
+ "icons/screens/s5-track.svg": "https://www.figma.com/api/mcp/asset/2ab807ee-bdc6-4cd2-95a3-3ea74ace40cd.svg",
+ "icons/screens/s5-progress.svg": "https://www.figma.com/api/mcp/asset/11174ad6-2d71-4aba-a413-d35f24a118b3.svg",
+ "icons/screens/s5-core.svg": "https://www.figma.com/api/mcp/asset/3a5a6b92-d3ab-492c-9e5d-481e8e4deadb.svg",
+ "icons/screens/s5-envelope.svg": "https://www.figma.com/api/mcp/asset/aa16484f-5332-4406-ab15-6d06cf09e847.svg",
+ "icons/screens/s5-lock.svg": "https://www.figma.com/api/mcp/asset/0cda5868-1d5d-46ae-9f63-672245bc5436.svg",
+ "icons/screens/s5-check.svg": "https://www.figma.com/api/mcp/asset/68933f94-6924-4639-ac53-95dbee0ac20c.svg"
+}

@@ -1,0 +1,65 @@
+---
+import '../styles/fonts.css';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'CentryAI — Find and cancel forgotten subscriptions',
+  description = 'CentryAI scans your Gmail or iCloud inbox, finds every subscription you’re paying for, and tells you which ones to cut.',
+} = Astro.props;
+
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#fefaf7" data-theme-color />
+    <!-- Theme before first paint: saved choice, else the OS preference. -->
+    <script is:inline>
+      (function () {
+        var t = null;
+        try {
+          t = localStorage.getItem('centry-theme');
+        } catch (e) {}
+        if (t !== 'light' && t !== 'dark') {
+          t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', t);
+        var m = document.querySelector('meta[data-theme-color]');
+        if (m) m.setAttribute('content', t === 'dark' ? '#0b0c0f' : '#fefaf7');
+        // Scroll motion (scripts/reveal.ts): only when allowed. Module scripts run
+        // before DOMContentLoaded, so if it hasn't run by then it failed: drop the
+        // class so nothing stays hidden.
+        if (!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+          document.documentElement.classList.add('fx');
+          document.addEventListener('DOMContentLoaded', function () {
+            if (!window.__fxReady) document.documentElement.classList.remove('fx');
+          });
+        }
+      })();
+    </script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="page" id="top">
+      <slot />
+      <script>
+        import { initMotion } from '../scripts/reveal';
+        initMotion();
+      </script>
+    </div>
+  </body>
+</html>

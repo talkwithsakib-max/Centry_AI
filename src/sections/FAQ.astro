@@ -1,0 +1,262 @@
+---
+/** Figma "FAQ" (448:8287) + component set "FAQ item" (Open/Closed). One item open at a time. */
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import IconBadge from '../components/ui/IconBadge.astro';
+import Button from '../components/ui/Button.astro';
+import chat from '../assets/icons/badges/chat.svg?url';
+import arrow from '../assets/icons/arrow-right.svg?url';
+import plus from '../assets/icons/faq-plus.svg?url';
+import minus from '../assets/icons/faq-minus.svg?url';
+import { faq } from '../data/faq';
+import { links, linkAttrs } from '../config/links';
+---
+
+<section class="faq" id="faq" aria-labelledby="faq-title" data-reveal>
+  <div class="container">
+    <div class="side">
+      <SectionHeading eyebrow="FAQ" line1="Your questions," line2="answered." id="faq-title">
+        Everything you need to know about how CentryAI finds, scores and helps you cancel subscriptions.
+      </SectionHeading>
+      <div class="support">
+        <IconBadge src={chat} />
+        <p class="s1">Still have questions?</p>
+        <p class="s2">Our team usually replies within a day.</p>
+        <Button size="sm" {...linkAttrs(links.contactSupport)} class="s-btn">
+          Contact support <img class="on-dark" src={arrow} alt="" width="14" height="14" />
+        </Button>
+      </div>
+    </div>
+
+    <div class="accordion" data-accordion>
+      {
+        faq.map((item, i) => (
+          <details class="item" name="faq" open={i === 0} data-accordion-item data-r style={`--rd:${i * 60}ms`}>
+            <summary>
+              <span class="q">{item.q}</span>
+              <span class="toggle" aria-hidden="true">
+                <img class="plus" src={plus} alt="" />
+                <img class="minus" src={minus} alt="" />
+              </span>
+            </summary>
+            <div class="answer">
+              <div class="answer-inner">
+                <p>{item.a}</p>
+              </div>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initAccordion } from '../scripts/accordion';
+  initAccordion();
+</script>
+
+<style>
+  .faq {
+    padding: 120px 0;
+  }
+  .container {
+    display: grid;
+    grid-template-columns: 400px 720px;
+    justify-content: space-between;
+    align-items: start;
+    max-width: calc(1224px + 2 * var(--gutter));
+  }
+  .faq :global(.heading .sub) {
+    font-size: 17px;
+  }
+  .support {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    margin-top: 40px;
+    padding: 24px;
+    border-radius: 24px;
+    background: var(--color-surface);
+    box-shadow: var(--elevation-medium);
+  }
+  .s1 {
+    margin-top: 12px;
+    font-size: 17px;
+    font-weight: var(--fw-semibold);
+    line-height: 24px;
+    letter-spacing: -0.3px;
+  }
+  .s2 {
+    font-size: 15px;
+    line-height: 22px;
+    letter-spacing: -0.1px;
+    color: var(--color-ink-2);
+  }
+  .support :global(.s-btn) {
+    margin-top: 14px;
+    letter-spacing: -0.2px;
+  }
+
+  .accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .item {
+    border-radius: 20px;
+    background: var(--color-surface);
+    box-shadow: var(--elevation-small);
+    transition: box-shadow var(--dur-base) var(--ease-out);
+  }
+  .item[open] {
+    box-shadow: var(--elevation-medium);
+  }
+  summary {
+    transition: background var(--dur-base) var(--ease-out);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 22px 24px;
+    list-style: none;
+    cursor: pointer;
+    border-radius: 20px;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary:focus-visible {
+    outline-offset: -2px;
+  }
+  .q {
+    flex: 1;
+    font-size: 17px;
+    font-weight: var(--fw-semibold);
+    line-height: 24px;
+    letter-spacing: -0.3px;
+  }
+  .toggle {
+    position: relative;
+    flex: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 16px;
+    background: var(--color-fill-1);
+    transition: background var(--dur-base) var(--ease-out);
+  }
+  .toggle img {
+    position: absolute;
+    inset: 0;
+    width: 32px;
+    height: 32px;
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      rotate var(--dur-slow) var(--ease-out);
+  }
+  /* the icon turns a quarter as it swaps (+ → −), both ways */
+  .minus {
+    opacity: 0;
+    rotate: -90deg;
+  }
+  .item[open]:not([data-closing]) .plus {
+    opacity: 0;
+    rotate: 90deg;
+  }
+  .item[open]:not([data-closing]) .minus {
+    opacity: 1;
+    rotate: 0deg;
+  }
+  .item[open]:not([data-closing]) .toggle {
+    background: var(--color-ink);
+  }
+  @media (hover: hover) {
+    .item:not([open]) summary:hover {
+      background: var(--color-fill-1);
+    }
+  }
+  summary:hover .toggle {
+    background: var(--color-fill-3);
+  }
+  .item[open]:not([data-closing]) summary:hover .toggle {
+    background: #333336;
+  }
+  /* Smooth height: the grid row animates 0fr → 1fr (accordion.ts drives it) */
+  .answer {
+    display: grid;
+    grid-template-rows: 1fr;
+    margin-top: -12px;
+    transition:
+      grid-template-rows var(--dur-slow) var(--ease-out),
+      margin var(--dur-slow) var(--ease-out);
+  }
+  .item[data-closing] .answer,
+  .item[data-opening] .answer {
+    grid-template-rows: 0fr;
+    margin-top: 0;
+  }
+  .answer-inner {
+    overflow: hidden;
+    transition:
+      opacity var(--dur-slow) var(--ease-out),
+      translate var(--dur-slow) var(--ease-out);
+  }
+  .item[data-closing] .answer-inner,
+  .item[data-opening] .answer-inner {
+    opacity: 0;
+    translate: 0 -6px;
+  }
+  .answer p {
+    padding: 0 24px 22px;
+    font-size: 15px;
+    line-height: 24px;
+    letter-spacing: -0.1px;
+    color: var(--color-ink-2);
+  }
+
+  @media (max-width: 1199px) {
+    .container {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 40px;
+      max-width: calc(760px + 2 * var(--gutter));
+    }
+    .side {
+      display: contents;
+    }
+    .accordion {
+      order: 2;
+    }
+    .support {
+      order: 3;
+      margin-top: 0;
+    }
+  }
+  @media (max-width: 1023px) {
+    .faq {
+      padding: 88px 0;
+    }
+  }
+  @media (max-width: 767px) {
+    .faq {
+      padding: 72px 0;
+    }
+    summary {
+      padding: 18px 20px;
+    }
+    .q {
+      font-size: 16px;
+    }
+    .answer p {
+      padding: 0 20px 18px;
+    }
+  }
+  /* Dark (Figma): white plus; open state is a light disc with a dark minus */
+  :global([data-theme='dark']) .plus {
+    filter: brightness(0) invert(0.96);
+  }
+  :global([data-theme='dark']) .minus {
+    filter: brightness(0) invert(0.07);
+  }
+  :global([data-theme='dark']) .item[open]:not([data-closing]) summary:hover .toggle {
+    background: #e2e2e6;
+  }
+</style>

@@ -1,0 +1,12 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="1424" height="1008" viewBox="0 0 1424 1008" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Wisp 2" opacity="0.55" filter="url(#filter0_f_0_8)">
+<path id="Vector" d="M40 858.1C55.6 858.5 102.2 857.8 133.3 860.5C164.4 863.2 195.6 868.6 226.7 874.1C257.8 879.6 288.9 895.1 320 893.4C351.1 891.8 382.2 872.7 413.3 864.1C444.4 855.4 475.6 847.2 506.7 841.6C537.8 835.9 584.4 832.2 600 830.3" stroke-width="34" stroke-linecap="round" stroke="#334542"/>
+</g>
+<defs>
+<filter id="filter0_f_0_8" x="-14" y="-14" width="1452" height="1036" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="7" result="effect1_foregroundBlur_0_8"/>
+</filter>
+</defs>
+</svg>

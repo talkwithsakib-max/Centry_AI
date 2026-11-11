@@ -1,0 +1,35 @@
+---
+/** iOS status bar + Dynamic Island, in 300px-device screen coordinates. */
+import statusIcons from '../../assets/icons/phone/status-icons.svg?url';
+---
+
+<span class="time">9:41</span>
+<span class="island"></span>
+<img class="icons" src={statusIcons} alt="" />
+
+<style>
+  .time {
+    position: absolute;
+    left: 36.47px;
+    top: 13.59px;
+    font-size: 12.157px;
+    font-weight: var(--fw-semibold);
+    color: #000;
+  }
+  .island {
+    position: absolute;
+    left: 95.47px;
+    top: 7.87px;
+    width: 90.108px;
+    height: 26.46px;
+    border-radius: 13.23px;
+    background: #000;
+  }
+  .icons {
+    position: absolute;
+    left: 199.53px;
+    top: 15.73px;
+    width: 55.781px;
+    height: 12.873px;
+  }
+</style>

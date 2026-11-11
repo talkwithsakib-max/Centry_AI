@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+
+# headless-Chrome profiles left by design-review capture scripts
+.cdp-*/

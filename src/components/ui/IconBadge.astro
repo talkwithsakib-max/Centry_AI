@@ -1,0 +1,36 @@
+---
+/**
+ * Glossy mint badge (latest Figma). Figma exports each badge as one SVG that
+ * includes its gradient, highlights and shadow, with a 25%/12.5%/37.5% bleed
+ * around the 40px box — reproduced here so the badge box keeps its layout size.
+ */
+interface Props {
+  src: string;
+  size?: number;
+  class?: string;
+  style?: string;
+}
+const { src, size = 40, class: className, style = '' } = Astro.props;
+---
+
+<span class:list={['badge', className]} style={`--size:${size}px;${style}`} aria-hidden="true">
+  <img src={src} alt="" />
+</span>
+
+<style>
+  .badge {
+    position: relative;
+    display: block;
+    flex: none;
+    width: var(--size);
+    height: var(--size);
+  }
+  img {
+    position: absolute;
+    left: -25%;
+    top: -12.5%;
+    width: 150%;
+    height: 150%;
+    max-width: none;
+  }
+</style>

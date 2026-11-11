@@ -1,0 +1,385 @@
+---
+/**
+ * Figma "How it works" (443:6456) + component set "Step card" (443:6455).
+ * One card is expanded (620px) and two collapsed (298px). Clicking (or hovering, desktop) a card expands
+ * it and closes the open one, Calendly-style (animated width + staggered content). Below 1024px the cards stack and
+ * expand vertically. Behaviour: scripts/steps.ts.
+ */
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import Button from '../components/ui/Button.astro';
+import SilkPanel from '../components/ui/SilkPanel.astro';
+import Fit from '../components/ui/Fit.astro';
+import StepMock from '../components/steps/StepMock.astro';
+import { links, linkAttrs } from '../config/links';
+
+const steps = [
+  {
+    n: 1 as const,
+    title: 'Connect your inbox',
+    expanded: 'Link Gmail or iCloud with read-only access. Nothing is ever stored.',
+    collapsed: 'Link Gmail or iCloud with read-only access. Nothing is ever stored.',
+    blobs: { mint: [-105.84, -52.08], aqua: [323.4, 95.48], cream: [-58.8, 269.08], sage: [294, 303.8] },
+  },
+  {
+    n: 2 as const,
+    title: 'See everything',
+    expanded: 'Every subscription, price and renewal date, found in seconds.',
+    collapsed: 'Your full list appears in seconds, with a zombie score for each.',
+    blobs: { mint: [-65.84, -22.08], aqua: [283.4, 95.48], cream: [-58.8, 239.08], sage: [324, 303.8] },
+  },
+  {
+    n: 3 as const,
+    title: 'Cut the waste',
+    expanded: 'Get the direct cancel link for anything and cancel in a tap.',
+    collapsed: 'Tap any subscription to get its direct cancel link. No hold music.',
+    blobs: { mint: [-135.84, -42.08], aqua: [353.4, 95.48], cream: [-58.8, 259.08], sage: [304, 303.8] },
+  },
+] as const;
+---
+
+<section class="how" id="how-it-works" aria-labelledby="how-title" data-reveal>
+  <div class="inner">
+    <SectionHeading eyebrow="How it works" line1="Up and running" line2="in 3 minutes." align="center" id="how-title">
+      Connect your inbox, see every charge, cut what you don’t use.<br class="br" /> No bank login, no spreadsheets, no
+      manual entry.
+    </SectionHeading>
+    <Button {...linkAttrs(links.downloadApp)} class="cta">Get started free</Button>
+
+    <div class="steps" data-steps data-count-manual>
+      {
+        steps.map((s, i) => (
+          <article class="step" data-step data-open={i === 0 ? '' : undefined} aria-labelledby={`step-${s.n}-title`} data-r style={`--rd:${i * 100}ms`}>
+            <button
+              class="hit"
+              type="button"
+              aria-expanded={i === 0 ? 'true' : 'false'}
+              aria-controls={`step-${s.n}-body`}
+              data-step-trigger
+            >
+              <span class="visually-hidden">Show step {s.n}: {s.title}</span>
+            </button>
+
+            {/* Expanded content (620px) */}
+            <div class="open-view" id={`step-${s.n}-body`}>
+              <div class="progress" aria-hidden="true">
+                {[1, 2, 3].map((k) => (
+                  <span class:list={['bar', k === s.n && 'on']} />
+                ))}
+              </div>
+              <h3 class="title" id={`step-${s.n}-title`}>
+                {s.title}
+              </h3>
+              <p class="desc">{s.expanded}</p>
+              <div class="visual">
+                <Fit w={588} h={434}>
+                  <SilkPanel w={588} h={434} blobs={s.blobs as never}>
+                    <StepMock step={s.n} />
+                  </SilkPanel>
+                </Fit>
+              </div>
+            </div>
+
+            {/* Collapsed content (298px) */}
+            <div class="closed-view" aria-hidden="true">
+              <p class="title">{s.title}</p>
+              <p class="desc">{s.collapsed}</p>
+              <span class="numeral">{s.n}</span>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initSteps } from '../scripts/steps';
+  initSteps();
+</script>
+
+<style>
+  .how {
+    padding: 8px var(--section-inset);
+  }
+  .inner {
+    max-width: 1424px;
+    margin-inline: auto;
+    padding: 120px var(--gutter) 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .how :global(.heading .sub) {
+    margin-top: 16px;
+  }
+  .how :global(.cta) {
+    margin-top: 36px;
+    height: 48px;
+  }
+
+  .steps {
+    display: flex;
+    gap: 12px;
+    margin-top: 60px;
+    width: 100%;
+    max-width: 1240px;
+  }
+  /* Calendly-style accordion (user, 2026-11-09): click a card → it widens while the
+     open one narrows; the old card's content leaves fast, the new card's content
+     rises in one piece after another once there is room for it. */
+  .step {
+    --step-ease: cubic-bezier(0.65, 0, 0.35, 1);
+    --step-dur: 650ms;
+    position: relative;
+    flex: 0 0 298px;
+    height: 600px;
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    overflow: hidden;
+    box-shadow: var(--elevation-large);
+    transition:
+      flex-basis var(--step-dur) var(--step-ease),
+      box-shadow var(--dur-base) var(--ease-out),
+      translate var(--dur-slow) var(--ease-out);
+  }
+  .step[data-open] {
+    flex-basis: 620px;
+  }
+  .step:not([data-open]):hover {
+    box-shadow: var(--elevation-large-hover);
+    translate: 0 -4px;
+  }
+  /* hovering a closed card hints at its numeral */
+  .closed-view .numeral {
+    transition: translate var(--dur-slow) var(--ease-out);
+  }
+  .step:not([data-open]):hover .closed-view > .numeral {
+    translate: 0 -10px;
+  }
+  .hit {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    border-radius: inherit;
+    cursor: pointer;
+  }
+  .step[data-open] .hit {
+    cursor: default;
+  }
+  .hit:focus-visible {
+    outline-offset: -2px;
+  }
+
+  .open-view,
+  .closed-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+  }
+  .open-view {
+    width: 620px;
+    pointer-events: none;
+  }
+  .step[data-open] .open-view {
+    pointer-events: auto;
+  }
+  .closed-view {
+    width: 298px;
+  }
+
+  /* leaving: everything fades out quickly, no delay */
+  .open-view > *,
+  .closed-view > * {
+    transition:
+      opacity 180ms var(--ease-out),
+      translate 180ms var(--ease-out),
+      scale 180ms var(--ease-out);
+  }
+  .open-view > * {
+    opacity: 0;
+    translate: 0 14px;
+  }
+  .open-view > .visual {
+    translate: 0 28px;
+    scale: 0.96;
+  }
+  .step[data-open] .closed-view > * {
+    opacity: 0;
+    translate: 0 -8px;
+  }
+  .step[data-open] .closed-view > .numeral {
+    translate: 0 60px;
+  }
+
+  /* arriving: staggered rise once the card has grown / shrunk enough */
+  .step[data-open] .open-view > *,
+  .step:not([data-open]) .closed-view > * {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+    transition:
+      opacity 420ms var(--ease-out) var(--in-delay, 0ms),
+      translate 620ms var(--ease-out) var(--in-delay, 0ms),
+      scale 620ms var(--ease-out) var(--in-delay, 0ms);
+  }
+  .open-view > .progress { --in-delay: 180ms; }
+  .open-view > .title { --in-delay: 230ms; }
+  .open-view > .desc { --in-delay: 280ms; }
+  .open-view > .visual { --in-delay: 330ms; }
+  .closed-view > .title { --in-delay: 220ms; }
+  .closed-view > .desc { --in-delay: 270ms; }
+  .closed-view > .numeral { --in-delay: 290ms; }
+
+  /* the active progress bar draws itself out */
+  .bar.on {
+    transition: width 600ms var(--ease-out) 500ms;
+  }
+  .step:not([data-open]) .bar.on {
+    width: 24px;
+    transition-delay: 0ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .step,
+    .open-view > *,
+    .closed-view > *,
+    .bar.on {
+      transition-duration: 0ms !important;
+      transition-delay: 0ms !important;
+    }
+  }
+
+  .progress {
+    position: absolute;
+    left: 28px;
+    top: 32px;
+    display: flex;
+    gap: 6px;
+  }
+  .bar {
+    width: 24px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--color-fill-3);
+  }
+  .bar.on {
+    width: 52px;
+    background: var(--color-mint-2);
+  }
+  .title {
+    position: absolute;
+    left: 28px;
+    right: 28px;
+    top: 56px;
+    font-size: 28px;
+    font-weight: var(--fw-semibold);
+    line-height: 32px;
+    letter-spacing: -0.025em;
+    color: var(--color-ink);
+  }
+  .desc {
+    position: absolute;
+    left: 28px;
+    right: 28px;
+    top: 98px;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: -0.15px;
+    color: var(--color-ink-2);
+  }
+  .visual {
+    position: absolute;
+    left: 16px;
+    top: 150px;
+    width: 588px;
+    border-radius: 22px;
+    overflow: hidden;
+  }
+  .numeral {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 230px;
+    text-align: center;
+    font-family: var(--font-serif);
+    font-size: 440px;
+    line-height: 1;
+    color: transparent;
+    background: linear-gradient(
+      180deg,
+      rgba(63, 227, 166, 0) 0%,
+      rgba(63, 227, 166, 0.55) 22%,
+      rgba(124, 200, 240, 0.28) 62%,
+      rgba(255, 255, 255, 0) 86%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    user-select: none;
+  }
+
+  /* ---------- Stacked (tablet + mobile) ---------- */
+  @media (max-width: 1023px) {
+    .inner {
+      padding: 88px var(--gutter) 96px;
+    }
+    .steps {
+      flex-direction: column;
+      max-width: 640px;
+    }
+    .step,
+    .step[data-open] {
+      flex: none;
+      height: 172px;
+      transition:
+        height var(--step-dur) var(--step-ease),
+        box-shadow var(--dur-base) var(--ease-out);
+    }
+    .step[data-open] {
+      height: var(--open-h, 600px);
+    }
+    .open-view,
+    .closed-view {
+      width: 100%;
+    }
+    .visual {
+      left: 16px;
+      right: 16px;
+      width: auto;
+    }
+    .numeral {
+      top: auto;
+      bottom: -230px;
+      left: auto;
+      right: 28px;
+      font-size: 320px;
+      text-align: right;
+    }
+  }
+  @media (max-width: 767px) {
+    .br {
+      display: none;
+    }
+    .title {
+      font-size: 24px;
+      line-height: 28px;
+      top: 52px;
+    }
+    .desc {
+      top: 88px;
+      font-size: 15px;
+      line-height: 22px;
+    }
+    .closed-view .desc {
+      right: 112px;
+    }
+    .numeral {
+      font-size: 230px;
+      right: 18px;
+      bottom: -150px;
+    }
+    .visual {
+      top: 176px;
+    }
+  }
+</style>

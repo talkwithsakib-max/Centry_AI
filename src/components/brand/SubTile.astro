@@ -1,0 +1,110 @@
+---
+/**
+ * Figma component "Sub tile" (Brand × State). Designed at 100×100; `size`
+ * scales every measurement through --u, exactly like a scaled Figma instance.
+ */
+import BrandLogo from './BrandLogo.astro';
+import { tileColors, type Brand } from './brands';
+
+interface Props {
+  brand: Brand;
+  state?: 'active' | 'cancelled';
+  size?: number;
+  class?: string;
+  style?: string;
+}
+
+const { brand, state = 'active', size = 100, class: className, style = '' } = Astro.props;
+const cancelled = state === 'cancelled';
+const greyDeep = brand === 'prime-video' || brand === 'hbo-max';
+
+const colors = cancelled
+  ? greyDeep
+    ? { thick: ['#77777c', '#68686d'], face: ['#a9a9ad', '#8d8d92'] }
+    : { thick: ['#b4b4b8', '#a1a1a6'], face: ['#eaeaec', '#cdcdd1'] }
+  : tileColors[brand];
+
+const vars = [
+  `--u:${size / 100}px`,
+  `--thick:linear-gradient(180deg,${colors.thick[0]} 0%,${colors.thick[1]} 100%)`,
+  `--face:linear-gradient(180deg,${colors.face[0]} 0%,${colors.face[1]} 100%)`,
+  style,
+].join(';');
+---
+
+<span
+  class:list={['tile', cancelled ? 'is-cancelled' : 'is-active', greyDeep && 'is-deep', className]}
+  style={vars}
+  aria-hidden="true"
+>
+  <span class="thickness"></span>
+  <span class="face"></span>
+  <span class="logo-wrap"><BrandLogo brand={brand} /></span>
+  <span class="gloss"></span>
+</span>
+
+<style>
+  .tile {
+    position: relative;
+    display: block;
+    flex: none;
+    width: calc(100 * var(--u));
+    height: calc(100 * var(--u));
+    border-radius: calc(24 * var(--u));
+    box-shadow:
+      0 calc(3 * var(--u)) calc(4 * var(--u)) 0 rgba(0, 0, 0, 0.1),
+      0 calc(14 * var(--u)) calc(22 * var(--u)) calc(-6 * var(--u)) var(--tile-shadow, rgba(13, 13, 26, 0.24));
+  }
+  .is-cancelled {
+    --tile-shadow: rgba(13, 13, 26, 0.2);
+  }
+  .thickness,
+  .face,
+  .gloss {
+    position: absolute;
+    left: 0;
+    width: calc(100 * var(--u));
+    border-radius: calc(24 * var(--u));
+  }
+  .thickness {
+    top: calc(7 * var(--u));
+    height: calc(100 * var(--u));
+    background: var(--thick);
+  }
+  .face {
+    top: 0;
+    height: calc(100 * var(--u));
+    background: var(--face);
+    box-shadow:
+      inset 0 calc(-5 * var(--u)) calc(9 * var(--u)) 0 rgba(0, 0, 0, 0.2),
+      inset 0 calc(2 * var(--u)) calc(3 * var(--u)) 0 rgba(255, 255, 255, 0.45);
+  }
+  .is-cancelled .face {
+    box-shadow:
+      inset 0 calc(-5 * var(--u)) calc(9 * var(--u)) 0 rgba(0, 0, 0, 0.13),
+      inset 0 calc(2 * var(--u)) calc(3 * var(--u)) 0 rgba(255, 255, 255, 0.9);
+  }
+  .logo-wrap {
+    position: absolute;
+    inset: 0;
+  }
+  /* Figma desaturates cancelled logos with a #808080 "saturation" blend layer;
+     grayscale() is visually equivalent and far cheaper to composite (the hero
+     renders ~90 of these). */
+  .is-cancelled .logo-wrap {
+    opacity: 0.6;
+    filter: grayscale(1) drop-shadow(0 calc(1 * var(--u)) 0 rgba(255, 255, 255, 0.55));
+  }
+  .is-cancelled.is-deep .logo-wrap {
+    opacity: 0.92;
+  }
+  .gloss {
+    top: 0;
+    height: calc(50 * var(--u));
+    border-radius: calc(24 * var(--u)) calc(24 * var(--u)) 0 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0) 100%);
+  }
+  .is-cancelled .gloss {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+  }
+</style>

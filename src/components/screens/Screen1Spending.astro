@@ -1,0 +1,140 @@
+---
+/** App preview screen 1 "At a glance" (451:10033) — 330px Figma coordinates. */
+import ScreenFrame from './ScreenFrame.astro';
+import { vecStyle } from './geom';
+import calBtn from '../../assets/icons/screens/s1-calendar-btn.svg?url';
+import arcStreaming from '../../assets/icons/screens/arc-streaming.svg?url';
+import arcWellness from '../../assets/icons/screens/arc-wellness.svg?url';
+import arcAi from '../../assets/icons/screens/arc-ai.svg?url';
+import arcMusic from '../../assets/icons/screens/arc-music.svg?url';
+import arcLearning from '../../assets/icons/screens/arc-learning.svg?url';
+import arcOther from '../../assets/icons/screens/arc-other.svg?url';
+import catStreaming from '../../assets/icons/screens/cat-streaming.svg?url';
+import catWellness from '../../assets/icons/screens/cat-wellness.svg?url';
+import catAi from '../../assets/icons/screens/cat-ai.svg?url';
+import catMusic from '../../assets/icons/screens/cat-music.svg?url';
+
+const R = 182.505;
+const arcs = [
+  { src: arcStreaming, i: [0, 0, 1.45, 51.05] },
+  { src: arcWellness, i: [82.2, 40.47, 0, 17.9] },
+  { src: arcAi, i: [56.32, 78.54, 13.31, 0.57] },
+  { src: arcMusic, i: [22.98, 85.34, 44.95, 0] },
+  { src: arcLearning, i: [6, 69.94, 74.43, 9.33] },
+  { src: arcOther, i: [0, 51.05, 87.91, 28.49] },
+] as const;
+const cats = [
+  { name: 'Streaming', meta: '3 subscriptions', price: '$242.82', pct: '47%', bg: 'rgba(255,59,48,.14)', src: catStreaming, i: [25, 16.67, 16.67, 16.67], p: [-6.43, -5.62, -6.43, -5.63] },
+  { name: 'Wellness', meta: 'Headspace', price: '$77.94', pct: '15%', bg: 'rgba(255,149,0,.14)', src: catWellness, i: [27.68, 20.82, 16.67, 20.82], p: [-6.74, -6.43, -6.74, -6.43] },
+  { name: 'AI tools', meta: 'Midjourney', price: '$60.00', pct: '12%', bg: 'rgba(124,92,255,.14)', src: catAi, i: [16.67, 25, 33.33, 25], p: [-7.5, -7.5, -7.5, -7.5] },
+  { name: 'Music', meta: 'Spotify', price: '$59.94', pct: '11%', bg: 'rgba(52,199,89,.14)', src: catMusic, i: [16.67, 24.17, 20, 20], p: [-5.92, -6.72, -5.92, -6.72] },
+] as const;
+---
+
+<ScreenFrame tab="insights">
+  <div class="scr">
+    <span class="title-xl" style="left:15.73px;top:44.05px">Spending</span>
+    <span class="round-btn" style="left:265.1px;top:48.77px">
+      <img src={calBtn} alt="" style={vecStyle(28.32, [29.17, 30.56, 30.56, 30.56], [-5.86, -6.07, -5.86, -6.07])} />
+    </span>
+    <span class="seg" style="left:15.73px;top:84.96px;width:277.691px">
+      <span style="left:27.53px">1M</span>
+      <span style="left:95.97px">3M</span>
+      <span class="sel" style="left:140.42px;width:66.276px"></span>
+      <span class="on" style="left:165.2px">6M</span>
+      <span style="left:236.79px">1Y</span>
+    </span>
+
+    <div class="ring" style="left:63.33px;top:125.87px">
+      {arcs.map((a) => <img src={a.src} alt="" style={vecStyle(R, a.i as never)} />)}
+      <span class="spent">Spent</span>
+      <span class="amount">$521<span>.64</span></span>
+      <span class="range">Jun – Nov 2026</span>
+    </div>
+    <span class="pill trend" style="left:80.24px;top:322.53px">↓ 8% vs. previous 6 months</span>
+
+    <span class="t-sec" style="left:15.73px;top:358.72px">By category</span>
+    <span class="t-link" style="right:15.73px;top:361.86px">See all</span>
+
+    <div class="row-card" style="left:15.73px;top:385.46px;width:277.691px;height:182.505px">
+      {
+        cats.map((c, k) => (
+          <div class="cat-row" style={`top:${k * 45.626}px`}>
+            <span class="glyph" style={`left:11.01px;top:8.65px;background:${c.bg}`}>
+              <img src={c.src} alt="" style={vecStyle(28.32, c.i as never, c.p as never)} />
+            </span>
+            <span class="t-name" style="left:48.77px;top:7.87px">
+              {c.name}
+            </span>
+            <span class="t-meta" style="left:48.77px;top:24.39px">
+              {c.meta}
+            </span>
+            <span class="t-name" style="right:15.73px;top:7.87px">
+              {c.price}
+            </span>
+            <span class="t-meta medium" style="right:15.73px;top:24.39px">
+              {c.pct}
+            </span>
+            {k < 3 && <span class="hair" style="left:48.77px;top:45.23px;width:228.918px" />}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</ScreenFrame>
+
+<style>
+  .ring {
+    width: 182.505px;
+    height: 182.505px;
+  }
+  .ring > * {
+    position: absolute;
+  }
+  .spent {
+    left: 0;
+    right: 0;
+    top: 55.07px;
+    text-align: center;
+    font-size: 11.013px;
+    font-weight: var(--fw-medium);
+    letter-spacing: -0.157px;
+    color: var(--color-ink-3);
+  }
+  .amount {
+    left: 0;
+    right: 0;
+    top: 70.8px;
+    text-align: center;
+    font-size: 29.893px;
+    font-weight: var(--fw-bold);
+    letter-spacing: -0.944px;
+  }
+  .amount span {
+    color: rgba(29, 29, 31, 0.32);
+  }
+  .range {
+    left: 0;
+    right: 0;
+    top: 110.13px;
+    text-align: center;
+    font-size: 10.227px;
+    font-weight: var(--fw-medium);
+    letter-spacing: -0.157px;
+    color: var(--color-ink-3);
+  }
+  .trend {
+    padding: 3.933px 9.44px;
+    font-size: 9.44px;
+    background: rgba(34, 201, 138, 0.14);
+    color: var(--color-mint-ink);
+  }
+  .cat-row {
+    left: 0;
+    width: 277.691px;
+    height: 45.626px;
+  }
+  .cat-row > * {
+    position: absolute;
+  }
+</style>

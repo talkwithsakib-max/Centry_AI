@@ -1,0 +1,76 @@
+---
+/**
+ * Dark-theme background for the mock-up panels (Figma "Home 2 — Dark"):
+ *   Glow (mint #3FE3A6 14%, 70px blur) · Glow (aqua #73B2FF 6%, 80px blur)
+ *   · Spotlight (mint 7%, 90px blur) · Dot grid · Vignette · Dark smoke (90%).
+ * Blurred ellipses are drawn as radial gradients over the blur-expanded box
+ * (no live CSS blur). Rendered only in dark; the light layers hide themselves.
+ * Coordinates are Figma box coords inside the w×h panel.
+ */
+type Box = [number, number, number, number]; // x, y, w, h
+
+interface Props {
+  w: number;
+  h: number;
+  mint: Box;
+  aqua: Box;
+  spotlight: Box;
+  /** smoke texture used as the "Dark smoke" mask */
+  smoke: string;
+  smokeOpacity?: number;
+  dots?: boolean;
+}
+const { w, h, mint, aqua, spotlight, smoke, smokeOpacity = 0.9, dots = true } = Astro.props;
+
+const glow = ([x, y, bw, bh]: Box, blur: number, rgb: string, a: number) => {
+  const m = blur * 0.9;
+  return (
+    `left:${x - m}px;top:${y - m}px;width:${bw + 2 * m}px;height:${bh + 2 * m}px;` +
+    `background:radial-gradient(closest-side,rgba(${rgb},${a}) 0%,rgba(${rgb},${(a * 0.8).toFixed(3)}) 40%,rgba(${rgb},${(a * 0.3).toFixed(3)}) 72%,rgba(${rgb},0) 100%)`
+  );
+};
+// Dot-grid image (1432×624, 28px pitch) is FILL-scaled into the panel.
+const pitch = 28 * Math.max(w / 1432, h / 624);
+---
+
+<div class="dpb only-dark" aria-hidden="true">
+  <span style={glow(mint, 70, '63,227,166', 0.14)}></span>
+  <span style={glow(aqua, 80, '115,178,255', 0.06)}></span>
+  <span style={glow(spotlight, 90, '63,227,166', 0.07)}></span>
+  {dots && <span class="dots" style={`--pitch:${pitch.toFixed(2)}px`}></span>}
+  <span class="vignette"></span>
+  <span
+    class="dark-smoke smoke"
+    style={`--mask:url(${smoke});width:${w + 40}px;height:${h + 40}px;opacity:${smokeOpacity}`}
+  ></span>
+</div>
+
+<style>
+  .dpb {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: inherit;
+    background: #1e2026;
+    pointer-events: none;
+  }
+  .dpb > * {
+    position: absolute;
+  }
+  .dots {
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.11) 0.9px, rgba(255, 255, 255, 0) 1.4px);
+    background-size: var(--pitch) var(--pitch);
+    background-position: center;
+    -webkit-mask-image: radial-gradient(ellipse 52% 62% at 50% 42%, #000 0%, rgba(0, 0, 0, 0.55) 55%, transparent 100%);
+    mask-image: radial-gradient(ellipse 52% 62% at 50% 42%, #000 0%, rgba(0, 0, 0, 0.55) 55%, transparent 100%);
+  }
+  .vignette {
+    inset: 0;
+    background: radial-gradient(closest-side, rgba(18, 19, 23, 0) 60%, rgba(18, 19, 23, 0.55) 100%);
+  }
+  .smoke {
+    left: -20px;
+    top: -20px;
+  }
+</style>
