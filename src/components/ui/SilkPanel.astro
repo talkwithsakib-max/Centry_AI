@@ -110,6 +110,9 @@ const smokeSrc = (smoke === 'a' ? smokeA : smokeB).src;
       inset 0 0 14px 0 rgba(0, 0, 0, 0.05);
   }
   :global([data-theme='dark']) .silk {
-    background: #1e2026;
+    background: none;
+  }
+  :global([data-theme='dark']) .edge {
+    box-shadow: var(--panel-edge, none);
   }
 </style>

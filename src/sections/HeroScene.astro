@@ -14,7 +14,6 @@ import ticks from '../assets/icons/hero/beam-ticks.svg?url';
 import flareCentre from '../assets/icons/hero/flare-centre.svg?url';
 import flareHit from '../assets/icons/hero/flare-tile-hit.svg?url';
 import flareLeft from '../assets/icons/hero/flare-left.svg?url';
-import CancelledBubble from '../components/brand/CancelledBubble.astro';
 import wisp1 from '../assets/icons/hero/wisp-1.svg?url';
 import wisp2 from '../assets/icons/hero/wisp-2.svg?url';
 import wisp3 from '../assets/icons/hero/wisp-3.svg?url';
@@ -25,7 +24,21 @@ import wisp2d from '../assets/icons/hero/wisp-2-dark.svg?url';
 import wisp3d from '../assets/icons/hero/wisp-3-dark.svg?url';
 import wisp4d from '../assets/icons/hero/wisp-4-dark.svg?url';
 import wisp5d from '../assets/icons/hero/wisp-5-dark.svg?url';
-import { floatingTiles, splitTiles, fallingTiles, pile, TILE, BEAM_Y } from '../data/hero-tiles';
+import { fallingTiles, pile as fullPile, TILE, BEAM_Y, type FloatingTile } from '../data/hero-tiles';
+
+/* Cleaner hero (user, 2026-11-11):
+ * - the icons that used to rest around the headline are gone;
+ * - the pile is thinner: the top rows are dropped and the next row is halved
+ *   (72 → 50 icons), so fewer icons fall on load and the heap sits lower.
+ * The Figma data file stays untouched; the filter lives here. */
+const floatingTiles: FloatingTile[] = [];
+let keptPrev = true;
+let thin = 0;
+const pile = fullPile.filter((p) => {
+  if (p.badge) return keptPrev; // a ✕ badge rides with the icon just before it
+  keptPrev = p.cy >= 930 || (p.cy >= 900 && thin++ % 2 === 0);
+  return keptPrev;
+});
 
 const half = TILE / 2;
 const at = (cx: number, cy: number, rot = 0) => `left:${cx - half}px;top:${cy - half}px;--rot:${rot}deg`;
@@ -139,13 +152,14 @@ const pileDrops = pile.map((p) => {
   pileEnd = Math.max(pileEnd, delayFor(p.cy, base, m) + m.t);
   return lastDrop;
 });
-// Split tiles (the two on the line) settle exactly when the last pile icon lands;
-// the three greys take their evenly spaced slots.
-const mids = [...splitTiles, ...fallingTiles];
-const midBase = (t: { cy: number }, i: number) =>
-  (i < splitTiles.length ? pileEnd : greyArrive[i - splitTiles.length]) - glideMotion(t.cy).t;
+// The two icons that used to sit on the line now ride on the phone's top corners
+// (Hero.astro, user 2026-11-12); the three greys take their evenly spaced slots.
+const mids = [...fallingTiles];
+const midBase = (t: { cy: number }, i: number) => greyArrive[i] - glideMotion(t.cy).t;
 const midDrops = mids.map((t, i) => dropVars(t.cy, midBase(t, i), 40 + i, glideMotion(t.cy)));
-const midSparks = mids.map((t, i) => sparkAt(t.cx, t.cy, midBase(t, i), glideMotion(t.cy)));
+const midSparks = fallingTiles.map((t, i) => sparkAt(t.cx, t.cy, midBase(t, i), glideMotion(t.cy)));
+// The line exists only while icons fall: it fades out once the pile has landed.
+const beamOff = (Math.max(pileEnd, ...midDrops.map((_, i) => midBase(mids[i], i) + glideMotion(mids[i].cy).t)) + 0.25).toFixed(2);
 // Per-tile bob timing — deterministic so SSR output is stable.
 const bob = (i: number) => `--bob-dur:${(5.2 + ((i * 7) % 6) * 0.5).toFixed(1)}s;--bob-delay:-${((i * 1.37) % 5).toFixed(2)}s;--bob-amp:${4 + (i % 3)}px`;
 // Dark theme: same wisps stroked #334542 (Figma "Home 2 — Dark").
@@ -158,7 +172,7 @@ const wisps = [
 ];
 ---
 
-<div class="scene" aria-hidden="true" data-smoke-root>
+<div class="scene" aria-hidden="true" data-smoke-root style={`--beam-off:${beamOff}s`}>
   <img class="mist only-light" src={mist.src} alt="" />
   <img class="mist only-light bleed-copy smoke-mirror-l" src={mist.src} alt="" />
   <img class="mist only-light bleed-copy smoke-mirror-r" src={mist.src} alt="" />
@@ -221,19 +235,13 @@ const wisps = [
   <!-- Falling (cancelled): two tiles split by the beam + three falling greys -->
   <div class="falling">
     <div class="half below">
-      {splitTiles.map((t, i) => (
-        <SubTile brand={t.brand} state="cancelled" size={TILE} class="tile drop mid" style={`${at(t.cx, t.cy, t.rot)};opacity:.92;${midDrops[i]}`} />
-      ))}
       {fallingTiles.map((t, i) => (
-        <SubTile brand={t.brand} state="cancelled" size={TILE} class="tile drop mid" style={`${at(t.cx, t.cy, t.rot)};opacity:${t.opacity};${midDrops[splitTiles.length + i]}`} />
+        <SubTile brand={t.brand} state="cancelled" size={TILE} class="tile drop mid" style={`${at(t.cx, t.cy, t.rot)};opacity:${t.opacity};${midDrops[i]}`} />
       ))}
     </div>
     <div class="half above">
-      {splitTiles.map((t, i) => (
-        <SubTile brand={t.brand} size={TILE} class="tile drop mid" style={`${at(t.cx, t.cy, t.rot)};${midDrops[i]}`} />
-      ))}
       {fallingTiles.map((t, i) => (
-        <SubTile brand={t.brand} size={TILE} class="tile drop mid" style={`${at(t.cx, t.cy, t.rot)};${midDrops[splitTiles.length + i]}`} />
+        <SubTile brand={t.brand} size={TILE} class="tile drop mid" style={`${at(t.cx, t.cy, t.rot)};${midDrops[i]}`} />
       ))}
     </div>
     {midSparks.map((sp) => <span class="spark" style={sp}></span>)}
@@ -284,8 +292,6 @@ const wisps = [
     </div>
   ))}
 
-  <!-- "Canceled" bubble (Figma rotation 5° → CSS -5°, origin top-left) -->
-  <CancelledBubble class="intro-bubble" style="left:1162.79px;top:796.12px;transform:rotate(-5deg)" />
 </div>
 
 <style>
@@ -299,9 +305,10 @@ const wisps = [
   .scene > * {
     position: absolute;
   }
+  /* --px/--py/--pr: hover nudge from scripts/pile-hover.ts (0 at rest) */
   .scene :global(.tile) {
     position: absolute;
-    transform: rotate(var(--rot));
+    transform: translate(var(--px, 0px), var(--py, 0px)) rotate(calc(var(--rot) + var(--pr, 0deg)));
   }
 
   /* Mint mist: 40%, 6px blur, oversized 40px */
@@ -346,18 +353,16 @@ const wisps = [
   .scene.smoke-gl-on .pile-smoke:not(.smoke-gl) {
     display: none !important;
   }
-  :global([data-theme='dark']) .scene .mist.smoke-gl {
-    opacity: 0.6;
-  }
-  :global([data-theme='dark']) .scene .pile-smoke.smoke-gl {
-    opacity: 0.8;
-  }
-  /* Dark smoke: hero 60%, pile 80% (Figma) */
+  /* Dark smoke (user, 2026-11-11/12): on the clean black it must read as soft
+     clouds drifting, not a grey overlay — hero mist 30% (Figma 60%); the pile sits
+     on black, with only a faint wisp behind it (20%) */
+  :global([data-theme='dark']) .scene .mist.smoke-gl,
   .scene .mist.dark-smoke {
-    opacity: 0.6;
+    opacity: 0.3;
   }
+  :global([data-theme='dark']) .scene .pile-smoke.smoke-gl,
   .scene .pile-smoke.dark-smoke {
-    opacity: 0.8;
+    opacity: 0.2;
   }
 
   /* ---- Scan beam ---- */
@@ -366,6 +371,8 @@ const wisps = [
     top: 595px;
     width: calc(1424px + 2 * var(--b));
     height: 240px;
+    /* the line exists only during the load intro (user, 2026-11-12) */
+    visibility: hidden;
   }
   .beam > * {
     position: absolute;
@@ -568,6 +575,10 @@ const wisps = [
   .wisps {
     inset: 0;
   }
+  /* Dark (user, 2026-11-12): no grey-teal haze over the pile; it sits on clean black */
+  :global([data-theme='dark']) .wisps {
+    display: none;
+  }
   .scene {
     --beam: 755px; /* BEAM_Y */
   }
@@ -674,6 +685,7 @@ const wisps = [
     top: 745px;
     width: calc(1424px + 2 * var(--b));
     height: 20px;
+    visibility: hidden;
   }
   .bf-glow,
   .bf-line {
@@ -711,6 +723,7 @@ const wisps = [
 
   .scene :global(.badge) {
     position: absolute;
+    transform: translate(var(--px, 0px), var(--py, 0px));
   }
 
   .wisps img {
@@ -737,13 +750,14 @@ const wisps = [
     .pile-colour {
       animation: colour-layer 2.8s step-end both;
     }
-    /* laser: constant full speed from the phone to both edges */
+    /* laser: opens at full speed from the phone to both edges while the icons
+       fall, then fades away once the last one has landed (user, 2026-11-12) */
     .beam,
     .beam-front {
-      animation: beam-open 0.24s linear 1s both;
-    }
-    .scene :global(.intro-bubble) {
-      animation: bubble-pop 0.4s cubic-bezier(0.3, 1.5, 0.5, 1) 2.5s both;
+      visibility: visible;
+      animation:
+        beam-open 0.24s linear 1s both,
+        beam-out 0.8s cubic-bezier(0.65, 0, 0.35, 1) var(--beam-off) forwards;
     }
     .flash-line,
     .blast,
@@ -893,14 +907,19 @@ const wisps = [
       clip-path: inset(-200px 0 -200px 0);
     }
   }
-  @keyframes bubble-pop {
-    from {
-      opacity: 0;
-      scale: 0.6;
-    }
-    to {
+  /* exit = the opening in reverse: both ends glide back into the phone's sides */
+  @keyframes beam-out {
+    0% {
+      clip-path: inset(-200px 0 -200px 0);
       opacity: 1;
-      scale: 1;
+    }
+    80% {
+      opacity: 1;
+    }
+    100% {
+      clip-path: inset(-200px calc(50% - 150px) -200px calc(50% - 150px));
+      opacity: 0;
+      visibility: hidden;
     }
   }
 
@@ -914,7 +933,6 @@ const wisps = [
   :global([data-motion='paused']) .pile-colour,
   :global([data-motion='paused']) .beam,
   :global([data-motion='paused']) .beam-front,
-  :global([data-motion='paused']) .scene :global(.intro-bubble),
   :global([data-motion='paused']) .float,
   :global([data-motion='paused']) .halo,
   :global([data-motion='paused']) .inner-glow,

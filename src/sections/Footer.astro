@@ -141,9 +141,15 @@ const wisps = [
       transform: translateX(1.5%) scale(1.06);
     }
   }
+  /* Dark (user, 2026-11-12): clean black like the hero — no grey haze or wisps;
+     only soft smoke drifting like clouds (30%, Figma 80%) */
   :global([data-theme='dark']) .smoke .dark-smoke,
   :global([data-theme='dark']) .smoke .smoke-gl {
-    opacity: 0.8;
+    opacity: 0.3;
+  }
+  :global([data-theme='dark']) .haze,
+  :global([data-theme='dark']) .front {
+    display: none;
   }
   .smoke-gl {
     display: none;
@@ -157,6 +163,8 @@ const wisps = [
   }
   :global([data-theme='dark']) .card {
     --footer-divider: rgba(255, 255, 255, 0.14);
+    background: var(--color-page);
+    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
   }
   :global([data-theme='dark']) .lang img {
     filter: brightness(0) invert(0.85);
@@ -326,6 +334,11 @@ const wisps = [
     text-shadow: 0 10px 30px rgba(34, 201, 138, 0.18);
     user-select: none;
     pointer-events: none;
+  }
+  /* dark only: fades out toward the bottom (user, 2026-11-12) */
+  :global([data-theme='dark']) .wordmark {
+    -webkit-mask-image: linear-gradient(180deg, #000 12%, rgba(0, 0, 0, 0.55) 45%, rgba(0, 0, 0, 0.15) 68%, transparent 82%);
+    mask-image: linear-gradient(180deg, #000 12%, rgba(0, 0, 0, 0.55) 45%, rgba(0, 0, 0, 0.15) 68%, transparent 82%);
   }
 
   @media (prefers-reduced-motion: reduce) {

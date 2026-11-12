@@ -16,29 +16,14 @@ import StoreBadge from '../components/ui/StoreBadge.astro';
 import IPhone from '../components/devices/IPhone.astro';
 import HomeScreen from '../components/screens/HomeScreen.astro';
 import SubTile from '../components/brand/SubTile.astro';
-import PriceTag from '../components/brand/PriceTag.astro';
+import CancelBadge from '../components/brand/CancelBadge.astro';
 import HeroScene from './HeroScene.astro';
-import { compactTiles } from '../data/hero-tiles-compact';
 ---
 
 <section class="hero-wrap" data-hero data-motion="running" aria-labelledby="hero-title">
   <div class="hero-card">
     <div class="stage">
       <HeroScene />
-    </div>
-
-    <div class="edge-tiles" aria-hidden="true">
-      {
-        compactTiles.map((t, i) => (
-          <span
-            class:list={['edge', t.only && `only-${t.only}`]}
-            style={`${t.side}:${t.x};bottom:${t.bottom}px;--bob-dur:${5.4 + (i % 4) * 0.6}s;--bob-delay:-${(i * 1.3) % 5}s`}
-          >
-            <SubTile brand={t.brand} size={t.size} style={`transform:rotate(${t.rot}deg)`} />
-            {t.tag && <PriceTag price={t.tag} scale={0.8} class="edge-tag" />}
-          </span>
-        ))
-      }
     </div>
 
     <div class="copy-layer">
@@ -64,13 +49,26 @@ import { compactTiles } from '../data/hero-tiles-compact';
     <IPhone label="CentryAI home screen showing $86.94 spent this month and subscriptions renewing soon">
       <HomeScreen />
     </IPhone>
+    <!-- Two icons on the phone's top corners (user, 2026-11-12): left active,
+         right cancelled. They drop in with the load intro, then float. -->
+    <div class="corner-icons" aria-hidden="true">
+      <span class="ci ci-l" style="--bob-dur:5.6s;--bob-delay:-1.2s">
+        <SubTile brand="netflix" size={64} class="tile" style="--rot:-14deg" />
+      </span>
+      <span class="ci ci-r" style="--bob-dur:6.2s;--bob-delay:-3.1s">
+        <SubTile brand="hbo-max" state="cancelled" size={64} class="tile" style="--rot:16deg" />
+        <CancelBadge class="badge" />
+      </span>
+    </div>
   </div>
 </section>
 
 <script>
   import { initHeroScale } from '../scripts/hero';
   import { initSmoke } from '../scripts/smoke';
+  import { initPileHover } from '../scripts/pile-hover';
   initHeroScale();
+  initPileHover(); // pile icons nudge away from the cursor
   initSmoke(); // hero, footer and Privacy smoke
 </script>
 
@@ -102,8 +100,9 @@ import { compactTiles } from '../data/hero-tiles-compact';
     transform-origin: 0 0;
   }
   /* Dark (Figma "Home 2 — Dark" hero fill) */
+  /* Dark: no grey wash — the hero sits on the clean black page (user, 2026-11-11) */
   :global([data-theme='dark']) .hero-card {
-    background: linear-gradient(180deg, #202329 0%, #1b1d21 20%, #121316 38%, #101114 100%);
+    background: var(--color-page);
   }
   :global([data-theme='dark']) .title {
     color: var(--color-ink-1);
@@ -170,6 +169,93 @@ import { compactTiles } from '../data/hero-tiles-compact';
     top: calc(var(--section-inset) + 567px * var(--hs));
     transform: translateX(-50%) scale(var(--hs));
     transform-origin: 50% 0;
+  }
+
+  /* Corner icons: perched above the phone's top-left / top-right corners */
+  .corner-icons {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .ci {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    animation: ci-bob var(--bob-dur) ease-in-out var(--bob-delay) infinite;
+  }
+  /* centred just above each top corner; the rotated tile's lowest point stays
+     above the screen (which starts 9.5px inside the frame) */
+  .ci-l {
+    left: -40px;
+    top: -12px;
+  }
+  .ci-r {
+    left: 276px;
+    top: -8px;
+  }
+  /* compact: the copy sits right above the phone, so the icons step out to the
+     sides of the top corners instead (still clear of the screen) */
+  @media (max-width: 1023px) {
+    .ci-l {
+      left: -62px;
+      top: 18px;
+    }
+    .ci-r {
+      left: 298px;
+      top: 10px;
+    }
+  }
+  .ci :global(.tile) {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: rotate(var(--rot));
+  }
+  .ci :global(.badge) {
+    position: absolute;
+    left: 41px;
+    top: -8px;
+  }
+  @keyframes ci-bob {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+  /* load intro (desktop): they drop in with the falling icons and settle as the
+     pile lands, then the float starts from rest */
+  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+    .ci {
+      animation:
+        ci-in 1.15s cubic-bezier(0.22, 1, 0.36, 1) var(--ci-d, 1.3s) both,
+        ci-bob var(--bob-dur) ease-in-out calc(var(--ci-d, 1.3s) + 1.15s) infinite;
+    }
+    .ci-r {
+      --ci-d: 1.42s;
+    }
+  }
+  @keyframes ci-in {
+    from {
+      translate: 0 -640px;
+      opacity: 0;
+    }
+    12% {
+      opacity: 1;
+    }
+    to {
+      translate: 0 0;
+    }
+  }
+  [data-motion='paused'] .ci {
+    animation-play-state: paused;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ci {
+      animation: none;
+    }
   }
 
   /* ================= Compact hero (< 1024px) ================= */

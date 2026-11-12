@@ -33,10 +33,11 @@ const glow = ([x, y, bw, bh]: Box, blur: number, rgb: string, a: number) => {
 const pitch = 28 * Math.max(w / 1432, h / 624);
 ---
 
-<div class="dpb only-dark" aria-hidden="true">
-  <span style={glow(mint, 70, '63,227,166', 0.14)}></span>
-  <span style={glow(aqua, 80, '115,178,255', 0.06)}></span>
-  <span style={glow(spotlight, 90, '63,227,166', 0.07)}></span>
+<div class="dpb cine only-dark" aria-hidden="true">
+  <!-- (user, 2026-11-12) background = the cinematic .cine card (global.css);
+       the old mint/aqua glows, dot grid and smoke are off -->
+  <span class="fig" style={glow(mint, 70, '63,227,166', 0.14)}></span>
+  <span class="fig" style={glow(aqua, 80, '115,178,255', 0.06)}></span>
   {dots && <span class="dots" style={`--pitch:${pitch.toFixed(2)}px`}></span>}
   <span class="vignette"></span>
   <span
@@ -51,11 +52,16 @@ const pitch = 28 * Math.max(w / 1432, h / 624);
     inset: 0;
     overflow: hidden;
     border-radius: inherit;
-    background: #1e2026;
     pointer-events: none;
   }
   .dpb > * {
     position: absolute;
+  }
+  .fig,
+  .dots,
+  .vignette,
+  .smoke {
+    display: none;
   }
   .dots {
     inset: 0;
@@ -67,7 +73,7 @@ const pitch = 28 * Math.max(w / 1432, h / 624);
   }
   .vignette {
     inset: 0;
-    background: radial-gradient(closest-side, rgba(18, 19, 23, 0) 60%, rgba(18, 19, 23, 0.55) 100%);
+    background: radial-gradient(closest-side, rgba(5, 5, 6, 0) 60%, rgba(5, 5, 6, 0.6) 100%);
   }
   .smoke {
     left: -20px;

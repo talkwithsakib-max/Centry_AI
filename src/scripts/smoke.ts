@@ -73,7 +73,7 @@ void main() {
   float t = uTime;
 
   // flow direction: up (texture -y) leaning left/right with slow noise
-  float lean = (fbm(uv * 1.6 + vec2(t * 0.03, 0.0)) - 0.47) * 2.4;
+  float lean = (fbm(uv * 1.2 + vec2(t * 0.015, 0.0)) - 0.47) * 1.6;
   vec2 dir = vec2(sin(lean), cos(lean)); // sampled from below → content moves up
 
   float ph0 = fract(t * uRate);
@@ -100,7 +100,7 @@ void main() {
   }
 }`;
 
-const EASE_IN = 2.5; // s for the motion to grow from 0 (seamless hand-over)
+const EASE_IN = 4; // s for the motion to grow from 0 (seamless hand-over)
 const FRAME_MS = 1000 / 30;
 const RES = 0.5; // render scale (blurry smoke needs few pixels)
 const MAX_W = 1280;
@@ -154,13 +154,14 @@ function setup(canvas: HTMLCanvasElement, root: HTMLElement, img: HTMLImageEleme
     u[n] = gl.getUniformLocation(prog, n);
   gl.uniform1i(u.uTex, 0);
   // motion strength: defaults = hero/footer/Privacy
-  // data-motion="calm": App preview (user: "normal and smooth") — a touch more
-  // drift than the default, but slower, so it glides rather than churns
+  // Gentle cloud drift everywhere (user, 2026-11-11): smoke floats very slowly
+  // on the black, like clouds — long 20s cycles, soft curl, little thinning.
+  // data-motion="calm" (App preview) drifts a touch further.
   const calm = canvas.dataset.motion === 'calm';
-  gl.uniform1f(u.uRise, calm ? 0.16 : 0.11);
-  gl.uniform1f(u.uRate, calm ? 0.08 : 0.12);
-  gl.uniform1f(u.uCurl, calm ? 0.04 : 0.035);
-  gl.uniform1f(u.uDens, calm ? 0.4 : 0.45);
+  gl.uniform1f(u.uRise, calm ? 0.12 : 0.09);
+  gl.uniform1f(u.uRate, 0.05);
+  gl.uniform1f(u.uCurl, 0.028);
+  gl.uniform1f(u.uDens, 0.3);
   return { canvas, root, gl, u, tw: img.naturalWidth, th: img.naturalHeight, ready: false };
 }
 

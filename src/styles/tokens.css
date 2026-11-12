@@ -150,13 +150,14 @@
  * ====================================================================== */
 :root[data-theme='dark'] {
   color-scheme: dark;
+  /* Clean neutral blacks, no blue-grey cast (user, 2026-11-11; ref. slash.com) */
 
   /* surfaces */
-  --color-page: #0b0c0f;
-  --color-surface: #16181d;
-  --color-surface-muted: #1e2026;
-  --color-surface-raised: #292b33;
-  --surface-input: #16181d;
+  --color-page: #050506;
+  --color-surface: #111113;
+  --color-surface-muted: #18181b;
+  --color-surface-raised: #232326;
+  --surface-input: #111113;
 
   /* buttons invert: light gradient, near-black label */
   --gradient-btn: linear-gradient(180deg, #ffffff 0%, #e5e8eb 100%);
@@ -167,7 +168,7 @@
   --gradient-dark-button-hover: linear-gradient(180deg, #ffffff 0%, #d6dade 100%);
   --color-btn-ink: #121214;
   /* App Store badge: graphite */
-  --gradient-control: linear-gradient(180deg, #3c404a 0%, #23252c 100%);
+  --gradient-control: linear-gradient(180deg, #353538 0%, #1d1d20 100%);
   --elevation-control:
     0 1px 2px 0 rgba(0, 0, 0, 0.45),
     0 6px 14px -4px rgba(0, 0, 0, 0.4),
@@ -193,7 +194,7 @@
   /* mock-ups */
   --mock-ink-rgb: 217, 217, 221;
   --mock-hair: rgba(255, 255, 255, 0.14);
-  --mock-row: #1e2026;
+  --mock-row: #18181b;
   --bar-past: rgba(255, 255, 255, 0.14);
 
   /* every inner white highlight drops to ~8–10% (Figma) */

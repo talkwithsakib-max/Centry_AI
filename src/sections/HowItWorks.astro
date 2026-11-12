@@ -48,7 +48,7 @@ const steps = [
     <div class="steps" data-steps data-count-manual>
       {
         steps.map((s, i) => (
-          <article class="step" data-step data-open={i === 0 ? '' : undefined} aria-labelledby={`step-${s.n}-title`} data-r style={`--rd:${i * 100}ms`}>
+          <article class="step cine" data-step data-open={i === 0 ? '' : undefined} aria-labelledby={`step-${s.n}-title`} data-r style={`--rd:${i * 100}ms`}>
             <button
               class="hit"
               type="button"
@@ -148,6 +148,14 @@ const steps = [
   .step:not([data-open]):hover {
     box-shadow: var(--elevation-large-hover);
     translate: 0 -4px;
+  }
+  :global([data-theme='dark']) .step {
+    --panel-edge: none;
+  }
+  /* the visual sits straight on the card's cinematic background */
+  :global([data-theme='dark']) .step :global(.dpb.cine) {
+    background: none;
+    box-shadow: none;
   }
   /* hovering a closed card hints at its numeral */
   .closed-view .numeral {

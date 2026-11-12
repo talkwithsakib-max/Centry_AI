@@ -69,7 +69,10 @@ const silkStyle = `left:${-l}%;top:${-t}%;width:${100 + l + r}%;height:${100 + t
       inset 0 0 12px 0 rgba(0, 0, 0, 0.04);
   }
   :global([data-theme='dark']) .bg {
-    background: #1e2026;
+    background: none;
+  }
+  :global([data-theme='dark']) .edge {
+    box-shadow: var(--panel-edge, none);
   }
   .panel > :global(:not(.bg)) {
     position: absolute;

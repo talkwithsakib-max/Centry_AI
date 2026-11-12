@@ -12,12 +12,12 @@
 <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
 <feOffset dy="-5.1"/>
 <feGaussianBlur stdDeviation="5.95"/>
-<feColorMatrix type="matrix" values="0 0 0 0 0.109804 0 0 0 0 0.227451 0 0 0 0 0.196078 0 0 0 0.22 0"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.28 0"/>
 <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_0_54"/>
 <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
 <feOffset/>
 <feGaussianBlur stdDeviation="10.2"/>
-<feColorMatrix type="matrix" values="0 0 0 0 0.247059 0 0 0 0 0.890196 0 0 0 0 0.65098 0 0 0 0.35 0"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"/>
 <feBlend mode="normal" in2="effect1_dropShadow_0_54" result="effect2_dropShadow_0_54"/>
 <feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow_0_54" result="shape"/>
 </filter>
@@ -28,20 +28,20 @@
 <feOffset dx="-2.55" dy="2.55"/>
 <feGaussianBlur stdDeviation="2.125"/>
 <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
-<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.75 0"/>
+<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.22 0"/>
 <feBlend mode="normal" in2="shape" result="effect1_innerShadow_0_54"/>
 <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
 <feOffset dx="3.4" dy="-1.7"/>
 <feGaussianBlur stdDeviation="3.4"/>
 <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
-<feColorMatrix type="matrix" values="0 0 0 0 0.180392 0 0 0 0 0.352941 0 0 0 0 0.305882 0 0 0 0.35 0"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.09 0 0 0 0 0.13 0 0 0 0 0.12 0 0 0 0.5 0"/>
 <feBlend mode="normal" in2="effect1_innerShadow_0_54" result="effect2_innerShadow_0_54"/>
 </filter>
 <linearGradient id="paint0_linear_0_54" x1="82.0097" y1="48.978" x2="82.0097" y2="408" gradientUnits="userSpaceOnUse">
-<stop stop-color="#6F9C8E"/>
-<stop offset="0.35" stop-color="#8FCDB6" stop-opacity="0.95"/>
-<stop offset="0.7" stop-color="#BDE9D8" stop-opacity="0.55"/>
-<stop offset="1" stop-color="#DFF3EB" stop-opacity="0"/>
+<stop stop-color="#8FA59B"/>
+<stop offset="0.3" stop-color="#768F85"/>
+<stop offset="0.62" stop-color="#5A7067" stop-opacity="0.8"/>
+<stop offset="1" stop-color="#43554E" stop-opacity="0"/>
 </linearGradient>
 <clipPath id="clip0_0_54">
 <rect width="144.5" height="408" fill="white" transform="translate(9.71726)"/>
