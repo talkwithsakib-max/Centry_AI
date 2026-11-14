@@ -25,9 +25,9 @@
 <feBlend mode="normal" in2="effect2_innerShadow_0_16" result="effect3_innerShadow_0_16"/>
 </filter>
 <linearGradient id="paint0_linear_0_16" x1="10" y1="121" x2="240" y2="121" gradientUnits="userSpaceOnUse">
-<stop stop-color="#34C759"/>
-<stop offset="0.5" stop-color="#FF9500"/>
-<stop offset="1" stop-color="#FF3B30"/>
+<stop stop-color="#34d399"/>
+<stop offset="0.5" stop-color="#f5b54a"/>
+<stop offset="1" stop-color="#ff6b5a"/>
 </linearGradient>
 </defs>
 </svg>

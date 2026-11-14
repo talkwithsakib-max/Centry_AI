@@ -162,7 +162,7 @@ const midSparks = fallingTiles.map((t, i) => sparkAt(t.cx, t.cy, midBase(t, i), 
 const beamOff = (Math.max(pileEnd, ...midDrops.map((_, i) => midBase(mids[i], i) + glideMotion(mids[i].cy).t)) + 0.25).toFixed(2);
 // Per-tile bob timing — deterministic so SSR output is stable.
 const bob = (i: number) => `--bob-dur:${(5.2 + ((i * 7) % 6) * 0.5).toFixed(1)}s;--bob-delay:-${((i * 1.37) % 5).toFixed(2)}s;--bob-amp:${4 + (i % 3)}px`;
-// Dark theme: same wisps stroked #334542 (Figma "Home 2 — Dark").
+// Dark theme: same wisps stroked #2e334d (navy, 2026-11-14 rebrand; was #334542).
 const wisps = [
   { src: wisp1, dark: wisp1d, style: 'left:-13.95px;width:1437.95px' },
   { src: wisp2, dark: wisp2d, style: 'left:0;width:1424px' },
@@ -181,7 +181,7 @@ const wisps = [
   <span class="mist dark-smoke only-dark bleed-copy smoke-mirror-l" style={`--mask:url(${mist.src})`}></span>
   <span class="mist dark-smoke only-dark bleed-copy smoke-mirror-r" style={`--mask:url(${mist.src})`}></span>
   <!-- animated smoke (WebGL, scripts/smoke.ts); replaces the two layers above once drawing -->
-  <canvas class="mist smoke-gl" data-smoke data-box="1504,1088" data-src={mist.src}></canvas>
+  <canvas class="mist smoke-gl" data-smoke data-tint="light" data-box="1504,1088" data-src={mist.src}></canvas>
 
   <!-- Scan beam (back) -->
   <div class="beam">
@@ -194,9 +194,9 @@ const wisps = [
     <img class="flare" style="left:940px;top:148px;width:160px;height:24px" src={flareHit} alt="" />
     <img class="flare" style="left:355px;top:148px;width:130px;height:24px" src={flareLeft} alt="" />
     <!-- Dark: white-cored flares (radial, 5px blur) -->
-    <span class="flare-d only-dark" style="left:502px;--c:rgba(255,255,255,.55);--m:rgba(63,227,166,.33);width:420px"></span>
-    <span class="flare-d only-dark" style="left:945px;--c:rgba(255,255,255,.75);--m:rgba(63,227,166,.45);width:150px"></span>
-    <span class="flare-d only-dark" style="left:360px;--c:rgba(255,255,255,.4);--m:rgba(63,227,166,.24);width:120px"></span>
+    <span class="flare-d only-dark" style="left:502px;--c:rgba(255,255,255,.55);--m:rgb(var(--brand-rgb) / .33);width:420px"></span>
+    <span class="flare-d only-dark" style="left:945px;--c:rgba(255,255,255,.75);--m:rgb(var(--brand-rgb) / .45);width:150px"></span>
+    <span class="flare-d only-dark" style="left:360px;--c:rgba(255,255,255,.4);--m:rgb(var(--brand-rgb) / .24);width:120px"></span>
     <span class="core"></span>
     <!-- intro: the whole line flares bright as it opens, then settles -->
     <span class="flash-line"></span>
@@ -259,7 +259,7 @@ const wisps = [
   <span class="pile-smoke dark-smoke only-dark" style={`--mask:url(${pileSmoke.src})`}></span>
   <span class="pile-smoke dark-smoke only-dark bleed-copy smoke-mirror-l" style={`--mask:url(${pileSmoke.src})`}></span>
   <span class="pile-smoke dark-smoke only-dark bleed-copy smoke-mirror-r" style={`--mask:url(${pileSmoke.src})`}></span>
-  <canvas class="pile-smoke smoke-gl" data-smoke data-box="1504,1088" data-src={pileSmoke.src}></canvas>
+  <canvas class="pile-smoke smoke-gl" data-smoke data-tint="light" data-box="1504,1088" data-src={pileSmoke.src}></canvas>
 
   <!-- Cancelled pile (+ a copy each side, shown only when the card is wider than 1424px) -->
   {[0, -1424, 1424].map((dx) => (
@@ -386,7 +386,7 @@ const wisps = [
   .wake {
     top: 50px;
     height: 110px;
-    background: linear-gradient(180deg, rgba(63, 227, 166, 0) 0%, rgba(63, 227, 166, 0.06) 70%, rgba(63, 227, 166, 0.16) 100%);
+    background: linear-gradient(180deg, rgb(var(--brand-rgb) / 0) 0%, rgb(var(--brand-rgb) / 0.06) 70%, rgb(var(--brand-rgb) / 0.16) 100%);
     mask-image: linear-gradient(90deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
   }
   .halo {
@@ -395,11 +395,11 @@ const wisps = [
     filter: blur(10px);
     background: linear-gradient(
       90deg,
-      rgba(63, 227, 166, 0) 0%,
-      rgba(63, 227, 166, 0.112) 12%,
-      rgba(63, 227, 166, 0.32) 50%,
-      rgba(63, 227, 166, 0.112) 88%,
-      rgba(63, 227, 166, 0) 100%
+      rgb(var(--brand-rgb) / 0) 0%,
+      rgb(var(--brand-rgb) / 0.112) 12%,
+      rgb(var(--brand-rgb) / 0.32) 50%,
+      rgb(var(--brand-rgb) / 0.112) 88%,
+      rgb(var(--brand-rgb) / 0) 100%
     );
     animation: beam-pulse 3.2s var(--ease-in-out) infinite alternate;
   }
@@ -409,11 +409,11 @@ const wisps = [
     filter: blur(2px);
     background: linear-gradient(
       90deg,
-      rgba(63, 227, 166, 0) 0%,
-      rgba(63, 227, 166, 0.225) 10%,
-      rgba(63, 227, 166, 0.75) 50%,
-      rgba(63, 227, 166, 0.225) 90%,
-      rgba(63, 227, 166, 0) 100%
+      rgb(var(--brand-rgb) / 0) 0%,
+      rgb(var(--brand-rgb) / 0.225) 10%,
+      rgb(var(--brand-rgb) / 0.75) 50%,
+      rgb(var(--brand-rgb) / 0.225) 90%,
+      rgb(var(--brand-rgb) / 0) 100%
     );
     animation: beam-pulse 3.2s var(--ease-in-out) infinite alternate;
   }
@@ -422,11 +422,11 @@ const wisps = [
     height: 1px;
     background: linear-gradient(
       90deg,
-      rgba(63, 227, 166, 0) 0%,
-      rgba(63, 227, 166, 0.168) 20%,
-      rgba(63, 227, 166, 0.28) 50%,
-      rgba(63, 227, 166, 0.168) 80%,
-      rgba(63, 227, 166, 0) 100%
+      rgb(var(--brand-rgb) / 0) 0%,
+      rgb(var(--brand-rgb) / 0.168) 20%,
+      rgb(var(--brand-rgb) / 0.28) 50%,
+      rgb(var(--brand-rgb) / 0.168) 80%,
+      rgb(var(--brand-rgb) / 0) 100%
     );
   }
   .ticks {
@@ -441,11 +441,11 @@ const wisps = [
     height: 2.5px;
     background: linear-gradient(
       90deg,
-      rgba(23, 184, 133, 0) 0%,
-      rgba(23, 184, 133, 0.75) 10%,
-      #17b885 50%,
-      rgba(23, 184, 133, 0.75) 90%,
-      rgba(23, 184, 133, 0) 100%
+      rgb(var(--brand-rgb) / 0) 0%,
+      rgb(var(--brand-rgb) / 0.75) 10%,
+      var(--color-brand) 50%,
+      rgb(var(--brand-rgb) / 0.75) 90%,
+      rgb(var(--brand-rgb) / 0) 100%
     );
   }
   .flare-d {
@@ -453,42 +453,42 @@ const wisps = [
     top: 153px;
     height: 14px;
     margin-left: var(--b);
-    background: radial-gradient(closest-side, var(--c) 0%, var(--m) 45%, rgba(63, 227, 166, 0) 100%);
+    background: radial-gradient(closest-side, var(--c) 0%, var(--m) 45%, rgb(var(--brand-rgb) / 0) 100%);
     filter: blur(5px);
   }
 
   /* ---- Dark theme beam: brighter, white core (Figma "Home 2 — Dark") ---- */
   :global([data-theme='dark']) .wake {
-    background: linear-gradient(180deg, rgba(63, 227, 166, 0) 0%, rgba(63, 227, 166, 0.07) 70%, rgba(63, 227, 166, 0.2) 100%);
+    background: linear-gradient(180deg, rgb(var(--brand-rgb) / 0) 0%, rgb(var(--brand-rgb) / 0.07) 70%, rgb(var(--brand-rgb) / 0.2) 100%);
   }
   :global([data-theme='dark']) .halo {
     background: linear-gradient(
       90deg,
-      rgba(63, 227, 166, 0) 0%,
-      rgba(63, 227, 166, 0.13) 12%,
-      rgba(63, 227, 166, 0.38) 50%,
-      rgba(63, 227, 166, 0.13) 88%,
-      rgba(63, 227, 166, 0) 100%
+      rgb(var(--brand-rgb) / 0) 0%,
+      rgb(var(--brand-rgb) / 0.13) 12%,
+      rgb(var(--brand-rgb) / 0.38) 50%,
+      rgb(var(--brand-rgb) / 0.13) 88%,
+      rgb(var(--brand-rgb) / 0) 100%
     );
   }
   :global([data-theme='dark']) .inner-glow {
     background: linear-gradient(
       90deg,
-      rgba(63, 227, 166, 0) 0%,
-      rgba(63, 227, 166, 0.25) 10%,
-      rgba(63, 227, 166, 0.85) 50%,
-      rgba(63, 227, 166, 0.25) 90%,
-      rgba(63, 227, 166, 0) 100%
+      rgb(var(--brand-rgb) / 0) 0%,
+      rgb(var(--brand-rgb) / 0.25) 10%,
+      rgb(var(--brand-rgb) / 0.85) 50%,
+      rgb(var(--brand-rgb) / 0.25) 90%,
+      rgb(var(--brand-rgb) / 0) 100%
     );
   }
   :global([data-theme='dark']) .echo {
     background: linear-gradient(
       90deg,
-      rgba(63, 227, 166, 0) 0%,
-      rgba(63, 227, 166, 0.21) 20%,
-      rgba(63, 227, 166, 0.35) 50%,
-      rgba(63, 227, 166, 0.21) 80%,
-      rgba(63, 227, 166, 0) 100%
+      rgb(var(--brand-rgb) / 0) 0%,
+      rgb(var(--brand-rgb) / 0.21) 20%,
+      rgb(var(--brand-rgb) / 0.35) 50%,
+      rgb(var(--brand-rgb) / 0.21) 80%,
+      rgb(var(--brand-rgb) / 0) 100%
     );
   }
   :global([data-theme='dark']) .beam > .flare {
@@ -497,26 +497,26 @@ const wisps = [
   :global([data-theme='dark']) .core {
     background: linear-gradient(
       90deg,
-      rgba(63, 227, 166, 0) 0%,
-      rgba(63, 227, 166, 0.7) 8%,
-      #b2fae0 30%,
+      rgb(var(--brand-rgb) / 0) 0%,
+      rgb(var(--brand-rgb) / 0.7) 8%,
+      var(--color-brand-light) 30%,
       #ffffff 50%,
-      #b2fae0 70%,
-      rgba(63, 227, 166, 0.7) 92%,
-      rgba(63, 227, 166, 0) 100%
+      var(--color-brand-light) 70%,
+      rgb(var(--brand-rgb) / 0.7) 92%,
+      rgb(var(--brand-rgb) / 0) 100%
     );
   }
   :global([data-theme='dark']) .bf-glow {
-    background: linear-gradient(90deg, rgba(63, 227, 166, 0) 0%, rgba(63, 227, 166, 0.6) 50%, rgba(63, 227, 166, 0) 100%);
+    background: linear-gradient(90deg, rgb(var(--brand-rgb) / 0) 0%, rgb(var(--brand-rgb) / 0.6) 50%, rgb(var(--brand-rgb) / 0) 100%);
   }
   :global([data-theme='dark']) .bf-line {
     background: linear-gradient(
       90deg,
-      rgba(217, 255, 242, 0) 0%,
-      rgba(217, 255, 242, 0.6) 15%,
-      rgba(217, 255, 242, 0.85) 50%,
-      rgba(217, 255, 242, 0.6) 85%,
-      rgba(217, 255, 242, 0) 100%
+      rgb(var(--brand-rgb) / 0) 0%,
+      rgb(var(--brand-rgb) / 0.6) 15%,
+      rgb(var(--brand-rgb) / 0.85) 50%,
+      rgb(var(--brand-rgb) / 0.6) 85%,
+      rgb(var(--brand-rgb) / 0) 100%
     );
   }
 
@@ -605,7 +605,7 @@ const wisps = [
     height: 28px;
     background:
       linear-gradient(180deg, rgba(255, 255, 255, 0) 40%, #fff 50%, rgba(255, 255, 255, 0) 60%),
-      linear-gradient(180deg, rgba(63, 227, 166, 0) 0%, rgba(63, 227, 166, 0.55) 50%, rgba(63, 227, 166, 0) 100%);
+      linear-gradient(180deg, rgb(var(--brand-rgb) / 0) 0%, rgb(var(--brand-rgb) / 0.55) 50%, rgb(var(--brand-rgb) / 0) 100%);
   }
   /* The phone (300px at design scale) spans x 562–862; the line bursts out of its sides. */
   .blast {
@@ -616,9 +616,9 @@ const wisps = [
     background: radial-gradient(
       closest-side,
       #fff 0%,
-      rgba(217, 255, 242, 0.95) 22%,
-      rgba(63, 227, 166, 0.6) 50%,
-      rgba(63, 227, 166, 0) 100%
+      rgb(var(--brand-rgb) / 0.95) 22%,
+      rgb(var(--brand-rgb) / 0.6) 50%,
+      rgb(var(--brand-rgb) / 0) 100%
     );
   }
   .blast-l {
@@ -632,10 +632,10 @@ const wisps = [
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    border: 2px solid rgba(178, 250, 224, 0.95);
+    border: 2px solid rgb(var(--brand-rgb) / 0.95);
     box-shadow:
-      0 0 14px 3px rgba(63, 227, 166, 0.6),
-      inset 0 0 14px 3px rgba(63, 227, 166, 0.45);
+      0 0 14px 3px rgb(var(--brand-rgb) / 0.6),
+      inset 0 0 14px 3px rgb(var(--brand-rgb) / 0.45);
   }
   .ring-l {
     left: 522px;
@@ -649,10 +649,10 @@ const wisps = [
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: radial-gradient(circle, #fff 0%, #fff 30%, rgba(178, 250, 224, 0.95) 55%, rgba(63, 227, 166, 0.7) 100%);
+    background: radial-gradient(circle, #fff 0%, #fff 30%, rgb(var(--brand-rgb) / 0.95) 55%, rgb(var(--brand-rgb) / 0.7) 100%);
     box-shadow:
-      0 0 16px 6px rgba(178, 250, 224, 0.85),
-      0 0 44px 16px rgba(63, 227, 166, 0.45);
+      0 0 16px 6px rgb(var(--brand-rgb) / 0.85),
+      0 0 44px 16px rgb(var(--brand-rgb) / 0.45);
   }
   .orb-l {
     left: 548px; /* centre on the phone's left side, x 562 */
@@ -668,9 +668,9 @@ const wisps = [
     background: radial-gradient(
       closest-side,
       #fff 0%,
-      rgba(178, 250, 224, 0.85) 25%,
-      rgba(63, 227, 166, 0.4) 55%,
-      rgba(63, 227, 166, 0) 100%
+      rgb(var(--brand-rgb) / 0.85) 25%,
+      rgb(var(--brand-rgb) / 0.4) 55%,
+      rgb(var(--brand-rgb) / 0) 100%
     );
     opacity: 0;
   }
@@ -705,7 +705,7 @@ const wisps = [
     top: 6px;
     height: 8px;
     filter: blur(3px);
-    background: linear-gradient(90deg, rgba(63, 227, 166, 0) 0%, rgba(63, 227, 166, 0.5) 50%, rgba(63, 227, 166, 0) 100%);
+    background: linear-gradient(90deg, rgb(var(--brand-rgb) / 0) 0%, rgb(var(--brand-rgb) / 0.5) 50%, rgb(var(--brand-rgb) / 0) 100%);
     animation: beam-pulse 3.2s var(--ease-in-out) infinite alternate;
   }
   .bf-line {
@@ -713,11 +713,11 @@ const wisps = [
     height: 1px;
     background: linear-gradient(
       90deg,
-      rgba(23, 184, 133, 0) 0%,
-      rgba(23, 184, 133, 0.6) 15%,
-      rgba(23, 184, 133, 0.85) 50%,
-      rgba(23, 184, 133, 0.6) 85%,
-      rgba(23, 184, 133, 0) 100%
+      rgb(var(--brand-rgb) / 0) 0%,
+      rgb(var(--brand-rgb) / 0.6) 15%,
+      rgb(var(--brand-rgb) / 0.85) 50%,
+      rgb(var(--brand-rgb) / 0.6) 85%,
+      rgb(var(--brand-rgb) / 0) 100%
     );
   }
 
@@ -946,5 +946,33 @@ const wisps = [
     .bf-glow {
       animation: none;
     }
+  }
+
+
+  /* ---- Dark theme hero (user, 2026-11-14) ----
+     Top: like the light hero — the light mist texture in indigo, kept to the top
+     (faded out by 62%) over the indigo sky set in Hero.astro.
+     Bottom: no grey haze — the pile smoke and the front wisps are off in dark. */
+  :global([data-theme='dark']) .scene .mist.smoke-gl {
+    filter: var(--tex-indigo) brightness(1.05) blur(1px);
+    mix-blend-mode: screen;
+    opacity: 0.5;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 30%, transparent 62%);
+    mask-image: linear-gradient(180deg, #000 0%, #000 30%, transparent 62%);
+  }
+  :global([data-theme='dark']) .scene .pile-smoke {
+    display: none !important;
+  }
+  /* static fallback (no WebGL): the light mist image, same treatment */
+  :global([data-theme='dark']) .scene .mist.dark-smoke {
+    display: none !important;
+  }
+  :global([data-theme='dark']) .scene:not(.smoke-gl-on) img.mist.only-light {
+    display: block !important;
+    filter: var(--tex-indigo) brightness(1.05);
+    mix-blend-mode: screen;
+    opacity: 0.5;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 30%, transparent 62%);
+    mask-image: linear-gradient(180deg, #000 0%, #000 30%, transparent 62%);
   }
 </style>

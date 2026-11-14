@@ -1,0 +1,149 @@
+---
+/**
+ * Realistic iPhone shell. Geometry from Figma "iPhone (realistic)" (300×627.63).
+ * `width` scales the whole device (the silver App-preview phone is 330px).
+ * Screen content goes in the default slot and is laid out at 300px-device scale
+ * (screen = 281.05 × 609.3) — the slot is scaled together with the frame.
+ */
+interface Props {
+  finish?: 'titanium' | 'silver';
+  width?: number;
+  class?: string;
+  label?: string;
+}
+const { finish = 'titanium', width = 300, class: className, label } = Astro.props;
+const scale = width / 300;
+---
+
+<div
+  class:list={['iphone', 'theme-light', finish, className]}
+  style={`--k:${scale}`}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+>
+  <div class="device">
+    <span class="btn action"></span>
+    <span class="btn vol-up"></span>
+    <span class="btn vol-down"></span>
+    <span class="btn side"></span>
+    <span class="frame"></span>
+    <span class="frame-hl"></span>
+    <span class="bezel"></span>
+    <div class="screen">
+      <slot />
+    </div>
+    <span class="glare"></span>
+  </div>
+</div>
+
+<style>
+  .iphone {
+    position: relative;
+    width: calc(300px * var(--k));
+    height: calc(627.632px * var(--k));
+    flex: none;
+    /* Titanium (hero) — Figma effects at 300px scale */
+    --btn: linear-gradient(90deg, #8e8b85 0%, #e6e4df 50%, #7d7a74 100%);
+    --frame: linear-gradient(90deg, #8f8c86 0%, #e9e7e2 3.5%, #bdbab4 9%, #d4d2cd 50%, #bdbab4 91%, #eceae5 96.5%, #85827c 100%);
+    --frame-stroke: rgba(94, 91, 86, 0.55);
+    --hl: rgba(255, 255, 255, 0.9);
+    --shadow: 0 39.47px 63.16px -15.79px rgba(20, 26, 48, 0.28), 0 11.05px 22.1px -4.74px rgba(20, 26, 48, 0.16);
+  }
+  /* Silver (App preview, Get the app) — Figma effects converted to 300px scale */
+  .silver {
+    --btn: linear-gradient(90deg, #a3a6ab 0%, #f2f3f5 50%, #8e9196 100%);
+    --frame: linear-gradient(90deg, #9ea1a6 0%, #f6f7f8 3.5%, #cdd0d4 9%, #e4e6e9 50%, #cdd0d4 91%, #f7f8f9 96.5%, #94979c 100%);
+    --frame-stroke: rgba(124, 127, 132, 0.55);
+    --hl: rgba(255, 255, 255, 0.6);
+    --shadow: 0 36.36px 72.73px -21.82px rgba(20, 26, 48, 0.22), 0 9.09px 20px -5.45px rgba(20, 26, 48, 0.12);
+  }
+  .device {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 300px;
+    height: 627.632px;
+    transform: scale(var(--k));
+    transform-origin: 0 0;
+  }
+  .btn {
+    position: absolute;
+    width: 3.947px;
+    border-radius: 1.579px;
+    background: var(--btn);
+  }
+  .action {
+    left: -2.37px;
+    top: 118.42px;
+    height: 26.842px;
+  }
+  .vol-up {
+    left: -2.37px;
+    top: 167.37px;
+    height: 48.947px;
+  }
+  .vol-down {
+    left: -2.37px;
+    top: 225.79px;
+    height: 48.947px;
+  }
+  .side {
+    left: 298.42px;
+    top: 186.32px;
+    height: 77.368px;
+  }
+  .frame {
+    position: absolute;
+    inset: 0;
+    border-radius: 50.526px;
+    border: 0.789px solid var(--frame-stroke);
+    background: var(--frame);
+    box-shadow: var(--shadow);
+  }
+  .frame-hl {
+    position: absolute;
+    left: 0.79px;
+    top: 0.79px;
+    width: 298.421px;
+    height: 626.053px;
+    border-radius: 49.737px;
+    border: 0.947px solid var(--hl);
+  }
+  .bezel {
+    position: absolute;
+    left: 3.16px;
+    top: 3.16px;
+    width: 293.684px;
+    height: 621.316px;
+    border-radius: 47.368px;
+    background: #050506;
+  }
+  .screen {
+    position: absolute;
+    left: 9.47px;
+    top: 9.47px;
+    width: 281.053px;
+    height: 609.305px;
+    border-radius: 41.479px;
+    overflow: hidden;
+    background: #f4f4f7;
+    isolation: isolate;
+  }
+  .glare {
+    position: absolute;
+    left: 9.47px;
+    top: 9.47px;
+    width: 281.053px;
+    height: 609.305px;
+    border-radius: 41.479px;
+    mix-blend-mode: screen;
+    pointer-events: none;
+    background: linear-gradient(
+      110.68deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0) 42%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0) 62%
+    );
+  }
+</style>

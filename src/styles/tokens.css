@@ -1,5 +1,10 @@
 /*
- * CentryAI design tokens — Figma "Home 2" (light) and "Home 2 — Dark".
+ * CentryAI design tokens — 2026-11-14 rebrand: indigo brand, navy dark theme, Geist.
+ * Semantic rules: brand (indigo) = CTAs, links, brand fills only; success (mint) =
+ * money saved / healthy subs only; zombie (coral) = zombie only; warning (amber).
+ * Zombie score scale: 0–39 success, 40–69 warning, 70–100 zombie.
+ *
+ * (previous header) CentryAI design tokens — Figma "Home 2" (light) and "Home 2 — Dark".
  * Light values live on :root and on .theme-light (phone app screens stay
  * light in both themes, as in Figma). Dark overrides are at the bottom.
  */
@@ -7,9 +12,10 @@
 .theme-light {
   color-scheme: light;
   /* ---------- Colour: surfaces ---------- */
-  --color-page: #fefaf7;
+  --color-page: #f7f8fb;
   --color-surface: #ffffff;
-  --color-surface-muted: #f4f4f7;
+  --color-surface-muted: #f1f3f8;
+  --color-border: #e6e8f0;
   /* raised tile on a card (icon tiles in mocks) */
   --color-surface-raised: #ffffff;
   /* text-field surface (waitlist email input) */
@@ -21,11 +27,14 @@
   --gradient-dark-button: linear-gradient(180deg, #26262a 0%, #0b0b0c 100%);
   --gradient-dark-button-hover: linear-gradient(180deg, #34343a 0%, #17171a 100%);
   /* Standard dark button (latest Figma): 48px, 12px radius */
-  --gradient-btn: linear-gradient(180deg, #2a2a2e 0%, #111113 100%);
-  --gradient-btn-hover: linear-gradient(180deg, #3a3a3f 0%, #1c1c1f 100%);
-  --gradient-btn-mint: linear-gradient(180deg, #6bf0c0 0%, #2ad394 100%);
+  /* Primary CTA = brand indigo (both themes) */
+  --gradient-btn: linear-gradient(180deg, #6a5ff0 0%, #5246e8 100%);
+  --gradient-btn-hover: linear-gradient(180deg, #7569f3 0%, #5a4eec 100%);
+  --gradient-btn-mint: var(--gradient-btn);
   /* text on the primary (dark-in-light / light-in-dark) button and Google Play badge */
   --color-btn-ink: #ffffff;
+  /* ink on the platform store badge (dark in light theme, white badge in dark theme) */
+  --color-store-ink: #ffffff;
   /* White control (App Store badge, email input) */
   --gradient-control: linear-gradient(180deg, #ffffff 0%, #f1f2f4 100%);
   --elevation-control:
@@ -36,50 +45,84 @@
     inset 0 1px 0 0 #fff,
     inset 0 -1px 0 0 rgba(0, 0, 0, 0.05);
   /* Glossy mint badge */
-  --gradient-badge: linear-gradient(180deg, #7af2c6 0%, #25cc8d 50%, #129a68 100%);
-  --gradient-nav-button: linear-gradient(180deg, #34343a 0%, #111113 100%);
-  --gradient-nav-button-hover: linear-gradient(180deg, #404047 0%, #1b1b1e 100%);
-  --gradient-mint: linear-gradient(135deg, #6bf0c0 0%, #22c98a 71.43%);
+  --gradient-badge: linear-gradient(180deg, #675df9 0%, #5246e8 50%, #4a3fd6 100%);
+  --gradient-nav-button: var(--gradient-btn);
+  --gradient-nav-button-hover: var(--gradient-btn-hover);
+  --gradient-mint: linear-gradient(135deg, #8b83ff 0%, #5246e8 71.43%);
+  --gradient-brand: linear-gradient(135deg, #8b83ff 0%, #5246e8 100%);
 
   /* ---------- Colour: ink ---------- */
-  --color-ink: #1d1d1f;
-  /* body-strength ink: same as --color-ink in light, #D9D9DD in dark */
-  --color-ink-1: #1d1d1f;
-  --color-ink-2: #6e6e73;
-  --color-ink-3: #8a8a8e;
-  --color-ink-4: #b0b0b5;
+  /* text-primary / text-secondary / text-muted */
+  --color-ink: #0b1020;
+  --color-ink-1: #0b1020;
+  --color-ink-2: #4a5270;
+  /* text-muted: spec #6B7391 measured 4.2–4.4:1 on the light backgrounds; #656C88 passes AA (≥4.67:1) */
+  --color-ink-3: #656c88;
+  --color-ink-4: #9ba2ba;
   /* grey second line of two-tone headings */
-  --color-heading-2: #8a8a8e;
-  --color-ink-soft: rgba(31, 32, 37, 0.6);
-  --color-link: rgba(29, 29, 31, 0.68);
-  --color-hairline: rgba(60, 60, 67, 0.16);
-  --color-fill-1: rgba(29, 29, 31, 0.05);
-  --color-fill-2: rgba(29, 29, 31, 0.06);
-  --color-fill-3: rgba(29, 29, 31, 0.1);
-  --color-fill-ios: rgba(118, 118, 128, 0.08);
+  --color-heading-2: #6b7391;
+  --color-ink-soft: rgba(11, 16, 32, 0.6);
+  --color-link: rgba(11, 16, 32, 0.7);
+  --color-hairline: #e6e8f0;
+  --color-fill-1: rgba(11, 16, 32, 0.05);
+  --color-fill-2: rgba(11, 16, 32, 0.06);
+  --color-fill-3: rgba(11, 16, 32, 0.1);
+  --color-fill-ios: rgba(107, 115, 145, 0.08);
 
   /* ---------- Colour: brand + status ---------- */
-  --color-mint: #3fe3a6;
-  --color-mint-2: #22c98a;
-  --color-mint-ink: #13865c;
-  --color-mint-ink-2: #1a9e6e;
-  --color-mint-soft: rgba(63, 227, 166, 0.16);
-  --color-danger: #e5302a;
-  --color-danger-2: #ff3b30;
-  --color-danger-soft: rgba(255, 59, 48, 0.1);
+  --color-brand: #5246e8;
+  --color-brand-text: #5246e8;
+  --color-brand-light: #7b71f0;
+  --color-brand-deep: #4338ca;
+  --color-brand-soft: rgba(82, 70, 232, 0.12);
+  --color-brand-tint: #eeedfe;
+  --color-on-brand: #ffffff;
+  --brand-rgb: 82 70 232;
+  --brand-light-rgb: 123 113 240;
+  --color-success: #059669;
+  --color-success-soft: rgba(5, 150, 105, 0.12);
+  --success-rgb: 5 150 105;
+  --color-zombie: #e04a3a;
+  --color-zombie-soft: rgba(224, 74, 58, 0.1);
+  --zombie-rgb: 224 74 58;
+  --color-warning: #b7791f;
+  --color-warning-soft: rgba(183, 121, 31, 0.12);
+  --warning-rgb: 183 121 31;
+  /* text-safe variants (WCAG AA ≥4.5:1 on #F1F3F8–#FFF and on their own 10–12% tints); fills keep the spec colours */
+  --color-success-text: #047351;
+  --color-zombie-text: #bf3f31;
+  --color-warning-text: #966319;
+  /* glass card */
+  --glass-fill: rgba(255, 255, 255, 0.72);
+  --glass-border: #e6e8f0;
+  --glass-blur: 20px;
+  /* legacy names, re-pointed: "mint" was the old brand */
+  --color-mint: var(--color-brand);
+  --color-mint-2: var(--color-brand-deep);
+  --color-mint-ink: var(--color-brand-text);
+  --color-mint-ink-2: var(--color-brand-text);
+  --color-mint-soft: var(--color-brand-soft);
+  --color-danger: var(--color-zombie);
+  --color-danger-2: var(--color-zombie);
+  --color-danger-soft: var(--color-zombie-soft);
 
   /* ---------- Typography ---------- */
-  --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, sans-serif;
+  --font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  /* Instrument Serif Italic: ONLY the accent word in the hero H1 */
   --font-serif: 'Instrument Serif', Georgia, serif;
+  /* Body text */
+  --text-body: 16px;
+  --text-body-lh: 26px;
   /* Phone app screens (Figma: SF Pro). Apple devices get the real system SF Pro;
-     everything else falls back to Inter (user asked for 100% screen fidelity).
+     everything else falls back to Geist.
      Figma renders SF Pro with its Display shapes at every size, so the screens set
      'opsz' 32 (see .screen-frame) — measured within ~2% of Figma's text widths. */
-  --font-phone: system-ui, -apple-system, BlinkMacSystemFont, 'Inter Variable', 'Inter', ui-sans-serif, sans-serif;
-  /* Figma weights (SF Pro) carried over to Inter's variable axis */
+  --font-phone: system-ui, -apple-system, BlinkMacSystemFont, 'Geist', ui-sans-serif, sans-serif;
+  /* Geist weights */
   --fw-regular: 400;
-  --fw-medium: 510;
-  --fw-semibold: 590;
+  --fw-medium: 500;
+  --fw-semibold: 600;
   --fw-bold: 700;
 
   /* ---------- Radii ---------- */
@@ -92,10 +135,10 @@
   --radius-button: 12px;
 
   /* ---------- Product mock-ups (illustration cards) ---------- */
-  --mock-ink-rgb: 29, 29, 31;
-  --mock-hair: rgba(60, 60, 67, 0.14);
-  --mock-row: #f2f2f7;
-  --bar-past: rgba(29, 29, 31, 0.1);
+  --mock-ink-rgb: 11, 16, 32;
+  --mock-hair: rgba(11, 16, 32, 0.1);
+  --mock-row: #f1f3f8;
+  --bar-past: rgba(11, 16, 32, 0.1);
 
   /* ---------- Top-edge highlights (inner white line) ---------- */
   --hl-100: #ffffff;
@@ -150,51 +193,78 @@
  * ====================================================================== */
 :root[data-theme='dark'] {
   color-scheme: dark;
-  /* Clean neutral blacks, no blue-grey cast (user, 2026-11-11; ref. slash.com) */
+  /* Navy dark theme (user, 2026-11-14; replaces the neutral blacks of 2026-11-11) */
 
   /* surfaces */
-  --color-page: #050506;
-  --color-surface: #111113;
-  --color-surface-muted: #18181b;
-  --color-surface-raised: #232326;
-  --surface-input: #111113;
+  --color-page: #07090f;
+  --color-surface: #0e1424;
+  --color-surface-muted: #131a2e;
+  --color-surface-raised: #1a2238;
+  --surface-input: #0e1424;
+  --color-border: rgba(255, 255, 255, 0.1);
 
-  /* buttons invert: light gradient, near-black label */
-  --gradient-btn: linear-gradient(180deg, #ffffff 0%, #e5e8eb 100%);
-  --gradient-btn-hover: linear-gradient(180deg, #ffffff 0%, #d6dade 100%);
-  --gradient-nav-button: linear-gradient(180deg, #ffffff 0%, #e5e8eb 100%);
-  --gradient-nav-button-hover: linear-gradient(180deg, #ffffff 0%, #d6dade 100%);
+  /* primary CTA = brand indigo */
+  /* never lighter than #675DF9 under white text (4.66:1) */
+  --gradient-btn: linear-gradient(180deg, #675df9 0%, #5a50ec 100%);
+  --gradient-btn-hover: linear-gradient(180deg, #6d63fa 0%, #6056f0 100%);
+  --gradient-nav-button: var(--gradient-btn);
+  --gradient-nav-button-hover: var(--gradient-btn-hover);
   --gradient-dark-button: linear-gradient(180deg, #ffffff 0%, #e5e8eb 100%);
   --gradient-dark-button-hover: linear-gradient(180deg, #ffffff 0%, #d6dade 100%);
-  --color-btn-ink: #121214;
-  /* App Store badge: graphite */
-  --gradient-control: linear-gradient(180deg, #353538 0%, #1d1d20 100%);
+  --color-btn-ink: #ffffff;
+  --color-store-ink: #0b1020;
+  /* App Store badge: navy graphite */
+  --gradient-control: linear-gradient(180deg, #232c47 0%, #131a2e 100%);
   --elevation-control:
     0 1px 2px 0 rgba(0, 0, 0, 0.45),
     0 6px 14px -4px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.22);
 
   /* ink */
-  --color-ink: #f5f5f7;
-  --color-ink-1: #d9d9dd;
-  --color-ink-2: #a1a1a6;
-  --color-heading-2: #8f8f94;
-  --color-ink-soft: rgba(214, 214, 218, 0.6);
-  --color-link: rgba(217, 217, 221, 0.68);
+  --color-ink: #eceef4;
+  --color-ink-1: #d5d9e5;
+  --color-ink-2: #9aa3be;
+  --color-ink-3: #7a84a6;
+  --color-ink-4: #7a84a6;
+  --color-heading-2: #7a84a6;
+  --color-ink-soft: rgba(213, 217, 229, 0.6);
+  --color-link: #9aa3be;
   --color-hairline: rgba(255, 255, 255, 0.14);
   --color-fill-1: rgba(255, 255, 255, 0.07);
   --color-fill-2: rgba(255, 255, 255, 0.08);
   --color-fill-3: rgba(255, 255, 255, 0.14);
   --color-fill-ios: rgba(255, 255, 255, 0.05);
 
-  /* brand */
-  --color-mint-ink: #3ccf96;
-  --color-mint-ink-2: #3fe3a6;
+  /* brand + status */
+  --color-brand: #675df9;
+  --color-brand-text: #8b83ff;
+  --color-brand-light: #8b83ff;
+  --color-brand-deep: #4a3fd6;
+  --color-brand-soft: rgba(103, 93, 249, 0.16);
+  --color-brand-tint: #171a3d;
+  --brand-rgb: 103 93 249;
+  --brand-light-rgb: 139 131 255;
+  --color-success: #34d399;
+  --color-success-soft: rgba(52, 211, 153, 0.14);
+  --success-rgb: 52 211 153;
+  --color-zombie: #ff6b5a;
+  --color-zombie-soft: rgba(255, 107, 90, 0.14);
+  --zombie-rgb: 255 107 90;
+  --color-warning: #f5b54a;
+  --color-warning-soft: rgba(245, 181, 74, 0.14);
+  --warning-rgb: 245 181 74;
+  --color-success-text: #34d399;
+  --color-zombie-text: #ff6b5a;
+  --color-warning-text: #f5b54a;
+  /* glass card */
+  --glass-fill: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-blur: 20px;
 
   /* mock-ups */
-  --mock-ink-rgb: 217, 217, 221;
-  --mock-hair: rgba(255, 255, 255, 0.14);
-  --mock-row: #18181b;
+  --mock-ink-rgb: 213, 217, 229;
+  --mock-hair: rgba(255, 255, 255, 0.12);
+  --mock-row: #131a2e;
   --bar-past: rgba(255, 255, 255, 0.14);
 
   /* every inner white highlight drops to ~8–10% (Figma) */

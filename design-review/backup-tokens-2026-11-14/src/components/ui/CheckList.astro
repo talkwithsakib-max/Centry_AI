@@ -1,0 +1,51 @@
+---
+/** Mint check-mark list (Figma "Checklist": 22px gradient check, 12px gap, 16/Medium). */
+import check22 from '../../assets/icons/check-22.svg?url';
+interface Props {
+  items: string[];
+}
+const { items } = Astro.props;
+---
+
+<ul class="checklist">
+  {
+    items.map((t) => (
+      <li>
+        <span class="check" aria-hidden="true">
+          <img src={check22} alt="" />
+        </span>
+        {t}
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    font-weight: var(--fw-medium);
+    color: var(--color-ink);
+  }
+  .check {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 11px;
+    background: var(--gradient-mint);
+    box-shadow:
+      0 3px 8px 0 rgba(34, 201, 138, 0.4),
+      inset 0 1px 0 0 var(--hl-55);
+  }
+  .check img {
+    width: 22px;
+    height: 22px;
+  }
+</style>

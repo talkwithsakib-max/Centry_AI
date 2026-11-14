@@ -1,0 +1,343 @@
+---
+/**
+ * Figma "App preview" (436:3969): six tabs switch the silver phone's screen and
+ * the detail panel (Figma keeps tabs 2–6 as hidden layers). Script: tabs.ts.
+ */
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import IconBadge from '../components/ui/IconBadge.astro';
+import IPhone from '../components/devices/IPhone.astro';
+import Screen1Spending from '../components/screens/Screen1Spending.astro';
+import Screen2Subscriptions from '../components/screens/Screen2Subscriptions.astro';
+import Screen3Calendar from '../components/screens/Screen3Calendar.astro';
+import Screen4Ask from '../components/screens/Screen4Ask.astro';
+import Screen5Scan from '../components/screens/Screen5Scan.astro';
+import Screen6Detail from '../components/screens/Screen6Detail.astro';
+import smokeB from '../assets/textures/panel-smoke-b-app.webp';
+import badge from '../assets/icons/badges/sparkle-24.svg?url';
+import sparkleBtn from '../assets/icons/sparkle-btn.svg?url';
+import { links, linkAttrs } from '../config/links';
+
+const tabs = [
+  { label: 'At a glance', meta: 'Spending dashboard', big: '$521', small: '.64', desc: 'See where every dollar goes, by category. Switch between 1M, 3M, 6M and 1Y in a tap.', cta: 'See my spending', note: 'Works with every currency you pay in.' },
+  { label: 'Every subscription', meta: 'Subscriptions', big: '9', small: 'subs', desc: 'Zombies and active subscriptions, split apart and scored, so you know exactly what to cut first.', cta: 'Find my subscriptions', note: 'No manual entry needed.' },
+  { label: 'Never surprised', meta: 'Renewal calendar', big: '2', small: 'days', desc: 'Every renewal on one calendar, with a heads-up before each one hits your card.', cta: 'Turn on reminders', note: 'Push and email reminders.' },
+  { label: 'Just ask', meta: 'AI cancel finder', big: '30', small: 'sec', desc: 'Ask how to cancel anything and get the direct cancel link in seconds.', cta: 'Ask Cancel Finder', note: 'No googling. No hold music.' },
+  { label: 'Inbox, scanned', meta: 'Inbox scanner', big: '60', small: 'sec', desc: 'Connect Gmail or iCloud and every receipt is found in under a minute.', cta: 'Scan my inbox', note: 'Read-only. Nothing is stored.' },
+  { label: 'Worth knowing', meta: 'Subscription detail', big: '99', small: '/100', desc: 'Zombie score, price history and the next charge for every single service.', cta: 'Check my zombie scores', note: 'Scores update as you use your apps.' },
+];
+const screens = [Screen1Spending, Screen2Subscriptions, Screen3Calendar, Screen4Ask, Screen5Scan, Screen6Detail];
+---
+
+<section class="app-preview" id="app-preview" aria-labelledby="ap-title">
+  <!-- Smoke spans the full screen width (user, 2026-11-10); the content stays centred -->
+  <div class="smoke-bleed" aria-hidden="true" data-smoke-root>
+    <img class="smoke only-light" src={smokeB.src} alt="" />
+    <span class="smoke dark-smoke only-dark" style={`--mask:url(${smokeB.src})`}></span>
+    <!-- drifting smoke (WebGL, scripts/smoke.ts, calm motion); replaces the two layers above once drawing -->
+    <canvas class="smoke smoke-gl" data-smoke data-motion="calm" data-src={smokeB.src}></canvas>
+  </div>
+  <div class="card" data-tabs>
+
+    <div class="left">
+      <SectionHeading eyebrow="App preview" line1="See CentryAI" line2="in action." id="ap-title" />
+      <div class="tabs" role="tablist" aria-label="App screens">
+        {
+          tabs.map((t, i) => (
+            <button
+              class="tab"
+              type="button"
+              role="tab"
+              id={`ap-tab-${i}`}
+              aria-selected={i === 0 ? 'true' : 'false'}
+              aria-controls={`ap-panel-${i}`}
+              tabindex={i === 0 ? 0 : -1}
+              data-tab={i}
+            >
+              <span class="num">{String(i + 1).padStart(2, '0')}</span>
+              <span class="lab">{t.label}</span>
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="phone" aria-hidden="true">
+      <IPhone finish="silver" width={330}>
+        {
+          screens.map((S, i) => (
+            <div class="screen" data-panel={i} hidden={i !== 0}>
+              <S />
+            </div>
+          ))
+        }
+      </IPhone>
+    </div>
+
+    <div class="details">
+      {
+        tabs.map((t, i) => (
+          <div class="detail" id={`ap-panel-${i}`} role="tabpanel" aria-labelledby={`ap-tab-${i}`} data-panel={i} hidden={i !== 0}>
+            <p class="meta">
+              <IconBadge src={badge} size={24} />
+              {t.meta}
+            </p>
+            <p class="display">
+              <span class="big">{t.big}</span>
+              <span class="small">{t.small}</span>
+            </p>
+            <p class="desc">{t.desc}</p>
+            <a class="cta" {...linkAttrs(links.downloadApp)}>
+              <img src={sparkleBtn} alt="" width="16" height="16" />
+              {t.cta}
+            </a>
+            <p class="note">{t.note}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initTabs } from '../scripts/tabs';
+  initTabs();
+</script>
+
+<style>
+  .app-preview {
+    position: relative;
+    padding: var(--section-inset);
+    overflow: hidden;
+  }
+  .card {
+    position: relative;
+    max-width: 1424px;
+    min-height: 900px;
+    margin-inline: auto;
+    display: grid;
+    grid-template-columns: 268px 330px 360px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 105px 100px;
+  }
+  /* No card fill (user): only the smoke, on the page background, edge to edge */
+  .smoke-bleed {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    /* soft top + bottom edges, so the smoke melts into the sections around it
+       instead of ending in a hard band (user, 2026-11-10) */
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 24%, #000 76%, transparent 100%);
+    mask-image: linear-gradient(180deg, transparent 0%, #000 24%, #000 76%, transparent 100%);
+  }
+  .smoke-bleed > * {
+    position: absolute;
+    left: -20px;
+    top: -20px;
+    width: calc(100% + 40px);
+    height: calc(100% + 40px);
+    max-width: none;
+    object-fit: cover;
+    opacity: 0.28;
+  }
+  /* Dark: "Dark smoke" at 75% (Figma) */
+  :global([data-theme='dark']) .smoke-bleed > .dark-smoke,
+  :global([data-theme='dark']) .smoke-bleed > .smoke-gl {
+    opacity: 0.75;
+  }
+  .smoke-bleed > .smoke-gl {
+    display: none;
+  }
+  .smoke-bleed:global(.smoke-gl-on) > .smoke-gl {
+    display: block;
+  }
+  .smoke-bleed:global(.smoke-gl-on) > :not(.smoke-gl) {
+    display: none !important;
+  }
+  .left,
+  .phone,
+  .details {
+    position: relative;
+    min-width: 0;
+  }
+  .tabs {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 36px;
+  }
+  .tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px 12px 18px;
+    border-radius: var(--radius-pill);
+    background: var(--color-fill-1);
+    line-height: 20px;
+    white-space: nowrap;
+    transition: background var(--dur-base) var(--ease-out);
+  }
+  .tab:hover {
+    background: var(--color-fill-2);
+  }
+  .tab[aria-selected='true'] {
+    background: linear-gradient(90deg, rgba(63, 227, 166, 0.28) 0%, rgba(124, 200, 240, 0.22) 100%);
+  }
+  .num {
+    font-size: 15px;
+    font-weight: var(--fw-medium);
+    color: var(--color-ink-3);
+  }
+  .lab {
+    font-size: 16px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.2px;
+    color: rgba(var(--mock-ink-rgb), 0.8);
+  }
+  [aria-selected='true'] .num {
+    color: var(--color-mint-ink);
+  }
+  [aria-selected='true'] .lab {
+    color: var(--color-ink);
+  }
+
+  /* tab switch motion lives in scripts/tabs.ts (cross-fade + staggered rise) */
+  .screen {
+    position: absolute;
+    inset: 0;
+  }
+  .screen[hidden],
+  .detail[hidden] {
+    display: none;
+  }
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 17px;
+    font-weight: var(--fw-medium);
+    line-height: 22px;
+    letter-spacing: -0.2px;
+    color: var(--color-ink-2);
+  }
+  .display {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    margin-top: 8px;
+    white-space: nowrap;
+  }
+  .big {
+    font-size: 128px;
+    font-weight: var(--fw-semibold);
+    line-height: 128px;
+    letter-spacing: -0.05em;
+  }
+  .small {
+    font-size: 32px;
+    font-weight: var(--fw-semibold);
+    line-height: 44px;
+    letter-spacing: -0.8px;
+  }
+  .desc {
+    margin-top: 28px;
+    font-size: 20px;
+    line-height: 30px;
+    letter-spacing: -0.2px;
+    color: var(--color-ink-2);
+  }
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 48px;
+    margin-top: 32px;
+    padding: 0 24px 0 22px;
+    border-radius: var(--radius-button);
+    background: var(--gradient-btn);
+    box-shadow: var(--elevation-small);
+    color: var(--color-btn-ink);
+    font-size: 16px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.2px;
+    transition:
+      background var(--dur-base) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out);
+  }
+  @media (hover: hover) {
+    .cta:hover {
+      background: var(--gradient-btn-hover);
+    }
+  }
+  .cta:active {
+    transform: translateY(1px);
+  }
+  .note {
+    margin-top: 14px;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: -0.1px;
+    color: var(--color-ink-3);
+  }
+
+  /* ---------- Tablet ---------- */
+  @media (max-width: 1199px) {
+    .card {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-areas:
+        'left left'
+        'phone details';
+      gap: 48px 40px;
+      padding: 80px var(--gutter);
+      min-height: 0;
+    }
+    .left {
+      grid-area: left;
+    }
+    .phone {
+      grid-area: phone;
+      justify-self: center;
+    }
+    .details {
+      grid-area: details;
+    }
+    .tabs {
+      flex-direction: row;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      margin-inline: calc(var(--gutter) * -1);
+      padding: 4px var(--gutter);
+      max-width: calc(100% + 2 * var(--gutter));
+    }
+    .tabs::-webkit-scrollbar {
+      display: none;
+    }
+    .tab {
+      scroll-snap-align: start;
+      flex: none;
+    }
+  }
+  /* ---------- Mobile ---------- */
+  @media (max-width: 767px) {
+    .card {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: 'left' 'phone' 'details';
+      gap: 40px;
+      padding: 64px var(--gutter);
+      border-radius: 20px;
+    }
+    .phone :global(.iphone) {
+      --k: 0.9 !important;
+    }
+    .big {
+      font-size: 96px;
+      line-height: 96px;
+    }
+    .desc {
+      font-size: 18px;
+      line-height: 27px;
+    }
+  }
+</style>

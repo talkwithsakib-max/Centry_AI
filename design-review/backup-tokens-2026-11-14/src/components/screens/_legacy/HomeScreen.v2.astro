@@ -1,0 +1,435 @@
+---
+/**
+ * Hero phone screen — redesign (2026-11-14), light + dark (follows the site theme).
+ * Same system as Screen2Subscriptions: shared tokens/chrome in styles/app-screen.css,
+ * Inter, neutral surfaces, mint brand light, glossy mint badge, top-edge highlights.
+ * Story unchanged: $86.94 this month, 2 zombies, renewing soon. Previous: ./_legacy/.
+ */
+import AppIcon from '../brand/AppIcon.astro';
+import CentryMark from '../brand/CentryMark.astro';
+import AppStatus from './app/AppStatus.astro';
+import AppTabBar from './app/AppTabBar.astro';
+import badge from '../../assets/icons/badges/sparkle-24.svg?url';
+import '../../styles/app-screen.css';
+
+const cats = [
+  { label: 'Streaming', pct: 46, c: '#e50914' },
+  { label: 'Music', pct: 14, c: '#1ed760' },
+  { label: 'AI tools', pct: 16, c: 'var(--ink)' },
+  { label: 'Learning', pct: 12, c: '#58cc02' },
+  { label: 'Other', pct: 12, c: 'var(--ink-3)' },
+];
+---
+
+<div class="mg home">
+  <AppStatus />
+
+  <div class="body">
+    <header class="top">
+      <span class="brand">
+        <CentryMark size={22} />
+        <span>CentryAI</span>
+      </span>
+      <span class="iconbtn" aria-hidden="true">
+        <svg viewBox="0 0 16 16"><path d="M4 11.5V7.2a4 4 0 0 1 8 0v4.3l1 1.2H3Z" /><path d="M6.6 14a1.5 1.5 0 0 0 2.8 0" /></svg>
+        <i class="ping"></i>
+      </span>
+    </header>
+    <p class="sync"><i class="live"></i>Synced with Gmail · just now</p>
+
+    <!-- spend card: brand mint light from the top-right, gradient edge -->
+    <section class="spend">
+      <p class="k">Spent this month</p>
+      <div class="amount-row">
+        <p class="big">$86<span>.94</span></p>
+        <span class="saved">
+          <svg viewBox="0 0 10 10"><path d="M5 2v6M2.5 5.5 5 8l2.5-2.5" /></svg>
+          $10.99 saved
+        </span>
+      </div>
+      <div class="bar" aria-hidden="true">
+        {cats.map((c) => <i style={`width:${c.pct}%;background:${c.c}`}></i>)}
+      </div>
+      <div class="legend">
+        {cats.slice(0, 4).map((c) => (
+          <span><i style={`background:${c.c}`}></i>{c.label}</span>
+        ))}
+      </div>
+    </section>
+
+    <div class="insight">
+      <img class="badge" src={badge} alt="" aria-hidden="true" />
+      <div class="ins-txt">
+        <p class="t">2 zombie subscriptions</p>
+        <p class="s">Cancel them to save <b>$23.98/mo</b></p>
+      </div>
+      <span class="go">Review</span>
+    </div>
+
+    <p class="label">Renewing soon<span>See all</span></p>
+    <div class="list">
+      <div class="row">
+        <AppIcon brand="netflix" size={28} radius={8} />
+        <div class="txt"><p class="n">Netflix</p><p class="m">Renews in 3 days</p></div>
+        <div class="val"><p class="p">$15.99</p><p class="m">monthly</p></div>
+      </div>
+      <div class="row">
+        <AppIcon brand="spotify" size={28} radius={8} />
+        <div class="txt">
+          <p class="n">Spotify <span class="tag">Zombie</span></p>
+          <p class="m red">Unused for 47 days</p>
+        </div>
+        <span class="cancel">Cancel</span>
+      </div>
+      <div class="row">
+        <AppIcon brand="prime-video" size={28} radius={8} />
+        <div class="txt"><p class="n">Prime Video</p><p class="m">Renews Nov 18</p></div>
+        <div class="val"><p class="p">$14.99</p><p class="m">monthly</p></div>
+      </div>
+      <div class="row done">
+        <AppIcon brand="duolingo" size={28} radius={8} />
+        <div class="txt"><p class="n">Duolingo</p><p class="m mint">Canceled · saving $10.99/mo</p></div>
+        <div class="val"><p class="p">$10.99</p><p class="m">Canceled</p></div>
+      </div>
+    </div>
+  </div>
+
+  <span class="fade" aria-hidden="true"></span>
+  <AppTabBar active="home" />
+</div>
+
+<style>
+  .body {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    top: 44px;
+    display: flex;
+    flex-direction: column;
+  }
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+  .iconbtn {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 13px;
+    background: var(--btn-bg);
+    box-shadow: var(--btn-shadow);
+  }
+  .iconbtn svg {
+    width: 12px;
+    height: 12px;
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 1.3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .ping {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 0 1.2px var(--bg);
+  }
+  .sync {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 6px;
+    font-size: 8.6px;
+    font-weight: 500;
+    color: var(--ink-3);
+  }
+  .live {
+    position: relative;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--mint);
+    box-shadow: 0 0 6px var(--mint);
+  }
+  .live::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 1px solid var(--mint);
+    animation: live 2.4s ease-out infinite;
+  }
+  @keyframes live {
+    0% { transform: scale(0.6); opacity: 0.9; }
+    80%, 100% { transform: scale(1.8); opacity: 0; }
+  }
+
+  /* spend card */
+  .spend {
+    position: relative;
+    margin-top: 12px;
+    padding: 14px 14px 13px;
+    border-radius: 18px;
+    background:
+      radial-gradient(80% 70% at 92% 0%, rgba(63, 227, 166, 0.2) 0%, rgba(124, 200, 240, 0.07) 50%, transparent 80%),
+      var(--glass);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+  }
+  .spend::before {
+    /* gradient edge: mint at the top, fading down */
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 0.75px;
+    background: linear-gradient(180deg, rgba(63, 227, 166, 0.6) 0%, rgba(124, 200, 240, 0.2) 35%, transparent 70%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  .k {
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+  .amount-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-top: 6px;
+  }
+  .big {
+    font-size: 34px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.045em;
+    font-variant-numeric: tabular-nums;
+  }
+  .big span {
+    font-size: 19px;
+    letter-spacing: -0.02em;
+    color: var(--ink-3);
+  }
+  .saved {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    margin-bottom: 3px;
+    padding: 3.5px 7px 3.5px 5px;
+    border-radius: 99px;
+    background: color-mix(in srgb, var(--mint) 16%, transparent);
+    color: var(--mint-ink);
+    font-size: 8.6px;
+    font-weight: 600;
+  }
+  .saved svg {
+    width: 8px;
+    height: 8px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .bar {
+    display: flex;
+    gap: 2.5px;
+    height: 6px;
+    margin-top: 14px;
+  }
+  .bar i {
+    display: block;
+    height: 100%;
+    border-radius: 3px;
+  }
+  .legend {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+    font-size: 8.2px;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+  .legend span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .legend i {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+  }
+
+  /* insight */
+  .insight {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 8px;
+    padding: 8px 8px 8px 9px;
+    border-radius: 14px;
+    background: var(--glass);
+    box-shadow: var(--card-shadow);
+  }
+  .badge {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    transform: scale(1.5);
+    transform-origin: 40% 40%;
+  }
+  .ins-txt {
+    flex: 1;
+    min-width: 0;
+  }
+  .t {
+    font-size: 10.4px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .s {
+    margin-top: 2px;
+    font-size: 8.6px;
+    color: var(--ink-2);
+  }
+  .s b {
+    font-weight: 600;
+    color: var(--mint-ink);
+  }
+  .go {
+    flex: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: linear-gradient(180deg, #6bf0c0 0%, #2ad394 100%);
+    box-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.5), 0 2px 8px rgba(63, 227, 166, 0.3);
+    color: #04140e;
+    font-size: 8.8px;
+    font-weight: 600;
+  }
+
+  /* list */
+  .label {
+    display: flex;
+    align-items: center;
+    margin: 14px 2px 7px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .label span {
+    margin-left: auto;
+    font-size: 8.6px;
+    font-weight: 500;
+    color: var(--mint-ink);
+  }
+  .list {
+    border-radius: 14px;
+    background: var(--glass);
+    border: 0.5px solid var(--glass-line);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    height: 44px;
+    padding: 0 10px;
+  }
+  .row + .row {
+    border-top: 0.5px solid var(--sep);
+  }
+  .row :global(.app-icon) {
+    box-shadow: 0 0 0 0.5px var(--sep);
+  }
+  .txt {
+    flex: 1;
+    min-width: 0;
+  }
+  .n,
+  .p {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .m {
+    margin-top: 2px;
+    font-size: 8.6px;
+    color: var(--ink-3);
+  }
+  .m.red {
+    color: var(--red);
+  }
+  .m.mint {
+    color: var(--mint-ink);
+  }
+  .val {
+    text-align: right;
+  }
+  .val .p {
+    justify-content: flex-end;
+  }
+  .tag {
+    padding: 1px 5px;
+    border-radius: 99px;
+    background: color-mix(in srgb, var(--red) 14%, transparent);
+    color: var(--red);
+    font-size: 7.4px;
+    font-weight: 600;
+  }
+  .cancel {
+    padding: 5px 10px;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--red) 12%, transparent);
+    box-shadow: inset 0 0 0 0.5px color-mix(in srgb, var(--red) 30%, transparent);
+    color: var(--red);
+    font-size: 8.8px;
+    font-weight: 600;
+  }
+  .done :global(.app-icon) {
+    opacity: 0.45;
+    filter: grayscale(0.4);
+  }
+  .done .n {
+    color: var(--ink-3);
+  }
+  .done .val .p {
+    color: var(--ink-3);
+    text-decoration: line-through;
+  }
+
+  .fade {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 110px;
+    background: linear-gradient(180deg, transparent 0%, var(--bg) 70%);
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .live::after { animation: none; opacity: 0; }
+  }
+</style>
+

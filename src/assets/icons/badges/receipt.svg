@@ -67,9 +67,9 @@
 <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_0_4" result="shape"/>
 </filter>
 <linearGradient id="paint0_linear_0_4" x1="15.7143" y1="10.7143" x2="44.2857" y2="39.2857" gradientUnits="userSpaceOnUse">
-<stop stop-color="#7AF2C6"/>
-<stop offset="0.5" stop-color="#25CC8D"/>
-<stop offset="1" stop-color="#129A68"/>
+<stop stop-color="#8b83ff"/>
+<stop offset="0.5" stop-color="#675df9"/>
+<stop offset="1" stop-color="#4a3fd6"/>
 </linearGradient>
 <radialGradient id="paint1_radial_0_4" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(19.2 5) scale(18 12)">
 <stop stop-color="white" stop-opacity="0.6"/>

@@ -1,0 +1,87 @@
+---
+/**
+ * Standard buttons (latest Figma):
+ *  - dark: 48px (or 40px "sm"), 12px radius, #2A2A2E→#111113, Elevation/Small
+ *  - mint: Pro "Start 7-day free trial"
+ * Renders <a> when href is given, otherwise <button>. Labels are always centred.
+ */
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+  variant?: 'dark' | 'mint';
+  size?: 'md' | 'sm';
+  block?: boolean;
+  href?: string;
+  class?: string;
+} & Omit<HTMLAttributes<'a'> & HTMLAttributes<'button'>, 'class'>;
+
+const { variant = 'dark', size = 'md', block = false, href, class: className, ...rest } = Astro.props;
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag class:list={['btn', variant, size, block && 'block', className]} href={href} {...rest}>
+  <slot />
+</Tag>
+
+<style>
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 48px;
+    padding: 0 22px;
+    border-radius: var(--radius-button);
+    white-space: nowrap;
+    font-size: 15px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.1px;
+    line-height: normal;
+    transition:
+      background var(--dur-base) var(--ease-out),
+      box-shadow var(--dur-base) var(--ease-out),
+      filter var(--dur-base) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out);
+  }
+  .sm {
+    height: 40px;
+    padding: 0 16px 0 18px;
+    font-size: 14px;
+  }
+  .block {
+    display: flex;
+    width: 100%;
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .dark {
+    color: var(--color-btn-ink);
+    background: var(--gradient-btn);
+    box-shadow: var(--elevation-small);
+  }
+  .mint {
+    color: #0b3b2a;
+    background: var(--gradient-btn-mint);
+    box-shadow:
+      0 8px 20px -6px rgba(33, 201, 138, 0.4),
+      inset 0 1px 0 0 var(--hl-50);
+  }
+  @media (hover: hover) {
+    .dark:hover {
+      background: var(--gradient-btn-hover);
+    }
+    .mint:hover {
+      filter: brightness(1.04);
+    }
+  }
+  .btn :global(svg),
+  .btn :global(img) {
+    flex: none;
+  }
+  /* white icons on the dark button turn near-black with it (dark theme) */
+  :global([data-theme='dark']) .dark :global(img.on-dark) {
+    filter: brightness(0) invert(0.07);
+  }
+</style>

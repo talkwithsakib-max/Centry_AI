@@ -22,6 +22,9 @@ body {
   font-family: var(--font-sans);
   font-optical-sizing: auto;
   font-weight: var(--fw-regular);
+  font-size: var(--text-body);
+  /* prices, stats and scores line up: tabular figures everywhere */
+  font-variant-numeric: tabular-nums;
   color: var(--color-ink);
   background-color: var(--color-page);
   line-height: normal;
@@ -107,7 +110,7 @@ h4 {
   padding: 10px 16px;
   border-radius: var(--radius-button);
   background: var(--color-ink);
-  color: #fff;
+  color: var(--color-page);
   font-weight: var(--fw-semibold);
 }
 .skip-link:focus-visible {
@@ -179,8 +182,10 @@ h4 {
 }
 /* Figma "Dark smoke": a smoke texture used as an alpha mask over the teal-grey
    gradient (#334542 → #293838 → #334047). Set --mask to the texture URL. */
+/* 2026-11-14 rebrand: dark smoke tinted navy (was green-grey #334542 / #293838 / #334047),
+   matching the WebGL tint in scripts/smoke.ts */
 .dark-smoke {
-  background: linear-gradient(90deg, #334542 0%, #293838 50%, #334047 100%);
+  background: linear-gradient(90deg, #2e334d 0%, #252a42 50%, #353354 100%);
   -webkit-mask: var(--mask) center / cover no-repeat;
   mask: var(--mask) center / cover no-repeat;
 }
@@ -194,7 +199,7 @@ h4 {
 html:root[data-theme='dark'] .cine {
   background:
     radial-gradient(70% 42% at 50% 0%, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.018) 50%, rgba(255, 255, 255, 0) 100%),
-    linear-gradient(180deg, #0e0e10 0%, #0a0a0b 100%);
+    linear-gradient(180deg, #0c1120 0%, #0a0d17 100%);
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.07),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
@@ -258,4 +263,24 @@ html:not(.fx) .fx-loop {
   50% {
     translate: 0 -5px;
   }
+}
+
+/* ---------- 2026-11-14 rebrand: mint raster textures → indigo ----------
+   The smoke / mist / glow / ray textures are images with mint baked into the
+   pixels. They are re-tinted to one even indigo: grayscale → sepia → saturate →
+   hue-rotate. (A plain hue-rotate turned the textures' sky-blue patches pink.)
+   - <img> layers (light theme, plus the phone glow and CTA rays): always.
+   - WebGL smoke canvases draw the texture's own colours only in light theme;
+     in dark they use the navy tint from smoke.ts, so they are not rotated.
+   - .dark-smoke mask layers use the navy gradient above, not rotated. */
+:root {
+  --tex-indigo: grayscale(1) sepia(1) saturate(5) hue-rotate(196deg);
+}
+img[src*='smoke'],
+img[src*='mist'],
+img[src*='phone-glow'] {
+  filter: var(--tex-indigo);
+}
+:root:not([data-theme='dark']) canvas[data-smoke] {
+  filter: var(--tex-indigo);
 }

@@ -72,7 +72,7 @@ const facts = [
     height: 560px;
     border-radius: var(--radius-section);
     overflow: hidden;
-    background: linear-gradient(155.7deg, #1a1a1d 0%, #09090a 71.43%);
+    background: linear-gradient(155.7deg, #131a2e 0%, #0a0d17 71.43%);
     box-shadow: var(--elevation-large);
     display: grid;
     place-items: center;
@@ -94,7 +94,7 @@ const facts = [
     width: 1300px;
     height: 596.69px;
     opacity: 0.8;
-    background: linear-gradient(90deg, #334542 0%, #293838 50%, #334047 100%);
+    background: linear-gradient(90deg, #2e334d 0%, #252a42 50%, #353354 100%);
     mask-image: var(--mask);
     mask-size: 1300px 596.69px;
     mask-repeat: no-repeat;
@@ -142,11 +142,12 @@ const facts = [
   }
   .eyebrow {
     font-size: 13px;
-    font-weight: var(--fw-semibold);
-    letter-spacing: 1.8px;
+    font-weight: var(--fw-medium);
+    letter-spacing: 1px;
     line-height: 16px;
     text-transform: uppercase;
-    color: #3ccf96;
+    /* the privacy panel is dark in both themes: dark-theme muted grey (2026-11-14) */
+    color: #8a93b1;
   }
   .title {
     margin-top: 16px;
@@ -154,13 +155,13 @@ const facts = [
     font-weight: var(--fw-semibold);
     line-height: 1.04;
     letter-spacing: -0.028em;
-    color: #f5f5f7;
+    color: #eceef4;
   }
   .lede {
     margin-top: 20px;
-    font-size: 17px;
-    line-height: 26px;
-    color: #a1a1a6;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    color: #9aa3be;
   }
   .card::after {
     content: '';
@@ -194,8 +195,8 @@ const facts = [
   }
   .fact p {
     margin-top: 6px;
-    font-size: 15px;
-    line-height: 23px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
     color: var(--color-ink-2);
   }
   .note {

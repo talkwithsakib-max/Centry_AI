@@ -1,0 +1,86 @@
+---
+/**
+ * Eyebrow + two-tone headline (ink line, grey line) + optional subtitle.
+ * Figma: eyebrow 13/Semibold +1.8 tracking #13865C; headline 48/Semibold
+ * line-height 1.04, -0.96 tracking; second line #8A8A8E.
+ */
+interface Props {
+  eyebrow?: string;
+  line1: string;
+  line2?: string;
+  /** render both lines on one row ("Small leaks. Big savings.") */
+  inline?: boolean;
+  align?: 'left' | 'center';
+  as?: 'h1' | 'h2';
+  id?: string;
+  eyebrowColor?: string;
+  class?: string;
+}
+const { eyebrow, line1, line2, inline = false, align = 'left', as: Tag = 'h2', id, eyebrowColor, class: className } =
+  Astro.props;
+---
+
+<div class:list={['heading', align, className]}>
+  {
+    eyebrow && (
+      <p class="eyebrow" style={eyebrowColor ? `color:${eyebrowColor}` : undefined}>
+        {eyebrow}
+      </p>
+    )
+  }
+  <Tag class="title" id={id}>
+    <span class="l1">{line1}</span>
+    {line2 && (inline ? ' ' : <br />)}
+    {line2 && <span class="l2">{line2}</span>}
+  </Tag>
+  {
+    Astro.slots.has('default') && (
+      <div class="sub">
+        <slot />
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .heading {
+    display: flex;
+    flex-direction: column;
+  }
+  .center {
+    align-items: center;
+    text-align: center;
+  }
+  .eyebrow {
+    font-size: 13px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: 1.8px;
+    line-height: 16px;
+    text-transform: uppercase;
+    color: var(--color-mint-ink);
+    margin-bottom: 16px;
+  }
+  .title {
+    font-size: clamp(34px, 2.2rem + 1.2vw, 48px);
+    font-weight: var(--fw-semibold);
+    line-height: 1.04;
+    letter-spacing: -0.028em;
+    color: var(--color-ink);
+  }
+  /* Figma lines never wrap on desktop */
+  @media (min-width: 1024px) {
+    .title span {
+      white-space: nowrap;
+    }
+  }
+  .l2 {
+    color: var(--color-heading-2);
+  }
+  .sub {
+    margin-top: 16px;
+    font-size: 17px;
+    line-height: 26px;
+    letter-spacing: -0.2px;
+    color: var(--color-ink-2);
+  }
+</style>

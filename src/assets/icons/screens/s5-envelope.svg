@@ -1,6 +1,6 @@
 <svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="23.5998" height="23.5998" viewBox="0 0 23.5998 23.5998" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="Envelope">
-<path id="Vector" d="M5.55289 5.55289H18.0469C19.5803 5.55289 20.8234 6.79595 20.8234 8.32935V15.9646C20.8234 17.498 19.5803 18.741 18.0469 18.741H5.55289C4.01949 18.741 2.77643 17.498 2.77643 15.9646V8.32935C2.77643 6.79595 4.01949 5.55289 5.55289 5.55289Z" stroke-width="1.38823" stroke="#1D1D1F"/>
-<path id="Vector_2" d="M3.47052 6.94108L11.7999 13.1881L20.1292 6.94108" stroke-width="1.38823" stroke-linejoin="round" stroke="#1D1D1F"/>
+<path id="Vector" d="M5.55289 5.55289H18.0469C19.5803 5.55289 20.8234 6.79595 20.8234 8.32935V15.9646C20.8234 17.498 19.5803 18.741 18.0469 18.741H5.55289C4.01949 18.741 2.77643 17.498 2.77643 15.9646V8.32935C2.77643 6.79595 4.01949 5.55289 5.55289 5.55289Z" stroke-width="1.38823" stroke="#0b1020"/>
+<path id="Vector_2" d="M3.47052 6.94108L11.7999 13.1881L20.1292 6.94108" stroke-width="1.38823" stroke-linejoin="round" stroke="#0b1020"/>
 </g>
 </svg>

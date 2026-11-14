@@ -24,26 +24,24 @@ import type { Brand } from '../components/brand/brands';
 // Figma x/y = top-left of the rotated node; rotation about that corner (CSS = −Figma).
 type Trail = { x: number; y: number; w: number; h: number; r: number; blur: number; rgb: string };
 type Side = { b: Brand; x: number; y: number; s: number; r: number; trail: Trail; tag?: { p: string; x: number; y: number; r: number }; hide?: 't' | 'm' };
-const MINT = '63,227,166';
+const MINT = '139,131,255'; // trails behind the cancelled tiles: brand light, so they blend with the indigo rays (2026-11-14)
 const WHITE = '255,255,255';
-const BLUE = '90,200,250';
+const BLUE = '139,131,255'; // brand light (sky blue removed)
 const sides: Side[] = [
-  { b: 'netflix', x: 144.6, y: 125.1, s: 112, r: 10, trail: { x: 186.5, y: 212.1, w: 235.2, h: 44.8, r: -170.9, blur: 13, rgb: MINT }, tag: { p: '-$15.49', x: 179.6, y: 221.1, r: 6 }, hide: 't' },
-  { b: 'duolingo', x: 374.8, y: 216, s: 80, r: -8, trail: { x: 418.7, y: 265.9, w: 168, h: 32, r: -175.3, blur: 10, rgb: WHITE } },
-  { b: 'spotify', x: 259.1, y: 379.4, s: 92, r: 6, trail: { x: 306.4, y: 447.3, w: 193.2, h: 36.8, r: 159.7, blur: 11, rgb: BLUE }, hide: 'm' },
-  { b: 'hbo-max', x: 1185.1, y: 144.6, s: 112, r: -10, trail: { x: 1246.5, y: 167.9, w: 235.2, h: 44.8, r: -9.1, blur: 13, rgb: MINT }, tag: { p: '-$15.99', x: 1224.1, y: 221.1, r: -6 }, hide: 't' },
-  { b: 'headspace', x: 986, y: 204.8, s: 80, r: 8, trail: { x: 1018.7, y: 234.1, w: 168, h: 32, r: -4.7, blur: 10, rgb: WHITE } },
+  { b: 'netflix', x: 144.6, y: 125.1, s: 112, r: 10, trail: { x: 186.5, y: 212.1, w: 235.2, h: 44.8, r: -170.9, blur: 13, rgb: MINT }, hide: 't' },
+  { b: 'duolingo', x: 374.8, y: 216, s: 80, r: -8, trail: { x: 418.7, y: 265.9, w: 168, h: 32, r: -175.3, blur: 10, rgb: WHITE }, tag: { p: '-$6.99', x: 392, y: 283, r: 6 } },
+  { b: 'spotify', x: 259.1, y: 379.4, s: 92, r: 6, trail: { x: 306.4, y: 447.3, w: 193.2, h: 36.8, r: 159.7, blur: 11, rgb: BLUE }, tag: { p: '-$9.99', x: 274, y: 462, r: -5 }, hide: 'm' },
+  { b: 'hbo-max', x: 1185.1, y: 144.6, s: 112, r: -10, trail: { x: 1246.5, y: 167.9, w: 235.2, h: 44.8, r: -9.1, blur: 13, rgb: MINT }, hide: 't' },
+  { b: 'headspace', x: 986, y: 204.8, s: 80, r: 8, trail: { x: 1018.7, y: 234.1, w: 168, h: 32, r: -4.7, blur: 10, rgb: WHITE }, tag: { p: '-$12.99', x: 1000, y: 272, r: -6 } },
   { b: 'prime-video', x: 1089.4, y: 389.1, s: 92, r: -6, trail: { x: 1146.4, y: 412.7, w: 193.2, h: 36.8, r: 20.3, blur: 11, rgb: BLUE }, hide: 'm' },
 ];
 // cancelled pile under the phone (frame at 565, 638.7)
 const PILE = { x: 565, y: 638.7 };
+// = exactly the 3 zombies the phone cancels (Headspace, Duolingo, Spotify), 2026-11-14
 const pile: { b: Brand; x: number; y: number; r: number }[] = [
-  { b: 'hbo-max', x: 58.5, y: 30.1, r: 16 },
-  { b: 'netflix', x: 186.7, y: 44, r: -19 },
-  { b: 'spotify', x: 19.3, y: 65.7, r: 24 },
-  { b: 'headspace', x: 171.2, y: 72.8, r: 9 },
-  { b: 'prime-video', x: 80.3, y: 87.7, r: -12 },
-  { b: 'duolingo', x: 237, y: 87.3, r: -27 },
+  { b: 'headspace', x: 126, y: 44, r: 10 },
+  { b: 'duolingo', x: 180, y: 70, r: 21 },
+  { b: 'spotify', x: 72, y: 68, r: -17 },
 ];
 
 // scroll pull: every side group starts pushed outward from the phone
@@ -92,7 +90,7 @@ const drop = (x: number, y: number) => `--fx:${(PHONE.x - (PILE.x + x + 29)).toF
               </span>
             ))
           }
-          <CancelBadge class="pile-badge" style="position:absolute;left:244.4px;top:19.1px" />
+          <CancelBadge class="pile-badge" style="position:absolute;left:226px;top:52px" />
         </div>
 
         <!-- Side tiles (under the phone: they fly in behind it), each with its trail -->
@@ -119,7 +117,7 @@ const drop = (x: number, y: number) => `--fx:${(PHONE.x - (PILE.x + x + 29)).toF
 
         <div class="phone">
           <IPhone finish="silver" width={290}>
-            <Screen2Subscriptions />
+            <Screen2Subscriptions story />
           </IPhone>
         </div>
 
@@ -160,9 +158,8 @@ const drop = (x: number, y: number) => `--fx:${(PHONE.x - (PILE.x + x + 29)).toF
   }
   .sub {
     margin-top: 20px;
-    font-size: 17px;
-    line-height: 26px;
-    letter-spacing: -0.2px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
     color: var(--color-ink-2);
   }
   .badges {
@@ -200,14 +197,34 @@ const drop = (x: number, y: number) => `--fx:${(PHONE.x - (PILE.x + x + 29)).toF
   .f2 {
     display: none;
   }
+  /* rays are a mint texture: hue-shifted to indigo (2026-11-14 rebrand) */
+  .field-img {
+    filter: var(--tex-indigo);
+  }
+  /* Dark (2026-11-14 polish): the rays melt into the page — dimmer indigo lines,
+     a hair of blur to soften the hard strokes, and the same radial falloff as
+     light so they fade out toward the edges instead of ending in hard streaks. */
   :global([data-theme='dark']) .field-img {
     mix-blend-mode: screen;
+    /* bluer than --tex-indigo (196°), which reads mauve on dark */
+    filter: grayscale(1) sepia(1) saturate(5) hue-rotate(184deg) brightness(0.85) blur(0.4px);
+    opacity: 0.85;
+  }
+  :global([data-theme='dark']) .field {
+    -webkit-mask-image:
+      radial-gradient(ellipse 50% 58% at 50% 49%, #000 25%, rgba(0, 0, 0, 0.65) 60%, transparent 95%),
+      linear-gradient(180deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      radial-gradient(ellipse 50% 58% at 50% 49%, #000 25%, rgba(0, 0, 0, 0.65) 60%, transparent 95%),
+      linear-gradient(180deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+    mask-composite: intersect;
   }
   /* Light (user picked option B): Figma's rays in a richer mint, concentrated
      around the phone and fading out toward the edges, so they read as a soft
      glow on the cream page instead of a faint wash. */
   :global(:root:not([data-theme='dark'])) .field-img {
-    filter: saturate(1.7) brightness(0.82);
+    filter: var(--tex-indigo) brightness(0.9);
   }
   :global(:root:not([data-theme='dark'])) .field {
     -webkit-mask-image:
@@ -227,9 +244,9 @@ const drop = (x: number, y: number) => `--fx:${(PHONE.x - (PILE.x + x + 29)).toF
     height: 792px;
     background: radial-gradient(
       closest-side,
-      rgba(63, 227, 166, 0.42) 0%,
-      rgba(34, 201, 138, 0.16) 52%,
-      rgba(34, 201, 138, 0) 92%
+      rgb(var(--brand-rgb) / 0.42) 0%,
+      rgb(var(--brand-rgb) / 0.16) 52%,
+      rgb(var(--brand-rgb) / 0) 92%
     );
     pointer-events: none;
   }
@@ -237,9 +254,9 @@ const drop = (x: number, y: number) => `--fx:${(PHONE.x - (PILE.x + x + 29)).toF
     mix-blend-mode: screen;
     background: radial-gradient(
       closest-side,
-      rgba(63, 227, 166, 0.55) 0%,
-      rgba(34, 201, 138, 0.22) 52%,
-      rgba(34, 201, 138, 0) 92%
+      rgb(var(--brand-rgb) / 0.55) 0%,
+      rgb(var(--brand-rgb) / 0.22) 52%,
+      rgb(var(--brand-rgb) / 0) 92%
     );
   }
 
@@ -531,4 +548,5 @@ const drop = (x: number, y: number) => `--fx:${(PHONE.x - (PILE.x + x + 29)).toF
       --s: 0.857;
     }
   }
+
 </style>

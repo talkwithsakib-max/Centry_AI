@@ -1,0 +1,33 @@
+---
+/** Flat app icon used inside phone/inbox mock-ups (Figma "App icon / <Brand>"). */
+import BrandLogo from './BrandLogo.astro';
+import { appIconBg, type Brand } from './brands';
+interface Props {
+  brand: Brand;
+  size: number;
+  radius?: number;
+  bg?: string;
+  class?: string;
+  style?: string;
+}
+const { brand, size, radius, bg, class: className, style = '' } = Astro.props;
+const r = radius ?? size * 0.25;
+---
+
+<span
+  class:list={['app-icon', className]}
+  style={`--u:${size / 100}px;--bg:${bg ?? appIconBg[brand]};border-radius:${r}px;width:${size}px;height:${size}px;${style}`}
+  aria-hidden="true"
+>
+  <BrandLogo brand={brand} />
+</span>
+
+<style>
+  .app-icon {
+    position: relative;
+    display: block;
+    flex: none;
+    overflow: hidden;
+    background: var(--bg);
+  }
+</style>

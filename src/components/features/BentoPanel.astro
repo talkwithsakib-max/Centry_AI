@@ -23,7 +23,7 @@ interface Props {
   /** dark theme glows (Figma "Home 2 — Dark"): mint, aqua, spotlight boxes */
   dark: { mint: Box; aqua: Box; spotlight: Box; dots?: boolean };
 }
-const { w, h, silk, bleed, angle, smoke, radius = 20, from = '#ecf8f2', dark } = Astro.props;
+const { w, h, silk, bleed, angle, smoke, radius = 20, from = '#eeedfe', dark } = Astro.props;
 const smokeSrc = (smoke === 'a' ? smokeA : smokeB).src;
 const [t, r, b, l] = bleed;
 const silkStyle = `left:${-l}%;top:${-t}%;width:${100 + l + r}%;height:${100 + t + b}%`;

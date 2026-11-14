@@ -9,8 +9,8 @@
 <feGaussianBlur stdDeviation="2.5" result="effect1_foregroundBlur_0_5"/>
 </filter>
 <radialGradient id="paint0_radial_0_5" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(80 12) scale(75 7)">
-<stop stop-color="#3FE3A6" stop-opacity="0.84"/>
-<stop offset="1" stop-color="#3FE3A6" stop-opacity="0"/>
+<stop stop-color="#675df9" stop-opacity="0.84"/>
+<stop offset="1" stop-color="#675df9" stop-opacity="0"/>
 </radialGradient>
 </defs>
 </svg>

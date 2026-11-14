@@ -1,0 +1,457 @@
+---
+/** Figma "Zombie Alert" (498:14732): tilted zombie-score card + zombie hand, copy + stats. */
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import Fit from '../components/ui/Fit.astro';
+import BentoPanel from '../components/features/BentoPanel.astro';
+import SubTile from '../components/brand/SubTile.astro';
+import silk from '../assets/icons/features/silk-zombie-alert.svg?url';
+import hand from '../assets/icons/zombie-hand.svg?url';
+import type { Brand } from '../components/brand/brands';
+
+const rows: { b: Brand; name: string; used: string; score: number; fill: number; price: string; zombie: boolean }[] = [
+  { b: 'headspace', name: 'Headspace', used: 'Last used 91 days ago', score: 99, fill: 218, price: '$12.99/mo', zombie: true },
+  { b: 'duolingo', name: 'Duolingo', used: 'Last used 62 days ago', score: 94, fill: 207, price: '$6.99/mo', zombie: true },
+  { b: 'midjourney', name: 'Midjourney', used: 'Last used 47 days ago', score: 87, fill: 191, price: '$10.00/mo', zombie: true },
+  { b: 'spotify', name: 'Spotify', used: 'Used 3 days ago', score: 8, fill: 18, price: '$9.99/mo', zombie: false },
+];
+---
+
+<section class="split zombie" aria-labelledby="zombie-title" data-reveal>
+  <div class="container">
+    <div class="visual" aria-hidden="true">
+      <Fit w={640} h={540}>
+        <BentoPanel
+          w={640}
+          h={540}
+          silk={silk}
+          bleed={[29.81, 30.86, 19.96, 35.31]}
+          angle={139.84}
+          smoke="b"
+          radius={28}
+          from="#fbefec"
+          dark={{ mint: [-64, -81, 384, 324], aqua: [352, 108, 320, 324], spotlight: [96, 81, 448, 378], dots: false }}
+        >
+          <div class="clip fx-loop">
+            <div class="mock-card list">
+              <span class="lh">Zombie scores</span>
+              <span class="mock-pill count">3 zombies</span>
+              {
+                rows.map((r, i) => (
+                  <div class="row" style={`top:${56 + i * 76}px;--i:${i}`}>
+                    <SubTile
+                      brand={r.b}
+                      state={r.zombie ? 'cancelled' : 'active'}
+                      size={42}
+                      style="position:absolute;left:18px;top:14px"
+                    />
+                    <span class="n">{r.name}</span>
+                    <span class:list={['u', r.zombie && 'danger']}>{r.used}</span>
+                    <span class="track">
+                      <span class:list={['fill', !r.zombie && 'ok']} style={`width:${r.fill}px`} />
+                    </span>
+                    <span class:list={['score', !r.zombie && 'ok']} data-count={r.score} data-at={(0.6 + i * 0.09).toFixed(2)} data-for="1.1">{r.score}</span>
+                    <span class="price">{r.price}</span>
+                    {i < 3 && <span class="rule" />}
+                  </div>
+                ))
+              }
+            </div>
+            <img class="hand" src={hand} alt="" />
+            <div class="waste">
+              <span class="w1" data-count="359.76" data-format="${int}.{dec}" data-at="1.25" data-for="1.3">$359.76</span>
+              <span class="w2">burned on zombies a year</span>
+            </div>
+          </div>
+        </BentoPanel>
+      </Fit>
+    </div>
+
+    <div class="text">
+      <SectionHeading
+        eyebrow="Zombie alert"
+        eyebrowColor="var(--color-danger)"
+        line1="You’re paying for things"
+        line2="you forgot exist."
+        id="zombie-title"
+      />
+      <p class="body">
+        A zombie subscription is one you haven’t touched in weeks but keep paying for every month. Most people have two
+        or three.
+      </p>
+      <p class="body second">
+        CentryAI gives every subscription a zombie score, so you know exactly which ones are bleeding your account.
+      </p>
+      <dl class="stats" data-r style="--rd:200ms">
+        <div><dt data-count="3" data-at="0.4" data-for="0.9">3</dt><dd>zombies found</dd></div>
+        <div><dt data-count="29.98" data-format="${int}.{dec}" data-at="0.5" data-for="1.3">$29.98</dt><dd>wasted per month</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<style>
+  .split {
+    padding: 100px 0;
+  }
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 64px;
+    max-width: calc(1240px + 2 * var(--gutter));
+  }
+  .visual {
+    flex: 0 1 640px;
+    min-width: 0;
+  }
+  .text {
+    flex: 0 1 500px;
+  }
+  .body {
+    margin-top: 24px;
+    font-size: 17px;
+    line-height: 26px;
+    letter-spacing: -0.15px;
+    color: var(--color-ink-2);
+  }
+  .body.second {
+    margin-top: 14px;
+  }
+  .stats {
+    display: flex;
+    gap: 40px;
+    margin-top: 32px;
+  }
+  .stats div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .stats dt {
+    font-size: 36px;
+    font-weight: var(--fw-bold);
+    letter-spacing: -1px;
+  }
+  .stats dd {
+    margin: 0;
+    font-size: 14px;
+    font-weight: var(--fw-medium);
+    color: var(--color-ink-3);
+  }
+
+  /* Illustration — clipped to the 28px-radius panel like Figma */
+  .clip {
+    inset: 0;
+    overflow: hidden;
+    border-radius: 28px;
+  }
+  .clip > * {
+    position: absolute;
+  }
+  .list {
+    left: 105px;
+    top: 66px;
+    width: 430px;
+    height: 368px;
+    border-radius: 24px;
+    transform: rotate(3.5deg);
+  }
+  .lh {
+    left: 20px;
+    top: 20px;
+    font-size: 16px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.2px;
+  }
+  .count {
+    right: 20px;
+    top: 20px;
+    padding: 3px 8px;
+    font-size: 11px;
+    background: var(--color-danger-soft);
+    color: var(--color-danger);
+  }
+  .row {
+    left: 0;
+    width: 430px;
+    height: 76px;
+  }
+  .row > * {
+    position: absolute;
+  }
+  .n {
+    left: 72px;
+    top: 13px;
+    font-size: 15px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.2px;
+  }
+  .u {
+    left: 72px;
+    top: 33px;
+    font-size: 12px;
+    letter-spacing: -0.2px;
+    color: var(--color-ink-3);
+  }
+  .u.danger {
+    color: var(--color-danger);
+  }
+  .track {
+    left: 72px;
+    top: 56px;
+    width: 220px;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(118, 118, 128, 0.12);
+  }
+  .fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #34c759 0%, #ff9500 60%, #ff3b30 100%);
+    box-shadow: inset 0 1px 0 0 var(--hl-50);
+  }
+  .fill.ok {
+    background: #34c759;
+  }
+  .score {
+    right: 20px;
+    top: 14px;
+    font-size: 26px;
+    font-weight: var(--fw-bold);
+    letter-spacing: -1px;
+    color: var(--color-danger);
+  }
+  .score.ok {
+    color: var(--color-mint-ink);
+  }
+  .price {
+    right: 20px;
+    top: 48px;
+    font-size: 12px;
+    font-weight: var(--fw-medium);
+    letter-spacing: -0.2px;
+    color: var(--color-ink-3);
+  }
+  .rule {
+    left: 72px;
+    top: 75.5px;
+    width: 338px;
+    height: 0.5px;
+    background: rgba(60, 60, 67, 0.12);
+  }
+  .hand {
+    left: 286.57px;
+    top: 361.43px;
+    width: 164.01px;
+    height: 428.4px;
+    max-width: none;
+    transform: rotate(6deg);
+    transform-origin: 82.0px 204px;
+  }
+  .waste {
+    left: 421.54px;
+    top: 10.72px;
+    width: 200px;
+    height: 64px;
+    border-radius: 18px;
+    /* stays graphite in both themes (Figma) */
+    background: linear-gradient(180deg, #2a2a2e 0%, #111113 100%);
+    transform: rotate(-3deg);
+    box-shadow:
+      0 14px 32px -10px rgba(28, 36, 70, 0.11),
+      0 1px 3px 0 rgba(28, 36, 70, 0.05),
+      inset 0 1px 0 0 var(--hl-90);
+  }
+  .waste > * {
+    position: absolute;
+    left: 18px;
+    white-space: nowrap;
+  }
+  .w1 {
+    top: 10px;
+    font-size: 22px;
+    font-weight: var(--fw-bold);
+    letter-spacing: -0.6px;
+    color: #fff;
+  }
+  .w2 {
+    top: 38px;
+    font-size: 12px;
+    letter-spacing: -0.2px;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  @media (max-width: 1023px) {
+    .split {
+      padding: 72px 0;
+    }
+    .container {
+      flex-direction: column-reverse;
+      align-items: stretch;
+      gap: 48px;
+    }
+    .text,
+    .visual {
+      flex: none;
+      max-width: 640px;
+      width: 100%;
+      margin-inline: auto;
+    }
+  }
+  :global([data-theme='dark']) .waste {
+    box-shadow:
+      0 14px 32px -10px rgba(0, 0, 0, 0.5),
+      0 1px 3px 0 rgba(0, 0, 0, 0.35),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  }
+
+  /* ---- Motion (user brief 2026-11-10): the zombie hand rises, grabs the card's
+     bottom edge and tugs it; the card gives a little (slides, tilts, shakes) and
+     its rows wobble. One tug right after the grab, then a gentle tug every 5.5s
+     while on screen. Playful, never scary. ---- */
+  :global(.fx) .zombie:not(:global(.is-in)) .list,
+  :global(.fx) .zombie:not(:global(.is-in)) .row,
+  :global(.fx) .zombie:not(:global(.is-in)) .waste {
+    opacity: 0;
+  }
+  :global(.fx) .zombie:not(:global(.is-in)) .hand {
+    translate: 40px 240px;
+  }
+  :global(.fx) .zombie:global(.is-in) .list {
+    animation:
+      z-card-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) backwards,
+      z-card-tug 5.5s ease-in-out 1.55s infinite;
+  }
+  :global(.fx) .zombie:global(.is-in) .row {
+    animation:
+      z-row-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) calc(0.3s + var(--i) * 0.09s) backwards,
+      z-row-wobble 5.5s ease-in-out calc(1.6s + var(--i) * 0.05s) infinite;
+  }
+  :global(.fx) .zombie:global(.is-in) .fill {
+    transform-origin: left center;
+    animation: z-fill 1.1s cubic-bezier(0.22, 1, 0.36, 1) calc(0.55s + var(--i) * 0.09s) backwards;
+  }
+  :global(.fx) .zombie:global(.is-in) .hand {
+    animation:
+      z-hand-in 0.95s cubic-bezier(0.22, 1, 0.36, 1) 0.6s backwards,
+      z-hand-tug 5.5s ease-in-out 1.55s infinite;
+  }
+  :global(.fx) .zombie:global(.is-in) .waste {
+    animation:
+      z-pop 0.6s cubic-bezier(0.34, 1.45, 0.64, 1) 1.1s backwards,
+      z-red-glow 2.6s ease-out 1.5s backwards;
+  }
+  @keyframes z-card-in {
+    from {
+      opacity: 0;
+      translate: 0 24px;
+    }
+  }
+  @keyframes z-row-in {
+    from {
+      opacity: 0;
+      translate: -14px 0;
+    }
+  }
+  @keyframes z-fill {
+    from {
+      scale: 0 1;
+    }
+  }
+  @keyframes z-pop {
+    from {
+      opacity: 0;
+      scale: 0.7;
+    }
+  }
+  @keyframes z-red-glow {
+    from {
+      box-shadow: 0 0 0 0 rgba(255, 59, 48, 0);
+    }
+    30% {
+      box-shadow: 0 0 28px 2px rgba(255, 59, 48, 0.38);
+    }
+    to {
+      box-shadow: 0 0 0 0 rgba(255, 59, 48, 0);
+    }
+  }
+  @keyframes z-hand-in {
+    from {
+      translate: 40px 240px;
+      rotate: 10deg;
+    }
+    70% {
+      translate: 0 -6px;
+      rotate: -1deg;
+    }
+    to {
+      translate: 0 0;
+      rotate: 0deg;
+    }
+  }
+  /* the hand pulls down … */
+  @keyframes z-hand-tug {
+    0%,
+    34%,
+    100% {
+      translate: 0 0;
+      rotate: 0deg;
+    }
+    7% {
+      translate: 0 14px;
+      rotate: 3deg;
+    }
+    22% {
+      translate: 0 10px;
+      rotate: 2deg;
+    }
+  }
+  /* … the card follows a little late, resists with a small shake, springs back */
+  @keyframes z-card-tug {
+    0%,
+    36%,
+    100% {
+      translate: 0 0;
+      rotate: 0deg;
+    }
+    8% {
+      translate: 0 8px;
+      rotate: 1.2deg;
+    }
+    12% {
+      translate: -3px 8px;
+      rotate: 1.1deg;
+    }
+    16% {
+      translate: 3px 7px;
+      rotate: 1.3deg;
+    }
+    20% {
+      translate: -2px 6px;
+      rotate: 1deg;
+    }
+    24% {
+      translate: 1px 5px;
+      rotate: 0.8deg;
+    }
+  }
+  @keyframes z-row-wobble {
+    0%,
+    30%,
+    100% {
+      translate: 0 0;
+    }
+    10% {
+      translate: 2.5px 0;
+    }
+    16% {
+      translate: -2px 0;
+    }
+    22% {
+      translate: 1px 0;
+    }
+  }
+</style>

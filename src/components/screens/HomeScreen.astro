@@ -1,388 +1,690 @@
 ---
-/** Hero phone screen — Figma "Screen" (421:2520). Static illustration, 300px-device coordinates. */
-import StatusBar from '../devices/StatusBar.astro';
-import PhoneTabBar from '../devices/PhoneTabBar.astro';
-import CentryMark from '../brand/CentryMark.astro';
+/**
+ * Hero phone screen — signature redesign (2026-11-14), light + dark (follows site theme).
+ * Hero = "spend arc": a 240° gauge split by category (budget $120) around a glass
+ * sphere holding the month's total. Below: this week's renewals as a day strip,
+ * then the zombie insight. Shared tokens/chrome: styles/app-screen.css.
+ * Mobbin refs: Lifesum (arc + glowing sphere), Sweatcoin (day strip under the hero),
+ * Google Health (ring + compact stats). Previous versions: ./_legacy/.
+ */
 import AppIcon from '../brand/AppIcon.astro';
-import bell from '../../assets/icons/phone/bell.svg?url';
-import sparkle from '../../assets/icons/sparkle.svg?url';
-import chevron from '../../assets/icons/phone/chevron-right.svg?url';
+import CentryMark from '../brand/CentryMark.astro';
+import AppStatus from './app/AppStatus.astro';
+import AppTabBar from './app/AppTabBar.astro';
+import badge from '../../assets/icons/badges/sparkle-24.svg?url';
+import type { Brand } from '../brand/brands';
+import '../../styles/app-screen.css';
 
-const segments = [
-  { left: 14.3, w: 102.981, c: '#e50914' },
-  { left: 119.43, w: 30.036, c: '#1ed760' },
-  { left: 151.61, w: 34.327, c: 'rgba(255,255,255,.85)' },
-  { left: 188.08, w: 25.745, c: '#58cc02' },
-  { left: 215.97, w: 21.454, c: '#8b5cf6' },
+/* ---- arc geometry (SVG 260 × 184, centre 130,122) ---- */
+const CX = 130, CY = 122, R = 102, A0 = 150, SWEEP = 240;
+const budget = 120, spent = 86.94;
+const pt = (a: number, r = R) => {
+  const t = (a * Math.PI) / 180;
+  return [+(CX + r * Math.cos(t)).toFixed(2), +(CY + r * Math.sin(t)).toFixed(2)];
+};
+const arc = (a: number, b: number, r = R) => {
+  const [x0, y0] = pt(a, r), [x1, y1] = pt(b, r);
+  return `M${x0} ${y0} A${r} ${r} 0 ${b - a > 180 ? 1 : 0} 1 ${x1} ${y1}`;
+};
+const cats = [
+  { label: 'Streaming', v: 40, c: '#ff6b5a' },
+  { label: 'Music', v: 12.2, c: '#1ed760' },
+  { label: 'AI tools', v: 14, c: 'var(--ai)' },
+  { label: 'Learning', v: 10.99, c: '#58cc02' },
+  { label: 'Other', v: 9.75, c: 'var(--ink-3)' },
 ];
-const legend = [
-  { dot: 14.3, text: 21.45, c: '#e50914', label: 'Streaming' },
-  { dot: 75.81, text: 82.96, c: '#1ed760', label: 'Music' },
-  { dot: 120.14, text: 127.3, c: 'rgba(255,255,255,.85)', label: 'AI tools' },
-  { dot: 170.92, text: 178.07, c: '#58cc02', label: 'Learning' },
+const endA = A0 + (spent / budget) * SWEEP;
+/* Category pills: one rounded segment per category. A round cap sticks out by half
+   the stroke at each end, so each segment is trimmed by that cap angle plus half
+   the visible gap — the pills never touch and every gap is the same width. */
+const STROKE = 10;
+const CAP = ((STROKE / 2) / R) * (180 / Math.PI); // ≈2.8° at R 102
+const GAP_DEG = 3.2; // visible gap between pills (~5.7px)
+let cur = A0;
+const segs = cats.map((c) => {
+  const span = (c.v / budget) * SWEEP;
+  const first = cur === A0;
+  const a0 = cur + CAP + (first ? 0 : GAP_DEG / 2);
+  const a1 = cur + span - CAP - GAP_DEG / 2;
+  cur += span;
+  return { ...c, d: arc(a0, Math.max(a0 + 0.01, a1)) };
+});
+const ticks = Array.from({ length: 25 }, (_, i) => {
+  const a = A0 + (i * SWEEP) / 24;
+  const major = i % 6 === 0;
+  const [x0, y0] = pt(a, R + 10), [x1, y1] = pt(a, R + (major ? 16 : 13));
+  return { x0, y0, x1, y1, major };
+});
+
+/* ---- this week ---- */
+type Day = { d: string; n: number; today?: boolean; b?: Brand; price?: string; z?: boolean };
+const week: Day[] = [
+  { d: 'M', n: 10 },
+  { d: 'T', n: 11, today: true, b: 'netflix', price: '$15.99' },
+  { d: 'W', n: 12 },
+  { d: 'T', n: 13, b: 'spotify', price: '$9.99', z: true },
+  { d: 'F', n: 14 },
+  { d: 'S', n: 15 },
+  { d: 'S', n: 16, b: 'prime-video', price: '$14.99' },
 ];
 ---
 
-<div class="home">
-  <StatusBar />
-  <CentryMark size={24.67} class="mark" />
-  <span class="title">CentryAI</span>
-  <span class="bell"><img src={bell} alt="" /><span class="badge"></span></span>
-  <span class="live-dot"></span>
-  <span class="synced">Synced with Gmail · just now</span>
+<div class="mg home">
+  <AppStatus />
 
-  <div class="summary">
-    <span class="s-label">Spent this month</span>
-    <span class="s-amount">$86<span>.94</span></span>
-    <span class="s-pill">↓ $10.99 saved</span>
-    {segments.map((s) => <span class="seg" style={`left:${s.left}px;width:${s.w}px;background:${s.c}`} />)}
-    {
-      legend.map((l) => (
-        <>
-          <span class="dot" style={`left:${l.dot}px;background:${l.c}`} />
-          <span class="legend" style={`left:${l.text}px`}>
-            {l.label}
-          </span>
-        </>
-      ))
-    }
+  <div class="body">
+    <header class="top">
+      <span class="brand">
+        <CentryMark size={20} />
+        <span>CentryAI</span>
+      </span>
+      <span class="right">
+        <span class="sync"><i class="live"></i>Gmail synced</span>
+        <span class="iconbtn" aria-hidden="true">
+          <svg viewBox="0 0 16 16"><path d="M4 11.5V7.2a4 4 0 0 1 8 0v4.3l1 1.2H3Z" /><path d="M6.6 14a1.5 1.5 0 0 0 2.8 0" /></svg>
+          <i class="ping"></i>
+        </span>
+      </span>
+    </header>
+
+    <!-- hero: spend arc around a glass sphere -->
+    <div class="gauge">
+      <span class="halo" aria-hidden="true"></span>
+      <svg class="arc" viewBox="0 0 260 184" aria-hidden="true">
+        <defs>
+          <!-- spent arc in the CentryMark gradient: mint → sky -->
+          <linearGradient id="hs-spend" gradientUnits="userSpaceOnUse" x1="24" y1="0" x2="236" y2="0">
+            <stop offset="0" stop-color="#675df9" />
+            <stop offset="0.55" stop-color="#675df9" />
+            <stop offset="1" stop-color="#8b83ff" />
+          </linearGradient>
+        </defs>
+        {ticks.map((t) => (
+          <line x1={t.x0} y1={t.y0} x2={t.x1} y2={t.y1} class:list={['tick', t.major && 'major']} />
+        ))}
+        <path d={arc(endA + CAP + GAP_DEG / 2, A0 + SWEEP - CAP)} class="track" />
+        {segs.map((sg) => <path d={sg.d} class="seg" />)}
+      </svg>
+      <div class="sphere">
+        <!-- glass orb: slow indigo aurora inside, dotted inner ring, specular crescent -->
+        <span class="aura" aria-hidden="true"></span>
+        <span class="iring" aria-hidden="true"></span>
+        <span class="spec" aria-hidden="true"></span>
+        <p class="k">Spent this month</p>
+        <p class="big">$86<span>.94</span></p>
+        <p class="saved">
+          <svg viewBox="0 0 10 10"><path d="M5 2v6M2.5 5.5 5 8l2.5-2.5" /></svg>
+          $10.99 saved
+        </p>
+      </div>
+    </div>
+    <p class="budget"><b>$33.06</b> left of $120 budget</p>
+
+    <!-- this week's renewals -->
+    <p class="label">This week<span>3 renewals · $40.97</span></p>
+    <div class="week">
+      {week.map((w) => (
+        <div class:list={['day', w.today && 'today', w.b && 'has', w.z && 'z']}>
+          <span class="dn">{w.d}</span>
+          <span class="dd">{w.n}</span>
+          {w.b ? (
+            <span class="ic"><AppIcon brand={w.b} size={16} radius={4.5} /></span>
+          ) : (
+            <span class="empty"></span>
+          )}
+          <span class="pr">{w.price ?? ''}</span>
+        </div>
+      ))}
+    </div>
+
+    <div class="insight">
+      <img class="badge" src={badge} alt="" aria-hidden="true" />
+      <div class="ins-txt">
+        <p class="t">2 zombie subscriptions</p>
+        <p class="s">Cancel them to save <b>$23.98/mo</b></p>
+      </div>
+      <span class="go">Review</span>
+    </div>
+
+    <div class="row done">
+      <AppIcon brand="duolingo" size={26} radius={7.5} />
+      <div class="txt"><p class="n">Duolingo canceled</p><p class="m">Saving $10.99 every month</p></div>
+      <span class="check" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="m3 6.2 2 2 4-4.4" /></svg></span>
+    </div>
   </div>
 
-  <div class="insight">
-    <span class="sparkle"><img src={sparkle} alt="" /></span>
-    <span class="i-title">2 zombie subscriptions found</span>
-    <span class="i-sub">Cancel them to save $23.98/mo</span>
-    <img class="i-chev" src={chevron} alt="" />
-  </div>
-
-  <span class="renewing">Renewing soon</span>
-  <span class="see-all">See all</span>
-
-  <div class="list">
-    <div class="row" style="top:0">
-      <AppIcon brand="netflix" size={31.466} radius={7.867} class="r-icon" />
-      <span class="r-name">Netflix</span>
-      <span class="r-meta">Renews in 3 days</span>
-      <span class="r-price">$15.99</span>
-      <span class="r-period">monthly</span>
-      <span class="r-div"></span>
-    </div>
-    <div class="row" style="top:50.06px">
-      <AppIcon brand="spotify" size={31.466} radius={7.867} class="r-icon" />
-      <span class="r-name">Spotify</span>
-      <span class="zombie-tag">Zombie</span>
-      <span class="r-meta danger">Unused for 47 days</span>
-      <span class="cancel-btn">Cancel</span>
-      <span class="r-div"></span>
-    </div>
-    <div class="row" style="top:100.12px">
-      <AppIcon brand="prime-video" size={31.466} radius={7.867} class="r-icon" />
-      <span class="r-name">Prime Video</span>
-      <span class="r-meta">Renews Nov 18</span>
-      <span class="r-price">$14.99</span>
-      <span class="r-period">monthly</span>
-      <span class="r-div"></span>
-    </div>
-    <div class="row" style="top:150.18px">
-      <AppIcon brand="duolingo" size={31.466} radius={7.867} class="r-icon faded" />
-      <span class="r-name muted">Duolingo</span>
-      <span class="r-meta mint">Canceled · saving $10.99/mo</span>
-      <span class="r-price struck">$10.99</span>
-      <span class="r-period cancelled">Canceled</span>
-    </div>
-  </div>
-
-  <PhoneTabBar active="home" />
+  <span class="fade" aria-hidden="true"></span>
+  <AppTabBar active="home" />
 </div>
 
 <style>
   .home {
+    --sheen: rgba(255, 255, 255, 0.8);
+    --track: rgba(11, 16, 32, 0.07);
+    --tick: rgba(11, 16, 32, 0.16);
+    --ai: #0b1020;
+    --sphere-bg:
+      radial-gradient(circle at 50% 30%, #ffffff 0%, #f7f6ff 42%, #e9e6ff 72%, #d9d4ff 100%);
+    --aura-op: 0.55;
+    --iring: rgb(var(--brand-rgb) / 0.22);
+    --spec: rgba(255, 255, 255, 0.9);
+    --sphere-shadow:
+      inset 0 -14px 26px rgb(var(--brand-light-rgb) / 0.18),
+      inset 0 10px 24px rgb(var(--brand-rgb) / 0.14),
+      0 18px 36px -14px rgba(28, 36, 70, 0.3),
+      0 0 0 0.75px rgb(var(--brand-rgb) / 0.3);
+  }
+  :global([data-theme='dark']) .home {
+    --sheen: rgba(255, 255, 255, 0.06);
+    --track: rgba(255, 255, 255, 0.07);
+    --tick: rgba(255, 255, 255, 0.16);
+    --ai: #eceef4;
+    --sphere-bg:
+      radial-gradient(circle at 50% 38%, #1b1d48 0%, #10122e 55%, #0a0c1d 100%);
+    --aura-op: 0.75;
+    --iring: rgb(var(--brand-light-rgb) / 0.22);
+    --spec: rgba(255, 255, 255, 0.12);
+    --sphere-shadow:
+      inset 0 -14px 26px rgb(var(--brand-light-rgb) / 0.12),
+      inset 0 10px 24px rgb(var(--brand-rgb) / 0.12),
+      inset 0 0.75px 0 rgba(255, 255, 255, 0.2),
+      0 18px 36px -14px rgba(0, 0, 0, 0.8),
+      0 0 0 0.75px rgb(var(--brand-rgb) / 0.28),
+      0 0 34px rgb(var(--brand-rgb) / 0.14);
+  }
+
+  .body {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    top: 44px;
+    display: flex;
+    flex-direction: column;
+  }
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+  .right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .sync {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    height: 24px;
+    padding: 0 9px 0 8px;
+    border-radius: 12px;
+    background: var(--btn-bg);
+    box-shadow: var(--btn-shadow);
+    font-size: 8.2px;
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+  .live {
+    position: relative;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--mint);
+    box-shadow: 0 0 6px var(--mint);
+  }
+  .live::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 1px solid var(--mint);
+    animation: live 2.4s ease-out infinite;
+  }
+  @keyframes live {
+    0% { transform: scale(0.6); opacity: 0.9; }
+    80%, 100% { transform: scale(1.9); opacity: 0; }
+  }
+  .iconbtn {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    background: var(--btn-bg);
+    box-shadow: var(--btn-shadow);
+  }
+  .iconbtn svg {
+    width: 11px;
+    height: 11px;
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 1.3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .ping {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    width: 4.5px;
+    height: 4.5px;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 0 1.2px var(--bg);
+  }
+
+  /* ---------- gauge ---------- */
+  .gauge {
+    position: relative;
+    width: 260px;
+    height: 184px;
+    margin: 14px auto 0;
+  }
+  .halo {
+    position: absolute;
+    left: 50%;
+    top: 122px;
+    width: 290px;
+    height: 250px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(closest-side, rgb(var(--brand-rgb) / 0.2), rgb(var(--brand-light-rgb) / 0.06) 60%, transparent);
+    pointer-events: none;
+  }
+  .arc {
     position: absolute;
     inset: 0;
-    font-family: var(--font-phone);
-    font-variation-settings: 'opsz' 32;
-    /* System SF Pro only has fixed faces in Chrome: in-between weights (510, 590)
-       get a fake bold. Figma's Medium 510 / Semibold 590 → the real 500 / 600 faces. */
-    --fw-medium: 500;
-    --fw-semibold: 600;
-    --fw-bold: 700;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    color: var(--color-ink);
-    white-space: nowrap;
-    line-height: normal;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
   }
-  .home > *,
-  .summary > *,
-  .insight > *,
-  .row > :global(*) {
-    position: absolute;
+  .tick {
+    stroke: var(--tick);
+    stroke-width: 0.7;
+    stroke-linecap: round;
   }
-  .home :global(.mark) {
-    position: absolute;
-    left: 15.73px;
-    top: 45.59px;
+  .tick.major {
+    stroke-width: 1.1;
+    stroke: var(--ink-3);
   }
-  .title {
-    left: 45.41px;
-    top: 47.93px;
-    font-size: 16.448px;
-    font-weight: var(--fw-semibold);
-    letter-spacing: -0.3px;
-  }
-  .bell {
-    left: 236.71px;
-    top: 44.34px;
-    width: 28.606px;
-    height: 28.606px;
-    border-radius: 14.303px;
-    background: #fff;
-    filter: drop-shadow(0 1.43px 2.145px rgba(0, 0, 0, 0.06));
-  }
-  .bell img {
-    position: absolute;
-    left: 7.15px;
-    top: 7.15px;
-    width: 14.303px;
-    height: 14.303px;
-  }
-  .bell .badge {
-    position: absolute;
-    left: 18.59px;
-    top: 5.72px;
-    width: 6.436px;
-    height: 6.436px;
-    border-radius: 3.218px;
-    background: #ff3b30;
-  }
-  .live-dot {
-    left: 16.45px;
-    top: 80.1px;
-    width: 5.006px;
-    height: 5.006px;
-    border-radius: 2.503px;
-    background: #2fd38f;
-  }
-  .synced {
-    left: 25.75px;
-    top: 75.81px;
-    font-size: 9.297px;
-    font-weight: var(--fw-medium);
-    letter-spacing: -0.143px;
-    color: var(--color-ink-2);
-  }
-
-  .summary {
-    left: 14.3px;
-    top: 98.69px;
-    width: 252.447px;
-    height: 114.423px;
-    border-radius: 18.594px;
-    background: linear-gradient(155.62deg, #1f2025 0%, #0d0e11 71.43%);
-    box-shadow:
-      0 7.151px 15.734px 0 rgba(0, 0, 0, 0.14),
-      inset 0 0.715px 0 0 rgba(255, 255, 255, 0.08);
-  }
-  .s-label {
-    left: 14.3px;
-    top: 14.3px;
-    font-size: 10.012px;
-    font-weight: var(--fw-medium);
-    letter-spacing: -0.143px;
-    color: rgba(255, 255, 255, 0.58);
-  }
-  .s-amount {
-    left: 14.3px;
-    top: 28.61px;
-    font-size: 30.036px;
-    font-weight: var(--fw-bold);
-    letter-spacing: -0.715px;
-    color: #fff;
-  }
-  .s-amount span {
-    color: rgba(255, 255, 255, 0.42);
-  }
-  .s-pill {
-    left: 153.04px;
-    top: 15.73px;
-    padding: 3.576px 7.151px;
-    border-radius: 714px;
-    background: rgba(63, 227, 166, 0.15);
-    font-size: 9.297px;
-    font-weight: var(--fw-semibold);
-    color: var(--color-mint);
+  .track {
+    fill: none;
+    stroke: var(--track);
+    stroke-width: 10;
+    stroke-linecap: round;
   }
   .seg {
-    top: 74.38px;
-    height: 5.721px;
-    border-radius: 2.861px;
+    fill: none;
+    stroke: url(#hs-spend);
+    stroke-width: 10;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 6px rgb(var(--brand-rgb) / 0.45));
   }
-  .dot {
-    top: 92.97px;
-    width: 4.291px;
-    height: 4.291px;
-    border-radius: 2.145px;
+  .knob {
+    fill: #fff;
+    stroke: var(--color-brand);
+    stroke-width: 2;
   }
-  .legend {
-    top: 89.39px;
-    font-size: 8.582px;
-    font-weight: var(--fw-medium);
-    letter-spacing: -0.143px;
-    color: rgba(255, 255, 255, 0.55);
+  .knob-glow {
+    fill: rgb(var(--brand-rgb) / 0.35);
+    filter: blur(3px);
   }
-
-  .insight {
-    left: 14.3px;
-    top: 224.56px;
-    width: 252.447px;
-    height: 48.63px;
-    border-radius: 14.303px;
-    background: #fff;
-    box-shadow: 0 1.43px 2.861px rgba(0, 0, 0, 0.04);
+  .end {
+    font-size: 7.4px;
+    font-weight: 600;
+    fill: var(--ink-3);
+    font-family: inherit;
   }
-  .sparkle {
-    left: 10.01px;
-    top: 10.01px;
-    width: 28.606px;
-    height: 28.606px;
-    border-radius: 14.303px;
-    background: var(--gradient-mint);
-  }
-  .sparkle img {
+  .sphere {
     position: absolute;
-    left: 7.15px;
-    top: 7.15px;
-    width: 14.303px;
-    height: 14.303px;
+    left: 50%;
+    top: 122px;
+    width: 142px;
+    height: 142px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--sphere-bg);
+    box-shadow: var(--sphere-shadow);
+    text-align: center;
   }
-  .i-title {
-    left: 47.2px;
-    top: 10.73px;
-    font-size: 10.727px;
-    font-weight: var(--fw-semibold);
-    letter-spacing: -0.143px;
+  /* layers sit under the text */
+  .sphere > p {
+    position: relative;
+    z-index: 2;
   }
-  .i-sub {
-    left: 47.2px;
-    top: 25.75px;
-    font-size: 9.297px;
-    letter-spacing: -0.143px;
-    color: var(--color-ink-2);
+  .aura {
+    /* slow-turning indigo light pooled in the lower half of the orb */
+    position: absolute;
+    inset: -20%;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg,
+      rgb(var(--brand-rgb) / 0.0) 0deg,
+      rgb(var(--brand-rgb) / 0.55) 70deg,
+      rgb(var(--brand-light-rgb) / 0.35) 140deg,
+      rgb(var(--brand-rgb) / 0.0) 200deg,
+      rgb(var(--brand-light-rgb) / 0.4) 280deg,
+      rgb(var(--brand-rgb) / 0.0) 360deg);
+    filter: blur(14px);
+    opacity: var(--aura-op);
+    -webkit-mask-image: radial-gradient(circle at 50% 78%, #000 0%, rgba(0, 0, 0, 0.6) 35%, transparent 62%);
+    mask-image: radial-gradient(circle at 50% 78%, #000 0%, rgba(0, 0, 0, 0.6) 35%, transparent 62%);
+    animation: aura 14s linear infinite;
+    z-index: 0;
   }
-  .i-chev {
-    left: 232.42px;
-    top: 20.02px;
-    width: 5.721px;
-    height: 9.297px;
+  @keyframes aura {
+    to { transform: rotate(360deg); }
   }
-  .renewing {
-    left: 15.73px;
-    top: 288.92px;
-    font-size: 14.303px;
-    font-weight: var(--fw-semibold);
-    letter-spacing: -0.286px;
+  .iring {
+    /* dotted inner ring — echoes the gauge ticks */
+    position: absolute;
+    inset: 9px;
+    border-radius: 50%;
+    border: 1px dashed var(--iring);
+    z-index: 1;
   }
-  .see-all {
-    left: 228.85px;
-    top: 291.78px;
-    font-size: 10.727px;
-    font-weight: var(--fw-medium);
-    letter-spacing: -0.143px;
-    color: var(--color-mint-ink-2);
+  .spec {
+    /* specular: a soft cap of light that follows the sphere's own curve (full-size
+       layer, clipped by the sphere) — no separate shape, so no hard edge */
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background:
+      radial-gradient(90% 55% at 42% 2%, var(--spec) 0%, rgb(255 255 255 / 0) 62%),
+      radial-gradient(60% 30% at 50% 0%, var(--spec) 0%, rgb(255 255 255 / 0) 70%);
+    opacity: 0.85;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .spec::after {
+    /* thin rim of light along the upper edge */
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    box-shadow: inset 0 1.5px 1px -0.5px var(--spec);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .aura { animation: none; }
+  }
+  .sphere::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    padding: 1px;
+    background: conic-gradient(from 200deg, var(--color-brand), var(--color-brand-light) 22%, #ffffff 30%, rgb(var(--brand-light-rgb) / 0.2) 45%,
+      rgb(var(--brand-rgb) / 0.12) 70%, var(--color-brand) 92%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.75;
+    pointer-events: none;
+  }
+  .k {
+    position: relative;
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+  .big {
+    position: relative;
+    margin-top: 5px;
+    font-size: 38px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.045em;
+    font-variant-numeric: tabular-nums;
+  }
+  .big span {
+    font-size: 20px;
+    letter-spacing: -0.02em;
+    color: var(--ink-3);
+  }
+  .saved {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    margin-top: 9px;
+    padding: 3.5px 8px 3.5px 6px;
+    border-radius: 99px;
+    background: color-mix(in srgb, var(--mint) 16%, transparent);
+    color: var(--mint-ink);
+    font-size: 8px;
+    font-weight: 600;
+  }
+  .saved svg {
+    width: 7.5px;
+    height: 7.5px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .budget {
+    /* sphere overhangs the 184px gauge box by ~8px: clear it */
+    margin-top: 18px;
+    text-align: center;
+    font-size: 9.4px;
+    font-weight: 500;
+    color: var(--ink-3);
+  }
+  .budget b {
+    font-weight: 600;
+    color: var(--ink);
   }
 
-  .list {
-    left: 14.3px;
-    top: 314.66px;
-    width: 252.447px;
-    height: 200.241px;
-    border-radius: 15.733px;
-    background: #fff;
-    overflow: hidden;
-    box-shadow: 0 1.43px 5.721px rgba(0, 0, 0, 0.04);
+  /* ---------- this week ---------- */
+  .label {
+    display: flex;
+    align-items: center;
+    margin: 22px 2px 10px;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
+  .label span {
+    margin-left: auto;
+    font-size: 8.6px;
+    font-weight: 500;
+    color: var(--ink-3);
+  }
+  .week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+  .day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 7px 0 7px;
+    border-radius: 11px;
+    background: var(--glass);
+    box-shadow: var(--card-shadow);
+  }
+  .dn {
+    font-size: 7px;
+    font-weight: 600;
+    color: var(--ink-3);
+  }
+  .dd {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .ic,
+  .empty {
+    display: grid;
+    place-items: center;
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+  }
+  .ic :global(.app-icon) {
+    box-shadow: 0 0 0 0.5px var(--sep);
+  }
+  .empty::before {
+    content: '';
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--sep);
+  }
+  .pr {
+    height: 8px;
+    font-size: 6.4px;
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+  .day.today {
+    background:
+      linear-gradient(180deg, rgb(var(--brand-rgb) / 0.22), rgb(var(--brand-light-rgb) / 0.12)),
+      var(--glass);
+    box-shadow: var(--card-shadow), inset 0 0 0 0.75px rgb(var(--brand-rgb) / 0.55);
+  }
+  .day.today .dn {
+    color: var(--color-brand-text);
+  }
+  .day.z .ic {
+    position: relative;
+  }
+  .day.z .ic::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: -2px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 0 1.2px var(--glass), 0 0 6px var(--red);
+  }
+  .day.z .pr {
+    color: var(--red-text);
+  }
+
+  /* ---------- insight + done ---------- */
+  .insight {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    padding: 10px 10px 10px 11px;
+    border-radius: 14px;
+    background: var(--glass);
+    box-shadow: var(--card-shadow);
+  }
+  .badge {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    transform: scale(1.5);
+    transform-origin: 40% 40%;
+  }
+  .ins-txt,
+  .txt {
+    flex: 1;
+    min-width: 0;
+  }
+  .t,
+  .n {
+    font-size: 10.4px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .s,
+  .m {
+    margin-top: 2px;
+    font-size: 8.6px;
+    color: var(--ink-2);
+  }
+  .s b {
+    font-weight: 600;
+    color: var(--mint-ink);
+  }
+  .go {
+    flex: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: linear-gradient(180deg, var(--color-brand-light) 0%, var(--color-brand) 100%);
+    box-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.5), 0 2px 8px rgb(var(--brand-rgb) / 0.3);
+    color: var(--color-on-brand, #fff);
+    font-size: 8.8px;
+    font-weight: 600;
+  }
+
   .row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 9px 11px 9px 10px;
+    border-radius: 14px;
+    background: var(--glass);
+    box-shadow: var(--card-shadow);
+  }
+  .row :global(.app-icon) {
+    opacity: 0.7;
+  }
+  .check {
+    display: grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgb(var(--success-rgb) / 0.85) 0%, var(--color-success) 72%);
+    box-shadow: 0 2px 6px rgb(var(--success-rgb) / 0.35);
+  }
+  .check svg {
+    width: 10px;
+    height: 10px;
+    fill: none;
+    stroke: var(--color-on-brand, #fff);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .fade {
     position: absolute;
     left: 0;
-    width: 252.447px;
-    height: 50.06px;
+    right: 0;
+    bottom: 0;
+    height: 78px;
+    background: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--bg) 70%, transparent) 45%, var(--bg) 85%);
+    pointer-events: none;
   }
-  .row :global(.r-icon) {
-    left: 10.01px;
-    top: 9.3px;
+  @media (prefers-reduced-motion: reduce) {
+    .live::after { animation: none; opacity: 0; }
   }
-  .row :global(.faded) {
-    opacity: 0.45;
-  }
-  .r-name {
-    left: 50.06px;
-    top: 10.73px;
-    font-size: 11.442px;
-    font-weight: var(--fw-semibold);
-    letter-spacing: -0.143px;
-  }
-  .r-name.muted {
-    color: rgba(29, 29, 31, 0.45);
-  }
-  .r-meta {
-    left: 50.06px;
-    top: 27.18px;
-    font-size: 9.297px;
-    letter-spacing: -0.143px;
-    color: var(--color-ink-3);
-  }
-  .r-meta.danger {
-    color: var(--color-danger);
-  }
-  .r-meta.mint {
-    color: var(--color-mint-ink-2);
-  }
-  .r-price {
-    right: 14.3px;
-    top: 10.73px;
-    font-size: 11.442px;
-    font-weight: var(--fw-semibold);
-    letter-spacing: -0.143px;
-  }
-  .r-price.struck {
-    color: rgba(29, 29, 31, 0.35);
-    text-decoration: line-through;
-  }
-  .r-period {
-    right: 14.3px;
-    top: 27.18px;
-    font-size: 9.297px;
-    letter-spacing: -0.143px;
-    color: var(--color-ink-3);
-  }
-  .r-period.cancelled {
-    font-weight: var(--fw-medium);
-  }
-  .r-div {
-    left: 50.06px;
-    top: 49.7px;
-    width: 202.387px;
-    height: 0.358px;
-    background: rgba(60, 60, 67, 0.16);
-  }
-  .zombie-tag {
-    left: 94.4px;
-    top: 12.16px;
-    padding: 1.43px 4.291px;
-    border-radius: 4.291px;
-    background: var(--color-danger-soft);
-    font-size: 7.867px;
-    font-weight: var(--fw-semibold);
-    color: var(--color-danger);
-  }
-  .cancel-btn {
-    right: 14.3px;
-    top: 15.02px;
-    padding: 4.291px 9.297px;
-    border-radius: 714px;
-    background: var(--color-danger-soft);
-    font-size: 10.012px;
-    font-weight: var(--fw-semibold);
-    color: var(--color-danger);
+
+  /* light: the saved pill as white glass on the lavender orb (a green tint read teal) */
+  :global(:root:not([data-theme='dark'])) .home .saved {
+    background: rgba(255, 255, 255, 0.78);
+    box-shadow: 0 0 0 0.75px rgb(var(--success-rgb) / 0.25), 0 2px 6px -2px rgb(var(--brand-rgb) / 0.25);
   }
 </style>
+
+
+
+
+
+
+

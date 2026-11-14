@@ -1,0 +1,388 @@
+---
+/** Hero phone screen — Figma "Screen" (421:2520). Static illustration, 300px-device coordinates. */
+import StatusBar from '../devices/StatusBar.astro';
+import PhoneTabBar from '../devices/PhoneTabBar.astro';
+import CentryMark from '../brand/CentryMark.astro';
+import AppIcon from '../brand/AppIcon.astro';
+import bell from '../../assets/icons/phone/bell.svg?url';
+import sparkle from '../../assets/icons/sparkle.svg?url';
+import chevron from '../../assets/icons/phone/chevron-right.svg?url';
+
+const segments = [
+  { left: 14.3, w: 102.981, c: '#e50914' },
+  { left: 119.43, w: 30.036, c: '#1ed760' },
+  { left: 151.61, w: 34.327, c: 'rgba(255,255,255,.85)' },
+  { left: 188.08, w: 25.745, c: '#58cc02' },
+  { left: 215.97, w: 21.454, c: '#8b5cf6' },
+];
+const legend = [
+  { dot: 14.3, text: 21.45, c: '#e50914', label: 'Streaming' },
+  { dot: 75.81, text: 82.96, c: '#1ed760', label: 'Music' },
+  { dot: 120.14, text: 127.3, c: 'rgba(255,255,255,.85)', label: 'AI tools' },
+  { dot: 170.92, text: 178.07, c: '#58cc02', label: 'Learning' },
+];
+---
+
+<div class="home">
+  <StatusBar />
+  <CentryMark size={24.67} class="mark" />
+  <span class="title">CentryAI</span>
+  <span class="bell"><img src={bell} alt="" /><span class="badge"></span></span>
+  <span class="live-dot"></span>
+  <span class="synced">Synced with Gmail · just now</span>
+
+  <div class="summary">
+    <span class="s-label">Spent this month</span>
+    <span class="s-amount">$86<span>.94</span></span>
+    <span class="s-pill">↓ $10.99 saved</span>
+    {segments.map((s) => <span class="seg" style={`left:${s.left}px;width:${s.w}px;background:${s.c}`} />)}
+    {
+      legend.map((l) => (
+        <>
+          <span class="dot" style={`left:${l.dot}px;background:${l.c}`} />
+          <span class="legend" style={`left:${l.text}px`}>
+            {l.label}
+          </span>
+        </>
+      ))
+    }
+  </div>
+
+  <div class="insight">
+    <span class="sparkle"><img src={sparkle} alt="" /></span>
+    <span class="i-title">2 zombie subscriptions found</span>
+    <span class="i-sub">Cancel them to save $23.98/mo</span>
+    <img class="i-chev" src={chevron} alt="" />
+  </div>
+
+  <span class="renewing">Renewing soon</span>
+  <span class="see-all">See all</span>
+
+  <div class="list">
+    <div class="row" style="top:0">
+      <AppIcon brand="netflix" size={31.466} radius={7.867} class="r-icon" />
+      <span class="r-name">Netflix</span>
+      <span class="r-meta">Renews in 3 days</span>
+      <span class="r-price">$15.99</span>
+      <span class="r-period">monthly</span>
+      <span class="r-div"></span>
+    </div>
+    <div class="row" style="top:50.06px">
+      <AppIcon brand="spotify" size={31.466} radius={7.867} class="r-icon" />
+      <span class="r-name">Spotify</span>
+      <span class="zombie-tag">Zombie</span>
+      <span class="r-meta danger">Unused for 47 days</span>
+      <span class="cancel-btn">Cancel</span>
+      <span class="r-div"></span>
+    </div>
+    <div class="row" style="top:100.12px">
+      <AppIcon brand="prime-video" size={31.466} radius={7.867} class="r-icon" />
+      <span class="r-name">Prime Video</span>
+      <span class="r-meta">Renews Nov 18</span>
+      <span class="r-price">$14.99</span>
+      <span class="r-period">monthly</span>
+      <span class="r-div"></span>
+    </div>
+    <div class="row" style="top:150.18px">
+      <AppIcon brand="duolingo" size={31.466} radius={7.867} class="r-icon faded" />
+      <span class="r-name muted">Duolingo</span>
+      <span class="r-meta mint">Canceled · saving $10.99/mo</span>
+      <span class="r-price struck">$10.99</span>
+      <span class="r-period cancelled">Canceled</span>
+    </div>
+  </div>
+
+  <PhoneTabBar active="home" />
+</div>
+
+<style>
+  .home {
+    position: absolute;
+    inset: 0;
+    font-family: var(--font-phone);
+    font-variation-settings: 'opsz' 32;
+    /* System SF Pro only has fixed faces in Chrome: in-between weights (510, 590)
+       get a fake bold. Figma's Medium 510 / Semibold 590 → the real 500 / 600 faces. */
+    --fw-medium: 500;
+    --fw-semibold: 600;
+    --fw-bold: 700;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: var(--color-ink);
+    white-space: nowrap;
+    line-height: normal;
+  }
+  .home > *,
+  .summary > *,
+  .insight > *,
+  .row > :global(*) {
+    position: absolute;
+  }
+  .home :global(.mark) {
+    position: absolute;
+    left: 15.73px;
+    top: 45.59px;
+  }
+  .title {
+    left: 45.41px;
+    top: 47.93px;
+    font-size: 16.448px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.3px;
+  }
+  .bell {
+    left: 236.71px;
+    top: 44.34px;
+    width: 28.606px;
+    height: 28.606px;
+    border-radius: 14.303px;
+    background: #fff;
+    filter: drop-shadow(0 1.43px 2.145px rgba(0, 0, 0, 0.06));
+  }
+  .bell img {
+    position: absolute;
+    left: 7.15px;
+    top: 7.15px;
+    width: 14.303px;
+    height: 14.303px;
+  }
+  .bell .badge {
+    position: absolute;
+    left: 18.59px;
+    top: 5.72px;
+    width: 6.436px;
+    height: 6.436px;
+    border-radius: 3.218px;
+    background: #ff3b30;
+  }
+  .live-dot {
+    left: 16.45px;
+    top: 80.1px;
+    width: 5.006px;
+    height: 5.006px;
+    border-radius: 2.503px;
+    background: #2fd38f;
+  }
+  .synced {
+    left: 25.75px;
+    top: 75.81px;
+    font-size: 9.297px;
+    font-weight: var(--fw-medium);
+    letter-spacing: -0.143px;
+    color: var(--color-ink-2);
+  }
+
+  .summary {
+    left: 14.3px;
+    top: 98.69px;
+    width: 252.447px;
+    height: 114.423px;
+    border-radius: 18.594px;
+    background: linear-gradient(155.62deg, #1f2025 0%, #0d0e11 71.43%);
+    box-shadow:
+      0 7.151px 15.734px 0 rgba(0, 0, 0, 0.14),
+      inset 0 0.715px 0 0 rgba(255, 255, 255, 0.08);
+  }
+  .s-label {
+    left: 14.3px;
+    top: 14.3px;
+    font-size: 10.012px;
+    font-weight: var(--fw-medium);
+    letter-spacing: -0.143px;
+    color: rgba(255, 255, 255, 0.58);
+  }
+  .s-amount {
+    left: 14.3px;
+    top: 28.61px;
+    font-size: 30.036px;
+    font-weight: var(--fw-bold);
+    letter-spacing: -0.715px;
+    color: #fff;
+  }
+  .s-amount span {
+    color: rgba(255, 255, 255, 0.42);
+  }
+  .s-pill {
+    left: 153.04px;
+    top: 15.73px;
+    padding: 3.576px 7.151px;
+    border-radius: 714px;
+    background: rgba(63, 227, 166, 0.15);
+    font-size: 9.297px;
+    font-weight: var(--fw-semibold);
+    color: var(--color-mint);
+  }
+  .seg {
+    top: 74.38px;
+    height: 5.721px;
+    border-radius: 2.861px;
+  }
+  .dot {
+    top: 92.97px;
+    width: 4.291px;
+    height: 4.291px;
+    border-radius: 2.145px;
+  }
+  .legend {
+    top: 89.39px;
+    font-size: 8.582px;
+    font-weight: var(--fw-medium);
+    letter-spacing: -0.143px;
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .insight {
+    left: 14.3px;
+    top: 224.56px;
+    width: 252.447px;
+    height: 48.63px;
+    border-radius: 14.303px;
+    background: #fff;
+    box-shadow: 0 1.43px 2.861px rgba(0, 0, 0, 0.04);
+  }
+  .sparkle {
+    left: 10.01px;
+    top: 10.01px;
+    width: 28.606px;
+    height: 28.606px;
+    border-radius: 14.303px;
+    background: var(--gradient-mint);
+  }
+  .sparkle img {
+    position: absolute;
+    left: 7.15px;
+    top: 7.15px;
+    width: 14.303px;
+    height: 14.303px;
+  }
+  .i-title {
+    left: 47.2px;
+    top: 10.73px;
+    font-size: 10.727px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.143px;
+  }
+  .i-sub {
+    left: 47.2px;
+    top: 25.75px;
+    font-size: 9.297px;
+    letter-spacing: -0.143px;
+    color: var(--color-ink-2);
+  }
+  .i-chev {
+    left: 232.42px;
+    top: 20.02px;
+    width: 5.721px;
+    height: 9.297px;
+  }
+  .renewing {
+    left: 15.73px;
+    top: 288.92px;
+    font-size: 14.303px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.286px;
+  }
+  .see-all {
+    left: 228.85px;
+    top: 291.78px;
+    font-size: 10.727px;
+    font-weight: var(--fw-medium);
+    letter-spacing: -0.143px;
+    color: var(--color-mint-ink-2);
+  }
+
+  .list {
+    left: 14.3px;
+    top: 314.66px;
+    width: 252.447px;
+    height: 200.241px;
+    border-radius: 15.733px;
+    background: #fff;
+    overflow: hidden;
+    box-shadow: 0 1.43px 5.721px rgba(0, 0, 0, 0.04);
+  }
+  .row {
+    position: absolute;
+    left: 0;
+    width: 252.447px;
+    height: 50.06px;
+  }
+  .row :global(.r-icon) {
+    left: 10.01px;
+    top: 9.3px;
+  }
+  .row :global(.faded) {
+    opacity: 0.45;
+  }
+  .r-name {
+    left: 50.06px;
+    top: 10.73px;
+    font-size: 11.442px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.143px;
+  }
+  .r-name.muted {
+    color: rgba(29, 29, 31, 0.45);
+  }
+  .r-meta {
+    left: 50.06px;
+    top: 27.18px;
+    font-size: 9.297px;
+    letter-spacing: -0.143px;
+    color: var(--color-ink-3);
+  }
+  .r-meta.danger {
+    color: var(--color-danger);
+  }
+  .r-meta.mint {
+    color: var(--color-mint-ink-2);
+  }
+  .r-price {
+    right: 14.3px;
+    top: 10.73px;
+    font-size: 11.442px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.143px;
+  }
+  .r-price.struck {
+    color: rgba(29, 29, 31, 0.35);
+    text-decoration: line-through;
+  }
+  .r-period {
+    right: 14.3px;
+    top: 27.18px;
+    font-size: 9.297px;
+    letter-spacing: -0.143px;
+    color: var(--color-ink-3);
+  }
+  .r-period.cancelled {
+    font-weight: var(--fw-medium);
+  }
+  .r-div {
+    left: 50.06px;
+    top: 49.7px;
+    width: 202.387px;
+    height: 0.358px;
+    background: rgba(60, 60, 67, 0.16);
+  }
+  .zombie-tag {
+    left: 94.4px;
+    top: 12.16px;
+    padding: 1.43px 4.291px;
+    border-radius: 4.291px;
+    background: var(--color-danger-soft);
+    font-size: 7.867px;
+    font-weight: var(--fw-semibold);
+    color: var(--color-danger);
+  }
+  .cancel-btn {
+    right: 14.3px;
+    top: 15.02px;
+    padding: 4.291px 9.297px;
+    border-radius: 714px;
+    background: var(--color-danger-soft);
+    font-size: 10.012px;
+    font-weight: var(--fw-semibold);
+    color: var(--color-danger);
+  }
+</style>

@@ -112,13 +112,13 @@ const { step } = Astro.props;
   }
   .pill.ok {
     padding: 4px 10px;
-    background: rgba(63, 227, 166, 0.18);
-    color: var(--color-mint-ink);
+    background: var(--color-success-soft);
+    color: var(--color-success-text);
   }
   .pill.dark {
     padding: 5px 12px;
     background: var(--color-ink);
-    color: var(--color-btn-ink);
+    color: var(--color-page);
   }
   .provider {
     left: 16px;
@@ -194,7 +194,7 @@ const { step } = Astro.props;
     color: var(--color-ink-3);
   }
   .r-meta.danger {
-    color: var(--color-danger);
+    color: var(--color-zombie-text);
   }
   .r-div {
     left: 60px;
@@ -208,7 +208,7 @@ const { step } = Astro.props;
     padding: 1px 6px;
     font-size: 11px;
     background: var(--color-danger-soft);
-    color: var(--color-danger);
+    color: var(--color-zombie-text);
   }
   .c-title {
     left: 72px;
@@ -250,14 +250,14 @@ const { step } = Astro.props;
   .c-save {
     top: 140px;
     font-weight: var(--fw-semibold);
-    color: var(--color-mint-ink);
+    color: var(--color-success-text);
   }
   .c-keep {
     top: 166px;
     font-weight: var(--fw-medium);
     color: var(--color-ink-3);
   }
-  /* Dark (Figma): secondary mock text lifts to #A1A1A6 */
+  /* Dark (Figma): secondary mock text lifts to #9aa3be */
   :global([data-theme='dark']) .p-meta,
   :global([data-theme='dark']) .note,
   :global([data-theme='dark']) .r-meta:not(.danger),
@@ -309,13 +309,13 @@ const { step } = Astro.props;
   }
   @keyframes zombie-glow {
     from {
-      box-shadow: 0 0 0 0 rgba(255, 59, 48, 0);
+      box-shadow: 0 0 0 0 rgb(var(--zombie-rgb) / 0);
     }
     30% {
-      box-shadow: 0 0 14px 2px rgba(255, 59, 48, 0.4);
+      box-shadow: 0 0 14px 2px rgb(var(--zombie-rgb) / 0.4);
     }
     to {
-      box-shadow: 0 0 0 0 rgba(255, 59, 48, 0);
+      box-shadow: 0 0 0 0 rgb(var(--zombie-rgb) / 0);
     }
   }
 </style>

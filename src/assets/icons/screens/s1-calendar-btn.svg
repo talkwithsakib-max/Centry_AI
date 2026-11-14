@@ -1,6 +1,6 @@
 <svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="12.3506" height="12.7439" viewBox="0 0 12.3506 12.7439" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="Group">
-<path id="Vector" d="M9.32196 1.84864H3.02867C1.72528 1.84864 0.668683 2.90524 0.668683 4.20862V9.71525C0.668683 11.0186 1.72528 12.0752 3.02867 12.0752H9.32196C10.6253 12.0752 11.6819 11.0186 11.6819 9.71525V4.20862C11.6819 2.90524 10.6253 1.84864 9.32196 1.84864Z" stroke="#1D1D1F" stroke-width="1.33732" stroke-linecap="round" stroke-linejoin="round"/>
-<path id="Vector_2" d="M0.668662 5.38863H11.6819M3.81531 0.668662V3.02865M8.53527 0.668662V3.02865" stroke="#1D1D1F" stroke-width="1.33732" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector" d="M9.32196 1.84864H3.02867C1.72528 1.84864 0.668683 2.90524 0.668683 4.20862V9.71525C0.668683 11.0186 1.72528 12.0752 3.02867 12.0752H9.32196C10.6253 12.0752 11.6819 11.0186 11.6819 9.71525V4.20862C11.6819 2.90524 10.6253 1.84864 9.32196 1.84864Z" stroke="#0b1020" stroke-width="1.33732" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_2" d="M0.668662 5.38863H11.6819M3.81531 0.668662V3.02865M8.53527 0.668662V3.02865" stroke="#0b1020" stroke-width="1.33732" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 </svg>

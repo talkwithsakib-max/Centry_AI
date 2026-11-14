@@ -1,7 +1,7 @@
 ---
 /**
  * Dark-theme background for the mock-up panels (Figma "Home 2 — Dark"):
- *   Glow (mint #3FE3A6 14%, 70px blur) · Glow (aqua #73B2FF 6%, 80px blur)
+ *   Glow (mint #675df9 14%, 70px blur) · Glow (aqua #8b83ff 6%, 80px blur)
  *   · Spotlight (mint 7%, 90px blur) · Dot grid · Vignette · Dark smoke (90%).
  * Blurred ellipses are drawn as radial gradients over the blur-expanded box
  * (no live CSS blur). Rendered only in dark; the light layers hide themselves.
@@ -36,8 +36,8 @@ const pitch = 28 * Math.max(w / 1432, h / 624);
 <div class="dpb cine only-dark" aria-hidden="true">
   <!-- (user, 2026-11-12) background = the cinematic .cine card (global.css);
        the old mint/aqua glows, dot grid and smoke are off -->
-  <span class="fig" style={glow(mint, 70, '63,227,166', 0.14)}></span>
-  <span class="fig" style={glow(aqua, 80, '115,178,255', 0.06)}></span>
+  <span class="fig" style={glow(mint, 70, '103,93,249', 0.14)}></span>
+  <span class="fig" style={glow(aqua, 80, '139,131,255', 0.06)}></span>
   {dots && <span class="dots" style={`--pitch:${pitch.toFixed(2)}px`}></span>}
   <span class="vignette"></span>
   <span
@@ -73,7 +73,7 @@ const pitch = 28 * Math.max(w / 1432, h / 624);
   }
   .vignette {
     inset: 0;
-    background: radial-gradient(closest-side, rgba(5, 5, 6, 0) 60%, rgba(5, 5, 6, 0.6) 100%);
+    background: radial-gradient(closest-side, rgba(7, 9, 15, 0) 60%, rgba(7, 9, 15, 0.6) 100%);
   }
   .smoke {
     left: -20px;

@@ -1,0 +1,4 @@
+/* Inter (variable, with optical-size axis) — primary face everywhere.
+   Instrument Serif — only for the How it works step numerals. */
+@import '@fontsource-variable/inter/opsz.css';
+@import '@fontsource/instrument-serif/latin-400.css';

@@ -1,0 +1,218 @@
+---
+/** Figma "Features (bento)" (468:5919): heading + four feature tiles. */
+import Fit from '../components/ui/Fit.astro';
+import FeatureVisuals from '../components/features/FeatureVisuals.astro';
+import { features } from '../data/features';
+
+const [inbox, zombie, spend, cancel] = features;
+const tiles = [
+  { f: inbox, kind: 'inbox' as const, w: 716, h: 307, signature: true, wide: true },
+  { f: zombie, kind: 'zombie' as const, w: 464, h: 307, signature: true, wide: false },
+  { f: spend, kind: 'spend' as const, w: 464, h: 312, signature: false, wide: false },
+  { f: cancel, kind: 'cancel' as const, w: 716, h: 312, signature: false, wide: true },
+];
+---
+
+<section class="features" id="features" aria-labelledby="features-title">
+  <div class="container">
+    <header class="head">
+      <div>
+        <p class="eyebrow">What CentryAI does</p>
+        <h2 class="title" id="features-title">
+          <span>Find it. Score it.</span><br /><span class="grey">Cut it.</span>
+        </h2>
+      </div>
+      <p class="sub">Four tools, one job: stop paying for things you don’t use.</p>
+    </header>
+
+    <div class="grid">
+      {
+        tiles.map((t, i) => (
+          <article class:list={['tile', 'cine', t.wide && 'wide', `t${i + 1}`]} id={`feature-${t.f.id}`} aria-labelledby={`f-${t.f.id}`}>
+            <div class="visual" aria-hidden="true">
+              <Fit w={t.w} h={t.h}>
+                <FeatureVisuals kind={t.kind} />
+              </Fit>
+            </div>
+            <div class="text">
+              {t.signature && <span class="signature">Signature feature</span>}
+              <h3 class="name" id={`f-${t.f.id}`}>
+                {t.f.name}
+              </h3>
+              <p class="desc">{t.f.description}</p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initFeatureFx } from '../scripts/feature-fx';
+  initFeatureFx();
+</script>
+
+<style>
+  .features {
+    padding: 120px 0;
+  }
+  .container {
+    max-width: calc(1240px + 2 * var(--gutter));
+  }
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 32px;
+  }
+  .eyebrow {
+    font-size: 13px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: 1.8px;
+    line-height: 16px;
+    text-transform: uppercase;
+    color: var(--color-mint-ink);
+    margin-bottom: 16px;
+  }
+  .title {
+    font-size: clamp(34px, 2.2rem + 1.2vw, 48px);
+    font-weight: var(--fw-semibold);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+  }
+  .grey {
+    color: var(--color-heading-2);
+  }
+  .sub {
+    width: 275px;
+    margin-bottom: 4px;
+    font-size: 17px;
+    line-height: 26px;
+    letter-spacing: -0.2px;
+    color: var(--color-ink-2);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 488fr 240fr 488fr;
+    gap: 12px;
+    margin-top: 52px;
+  }
+  .tile {
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    box-shadow: var(--elevation-large);
+    padding: 12px;
+    overflow: hidden;
+  }
+  :global([data-theme='dark']) .tile {
+    --panel-edge: none;
+  }
+  :global([data-theme='dark']) .tile :global(.dpb.cine) {
+    background: none;
+    box-shadow: none;
+  }
+  /* the mock-up fades into the card at the bottom (ref. Linear features grid) */
+  :global([data-theme='dark']) .tile :global(.panel) {
+    -webkit-mask-image: linear-gradient(180deg, #000 80%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 80%, transparent 100%);
+  }
+  .t1 {
+    grid-column: 1 / 3;
+    min-height: 520px;
+  }
+  .t2 {
+    grid-column: 3 / 4;
+    min-height: 520px;
+  }
+  .t3 {
+    grid-column: 1 / 2;
+    min-height: 460px;
+  }
+  .t4 {
+    grid-column: 2 / 4;
+    min-height: 460px;
+  }
+  .visual {
+    border-radius: 20px;
+  }
+  .text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 24px 16px 16px;
+  }
+  .signature {
+    margin-bottom: 4px;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    background: rgba(34, 201, 138, 0.12);
+    font-size: 11px;
+    font-weight: var(--fw-semibold);
+    line-height: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--color-mint-ink);
+  }
+  .name {
+    font-size: 24px;
+    font-weight: var(--fw-semibold);
+    line-height: 30px;
+    letter-spacing: -0.025em;
+  }
+  .desc {
+    font-size: 15px;
+    line-height: 23px;
+    letter-spacing: -0.1px;
+    color: var(--color-ink-2);
+  }
+
+  @media (max-width: 1023px) {
+    .features {
+      padding: 88px 0;
+    }
+    .head {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .sub {
+      width: auto;
+      max-width: 420px;
+    }
+    .grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .t1,
+    .t4 {
+      grid-column: 1 / -1;
+    }
+    .t2,
+    .t3 {
+      grid-column: auto;
+    }
+    .tile {
+      min-height: 0;
+    }
+  }
+  @media (max-width: 767px) {
+    .features {
+      padding: 72px 0;
+    }
+    .grid {
+      grid-template-columns: minmax(0, 1fr);
+      margin-top: 36px;
+    }
+    .t1,
+    .t2,
+    .t3,
+    .t4 {
+      grid-column: auto;
+    }
+    .name {
+      font-size: 22px;
+    }
+  }
+</style>

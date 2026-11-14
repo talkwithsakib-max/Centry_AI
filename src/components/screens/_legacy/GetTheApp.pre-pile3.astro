@@ -1,0 +1,554 @@
+---
+/**
+ * Figma "Get the app (CTA)" (663:17998 light / 663:18698 dark), redesigned
+ * 2026-11-10: a magnetic field of speed lines radiates from the phone, the app
+ * tiles are pulled in toward it (with motion trails), and the ones it cancelled
+ * lie greyed out in a pile under the phone (+ "Canceled" bubble, light only).
+ * The flat-lay is a 1440×859 stage; smaller screens show a centred crop
+ * (--fit-w / --fit-x) so the phone stays large.
+ *
+ * Motion: plays ONCE when the tiles come on screen (user: no loop; smooth, calm,
+ * professional) — the magnet draws the set into the phone, the newly cancelled
+ * tiles settle under it, a fresh set eases back in. Reduced motion → static frame.
+ */
+import StoreBadge from '../components/ui/StoreBadge.astro';
+import SubTile from '../components/brand/SubTile.astro';
+import PriceTag from '../components/brand/PriceTag.astro';
+import CancelBadge from '../components/brand/CancelBadge.astro';
+import CancelledBubble from '../components/brand/CancelledBubble.astro';
+import IPhone from '../components/devices/IPhone.astro';
+import Screen2Subscriptions from '../components/screens/Screen2Subscriptions.astro';
+import field from '../assets/textures/cta-field.webp';
+import type { Brand } from '../components/brand/brands';
+
+// Figma x/y = top-left of the rotated node; rotation about that corner (CSS = −Figma).
+type Trail = { x: number; y: number; w: number; h: number; r: number; blur: number; rgb: string };
+type Side = { b: Brand; x: number; y: number; s: number; r: number; trail: Trail; tag?: { p: string; x: number; y: number; r: number }; hide?: 't' | 'm' };
+const MINT = '139,131,255'; // trails behind the cancelled tiles: brand light, so they blend with the indigo rays (2026-11-14)
+const WHITE = '255,255,255';
+const BLUE = '139,131,255'; // brand light (sky blue removed)
+const sides: Side[] = [
+  { b: 'netflix', x: 144.6, y: 125.1, s: 112, r: 10, trail: { x: 186.5, y: 212.1, w: 235.2, h: 44.8, r: -170.9, blur: 13, rgb: MINT }, tag: { p: '-$15.49', x: 179.6, y: 221.1, r: 6 }, hide: 't' },
+  { b: 'duolingo', x: 374.8, y: 216, s: 80, r: -8, trail: { x: 418.7, y: 265.9, w: 168, h: 32, r: -175.3, blur: 10, rgb: WHITE } },
+  { b: 'spotify', x: 259.1, y: 379.4, s: 92, r: 6, trail: { x: 306.4, y: 447.3, w: 193.2, h: 36.8, r: 159.7, blur: 11, rgb: BLUE }, hide: 'm' },
+  { b: 'hbo-max', x: 1185.1, y: 144.6, s: 112, r: -10, trail: { x: 1246.5, y: 167.9, w: 235.2, h: 44.8, r: -9.1, blur: 13, rgb: MINT }, tag: { p: '-$15.99', x: 1224.1, y: 221.1, r: -6 }, hide: 't' },
+  { b: 'headspace', x: 986, y: 204.8, s: 80, r: 8, trail: { x: 1018.7, y: 234.1, w: 168, h: 32, r: -4.7, blur: 10, rgb: WHITE } },
+  { b: 'prime-video', x: 1089.4, y: 389.1, s: 92, r: -6, trail: { x: 1146.4, y: 412.7, w: 193.2, h: 36.8, r: 20.3, blur: 11, rgb: BLUE }, hide: 'm' },
+];
+// cancelled pile under the phone (frame at 565, 638.7)
+const PILE = { x: 565, y: 638.7 };
+const pile: { b: Brand; x: number; y: number; r: number }[] = [
+  { b: 'hbo-max', x: 58.5, y: 30.1, r: 16 },
+  { b: 'netflix', x: 186.7, y: 44, r: -19 },
+  { b: 'spotify', x: 19.3, y: 65.7, r: 24 },
+  { b: 'headspace', x: 171.2, y: 72.8, r: 9 },
+  { b: 'prime-video', x: 80.3, y: 87.7, r: -12 },
+  { b: 'duolingo', x: 237, y: 87.3, r: -27 },
+];
+
+// scroll pull: every side group starts pushed outward from the phone
+const PHONE = { x: 720, y: 323 };
+const PULL = 0.5;
+const pull = (cx: number, cy: number) => `--dx:${((cx - PHONE.x) * PULL).toFixed(1)}px;--dy:${((cy - PHONE.y) * PULL).toFixed(1)}px`;
+// loop: each side set flies into the phone (--cx/--cy = vector to the phone centre)
+// and a fresh set glides back in from further out (--ox/--oy) to the same spot
+const fly = (cx: number, cy: number) =>
+  `--cx:${(PHONE.x - cx).toFixed(1)}px;--cy:${(PHONE.y - cy).toFixed(1)}px;` +
+  `--ox:${((cx - PHONE.x) * 0.6).toFixed(1)}px;--oy:${((cy - PHONE.y) * 0.6).toFixed(1)}px;` +
+  `transform-origin:${cx.toFixed(1)}px ${cy.toFixed(1)}px`;
+// pile drop: each tile falls from just under the phone into its spot
+const drop = (x: number, y: number) => `--fx:${(PHONE.x - (PILE.x + x + 29)).toFixed(1)}px;--fy:${(560 - (PILE.y + y + 29)).toFixed(1)}px`;
+---
+
+<section class="cta" aria-labelledby="cta-title" data-reveal>
+  <div class="container head">
+    <h2 class="title" id="cta-title" data-r>
+      <span>Find out what you’re</span><br /><span class="grey">actually paying for.</span>
+    </h2>
+    <p class="sub" data-r style="--rd:100ms">Set up in 3 minutes. Cancel anything you find in 30 seconds.</p>
+    <div class="badges" data-r style="--rd:200ms">
+      <StoreBadge store="google" />
+      <StoreBadge store="apple" />
+    </div>
+  </div>
+
+  <div class="flat" aria-hidden="true">
+    <div class="fit" data-fit-w="1440" style="--fit-w:1440;--fit-h:859">
+      <div class="fit-stage fx-loop" data-attract>
+        <!-- Magnetic field: speed lines (two copies flow inward while animated) -->
+        <div class="field">
+          <img class="field-img f1" src={field.src} alt="" />
+          <img class="field-img f2" src={field.src} alt="" />
+        </div>
+        <span class="halo"></span>
+
+        <!-- Canceled pile (under the phone) -->
+        <div class="pile" style={`left:${PILE.x}px;top:${PILE.y}px`}>
+          <span class="pile-shadow"></span>
+          {
+            pile.map((t, k) => (
+              <span class="pile-tile" style={`left:${t.x}px;top:${t.y}px;transform:rotate(${t.r}deg);--k:${k};--spin:${k % 2 ? -22 : 22}deg;${drop(t.x, t.y)}`}>
+                <SubTile brand={t.b} state="cancelled" size={58} />
+              </span>
+            ))
+          }
+          <CancelBadge class="pile-badge" style="position:absolute;left:244.4px;top:19.1px" />
+        </div>
+
+        <!-- Side tiles (under the phone: they fly in behind it), each with its trail -->
+        {
+          sides.map((t, k) => (
+            <div class:list={['side', t.hide && `hide-${t.hide}`]} style={`${pull(t.x + t.s / 2, t.y + t.s / 2)};--k:${k}`}>
+              <div class="fly" style={fly(t.x + t.s / 2, t.y + t.s / 2)}>
+                <span
+                  class="trail"
+                  style={`left:${t.trail.x}px;top:${t.trail.y}px;width:${t.trail.w}px;height:${t.trail.h}px;border-radius:${t.trail.h / 2}px;rotate:${t.trail.r}deg;filter:blur(${t.trail.blur / 2}px);--rgb:${t.trail.rgb}`}
+                />
+                <span class="tile" style={`left:${t.x}px;top:${t.y}px;transform:rotate(${t.r}deg)`}>
+                  <SubTile brand={t.b} size={t.s} />
+                </span>
+                {t.tag && (
+                  <span class="tag" style={`left:${t.tag.x}px;top:${t.tag.y}px;transform:rotate(${t.tag.r}deg)`}>
+                    <PriceTag price={t.tag.p} scale={1.1} />
+                  </span>
+                )}
+              </div>
+            </div>
+          ))
+        }
+
+        <div class="phone">
+          <IPhone finish="silver" width={290}>
+            <Screen2Subscriptions story />
+          </IPhone>
+        </div>
+
+        <CancelledBubble scale={1.125} class="cta-bubble only-light" style="left:851px;top:632.7px;transform:rotate(4deg)" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initFit } from '../scripts/fit';
+  import { initAttract } from '../scripts/attract';
+  initFit();
+  initAttract();
+</script>
+
+<style>
+  .cta {
+    padding-top: 120px;
+    overflow: hidden;
+  }
+  .head {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .title {
+    font-size: clamp(34px, 2.2rem + 1.2vw, 48px);
+    font-weight: var(--fw-semibold);
+    line-height: 1.04;
+    letter-spacing: -0.028em;
+  }
+  .grey {
+    color: var(--color-ink-3);
+  }
+  .sub {
+    margin-top: 20px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    color: var(--color-ink-2);
+  }
+  .badges {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+  }
+  /* Figma: flat-lay at y 405 of a 1304 frame (badges end at 349) */
+  .flat {
+    max-width: 1440px;
+    margin: 56px auto 40px;
+  }
+  .fit-stage > * {
+    position: absolute;
+  }
+
+  /* ---- Magnetic field (1440×660, faded in over its top 12%) ---- */
+  .field {
+    left: 0;
+    top: 0;
+    width: 1440px;
+    height: 660px;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 12%);
+    mask-image: linear-gradient(180deg, transparent 0%, #000 12%);
+    pointer-events: none;
+  }
+  .field-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    transform-origin: 720px 323px;
+  }
+  .f2 {
+    display: none;
+  }
+  /* rays are a mint texture: hue-shifted to indigo (2026-11-14 rebrand) */
+  .field-img {
+    filter: var(--tex-indigo);
+  }
+  /* Dark (2026-11-14 polish): the rays melt into the page — dimmer indigo lines,
+     a hair of blur to soften the hard strokes, and the same radial falloff as
+     light so they fade out toward the edges instead of ending in hard streaks. */
+  :global([data-theme='dark']) .field-img {
+    mix-blend-mode: screen;
+    /* bluer than --tex-indigo (196°), which reads mauve on dark */
+    filter: grayscale(1) sepia(1) saturate(5) hue-rotate(184deg) brightness(0.85) blur(0.4px);
+    opacity: 0.85;
+  }
+  :global([data-theme='dark']) .field {
+    -webkit-mask-image:
+      radial-gradient(ellipse 50% 58% at 50% 49%, #000 25%, rgba(0, 0, 0, 0.65) 60%, transparent 95%),
+      linear-gradient(180deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      radial-gradient(ellipse 50% 58% at 50% 49%, #000 25%, rgba(0, 0, 0, 0.65) 60%, transparent 95%),
+      linear-gradient(180deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+    mask-composite: intersect;
+  }
+  /* Light (user picked option B): Figma's rays in a richer mint, concentrated
+     around the phone and fading out toward the edges, so they read as a soft
+     glow on the cream page instead of a faint wash. */
+  :global(:root:not([data-theme='dark'])) .field-img {
+    filter: var(--tex-indigo) brightness(0.9);
+  }
+  :global(:root:not([data-theme='dark'])) .field {
+    -webkit-mask-image:
+      radial-gradient(ellipse 52% 62% at 50% 49%, #000 35%, transparent 100%),
+      linear-gradient(180deg, transparent 0%, #000 12%);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      radial-gradient(ellipse 52% 62% at 50% 49%, #000 35%, transparent 100%),
+      linear-gradient(180deg, transparent 0%, #000 12%);
+    mask-composite: intersect;
+  }
+  /* Phone halo: radial mint glow behind the phone (Figma: 460×720, 36px blur) */
+  .halo {
+    left: 454px;
+    top: -56px;
+    width: 532px;
+    height: 792px;
+    background: radial-gradient(
+      closest-side,
+      rgb(var(--brand-rgb) / 0.42) 0%,
+      rgb(var(--brand-rgb) / 0.16) 52%,
+      rgb(var(--brand-rgb) / 0) 92%
+    );
+    pointer-events: none;
+  }
+  :global([data-theme='dark']) .halo {
+    mix-blend-mode: screen;
+    background: radial-gradient(
+      closest-side,
+      rgb(var(--brand-rgb) / 0.55) 0%,
+      rgb(var(--brand-rgb) / 0.22) 52%,
+      rgb(var(--brand-rgb) / 0) 92%
+    );
+  }
+
+  /* ---- Canceled pile ---- */
+  .pile {
+    width: 310px;
+    height: 150px;
+  }
+  .pile > * {
+    position: absolute;
+  }
+  .pile-shadow {
+    left: -21px;
+    top: 102px;
+    width: 352px;
+    height: 62px;
+    background: radial-gradient(closest-side, rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.06) 55%, rgba(0, 0, 0, 0));
+  }
+  :global([data-theme='dark']) .pile-shadow {
+    background: radial-gradient(closest-side, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.25) 55%, rgba(0, 0, 0, 0));
+  }
+  .pile-tile {
+    transform-origin: 0 0;
+    line-height: 0;
+  }
+  .pile :global(.pile-badge) {
+    transform: scale(0.7333);
+    transform-origin: 0 0;
+  }
+
+  .phone {
+    left: 575px;
+    top: 20px;
+  }
+
+  /* ---- Side tiles + trails ---- */
+  .side {
+    left: 0;
+    top: 0;
+    width: 1440px;
+    height: 859px;
+    pointer-events: none;
+    translate: calc(var(--dx, 0px) * (1 - var(--p))) calc(var(--dy, 0px) * (1 - var(--p)));
+  }
+  .side > .fly {
+    position: absolute;
+    inset: 0;
+  }
+  .fly > * {
+    position: absolute;
+  }
+  /* light: the white trails (Duolingo, Headspace) were invisible on cream */
+  :global(:root:not([data-theme='dark'])) .trail[style*='255,255,255'] {
+    --rgb: 120, 190, 165 !important;
+  }
+  .trail {
+    transform-origin: 0 0;
+    /* rotate: inline (property, not transform) so scale stretches along the trail */
+    background: linear-gradient(90deg, rgba(var(--rgb), 0.7) 0%, rgba(var(--rgb), 0) 100%);
+  }
+  :global([data-theme='dark']) .trail {
+    mix-blend-mode: screen;
+    background: linear-gradient(90deg, rgba(var(--rgb), 0.5) 0%, rgba(var(--rgb), 0) 100%);
+  }
+  .tile,
+  .tag {
+    transform-origin: 0 0;
+    line-height: 0;
+  }
+  .fit-stage {
+    --p: 1;
+  }
+
+  /* ---- Motion (html.fx only; loops pause off-screen via .fx-loop) ---- */
+  /* field: the Figma lines stay put; a second, fainter copy keeps shrinking in
+     toward the phone and fading, so the field seems to stream inward */
+  :global(.fx) .f2 {
+    display: block;
+    opacity: 0;
+  }
+  :global(.fx) .cta:global(.is-in) .f2 {
+    animation: field-in 2.4s ease-in-out 0.1s backwards;
+  }
+  @keyframes field-in {
+    0% {
+      scale: 1.18;
+      opacity: 0;
+    }
+    40% {
+      opacity: 0.38;
+    }
+    100% {
+      scale: 0.9;
+      opacity: 0;
+    }
+  }
+
+  /* tiles float gently; trails stretch a little as they "move" */
+  :global(.fx) .cta:global(.is-in) .tile > :global(*),
+  :global(.fx) .cta:global(.is-in) .tag > :global(*) {
+    animation: fx-bob calc(3.6s + var(--k) * 0.45s) ease-in-out calc(var(--k) * -0.7s) infinite;
+  }
+  /* ---- One calm sequence (user 2026-11-10: no loop; smoother, calmer, professional).
+     attract.ts holds it at its first frame and plays it once when the tiles come on
+     screen. 3.6s:
+     5–40%  the magnet draws the set smoothly into the phone (eases in and out),
+            the tiles shrink and fade behind it; trails lengthen a little
+     40–64% the pile (empty until now) fills: the same tiles, greyed out, fall
+            out from behind the phone one by one; the ✕ badge + bubble follow
+     42–80% a fresh set eases back into the same spots, then everything rests */
+  :global(.fx) .cta:global(.is-in) .fly {
+    animation: set-once 3.6s calc(var(--k) * 0.05s) backwards;
+  }
+  @keyframes set-once {
+    0%,
+    5% {
+      translate: 0 0;
+      scale: 1;
+      opacity: 1;
+      animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    40% {
+      translate: var(--cx) var(--cy);
+      scale: 0.35;
+      opacity: 0;
+    }
+    40.01% {
+      translate: var(--ox) var(--oy);
+      scale: 0.96;
+      opacity: 0;
+      animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    52% {
+      opacity: 1;
+    }
+    80%,
+    100% {
+      translate: 0 0;
+      scale: 1;
+      opacity: 1;
+    }
+  }
+  :global(.fx) .cta:global(.is-in) .trail {
+    animation: trail-once 3.6s calc(var(--k) * 0.05s) backwards;
+  }
+  @keyframes trail-once {
+    0%,
+    5% {
+      scale: 1 1;
+      opacity: 1;
+      animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    30% {
+      scale: 1.35 1;
+      opacity: 0.9;
+    }
+    40% {
+      scale: 1.2 1;
+      opacity: 0;
+    }
+    40.01% {
+      scale: 1.3 1;
+      opacity: 0;
+      animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    58% {
+      opacity: 1;
+    }
+    80%,
+    100% {
+      scale: 1 1;
+      opacity: 1;
+    }
+  }
+  :global(.fx) .cta:global(.is-in) .halo {
+    animation: halo-once 3.6s backwards;
+  }
+  @keyframes halo-once {
+    0%,
+    20% {
+      opacity: 0.85;
+    }
+    45% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  /* The pile starts empty (user: no cancelled set at the start). Once the set has
+     gone into the phone, those same tiles — now greyed out — fall out from behind
+     the phone one by one, turning as they drop, and settle into the pile; then
+     its shadow, the ✕ badge and the "Canceled" bubble fade in. */
+  :global(.fx) .cta:not(:global(.is-in)) .pile > *,
+  :global(.fx) .cta:not(:global(.is-in)) .fit-stage > :global(.cta-bubble) {
+    opacity: 0;
+  }
+  :global(.fx) .cta:global(.is-in) .pile-tile {
+    animation: pile-fall 3.6s calc(var(--k) * 0.11s) backwards;
+  }
+  @keyframes pile-fall {
+    0%,
+    40% {
+      translate: var(--fx) var(--fy);
+      rotate: var(--spin);
+      scale: 0.7;
+      opacity: 0;
+      animation-timing-function: cubic-bezier(0.5, 0, 0.75, 0.35);
+    }
+    46% {
+      opacity: 1;
+    }
+    58% {
+      translate: 0 -6px;
+      rotate: calc(var(--spin) * 0.1);
+      scale: 1;
+      animation-timing-function: cubic-bezier(0.25, 0.8, 0.4, 1);
+    }
+    64%,
+    100% {
+      translate: 0 0;
+      rotate: 0deg;
+      scale: 1;
+      opacity: 1;
+    }
+  }
+  :global(.fx) .cta:global(.is-in) .pile-shadow {
+    animation: appear 3.6s backwards;
+  }
+  :global(.fx) .cta:global(.is-in) .pile :global(.pile-badge) {
+    animation: appear-late 3.6s 0.5s backwards;
+  }
+  :global(.fx) .cta:global(.is-in) .fit-stage > :global(.cta-bubble) {
+    animation: appear-late 3.6s 0.65s backwards;
+  }
+  @keyframes appear {
+    0%,
+    44% {
+      opacity: 0;
+    }
+    70%,
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes appear-late {
+    0%,
+    62% {
+      opacity: 0;
+      scale: 0.85;
+      animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    76%,
+    100% {
+      opacity: 1;
+      scale: 1;
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .cta {
+      padding-top: 88px;
+    }
+    /* centred 1000px crop of the stage */
+    .flat .fit {
+      --fit-w: 1000 !important;
+      --fit-x: 220;
+    }
+    .hide-t {
+      display: none;
+    }
+  }
+  @media (max-width: 767px) {
+    .cta {
+      padding-top: 72px;
+    }
+    .flat {
+      margin-top: 40px;
+    }
+    /* centred 720px crop: phone, nearest tiles, pile + bubble */
+    .flat .fit {
+      --fit-w: 720 !important;
+      --fit-x: 360;
+    }
+    .hide-m {
+      display: none;
+    }
+    .badges :global(.badge) {
+      --s: 0.857;
+    }
+  }
+
+</style>

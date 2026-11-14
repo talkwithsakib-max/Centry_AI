@@ -1,0 +1,496 @@
+---
+/**
+ * Screen 1 "At a glance" — spending dashboard, redesign (light + dark, follows site theme)
+ * (2026-11-14). Same family as the hero (HomeScreen) and Subscriptions screens:
+ * shared tokens/chrome in styles/app-screen.css, glass cards, indigo = brand only,
+ * mint = money saved only. Hero here is a 6-month bar chart (this month glows),
+ * then one stacked category bar + the category list.
+ * Numbers tie to the other screens: this month $86.94 (hero), Headspace $12.99,
+ * Spotify $9.99, Duolingo $6.99, Netflix + Prime Video + HBO Max (Subscriptions).
+ * Mobbin refs: Copilot Money / Revolut (period switch + monthly bars + avg line),
+ * Monzo (stacked category bar over a list). Previous screen: ./Screen1Spending.astro.
+ */
+import AppIcon from '../brand/AppIcon.astro';
+import AppStatus from './app/AppStatus.astro';
+import AppTabBar from './app/AppTabBar.astro';
+import type { Brand } from '../brand/brands';
+import '../../styles/app-screen.css';
+
+/* 6 months, Jun–Nov 2026 — sums to $521.64, avg $86.94 (= this month on the hero) */
+const months = [
+  { m: 'Jun', v: 92.4 },
+  { m: 'Jul', v: 95.12 },
+  { m: 'Aug', v: 89.3 },
+  { m: 'Sep', v: 84.98 },
+  { m: 'Oct', v: 72.9 },
+  { m: 'Nov', v: 86.94, now: true },
+];
+const MAX = 95.12, H = 54; // tallest bar = 54px
+const avg = 86.94;
+const avgY = +((avg / MAX) * H).toFixed(1);
+
+/* categories over the 6 months: 242.82 + 77.94 + 59.94 + 41.94 + 99.00 = 521.64 */
+type Cat = { name: string; meta: string; price: string; pct: number; k: string; icons: { b: Brand; bg?: string }[] };
+const cats: Cat[] = [
+  { name: 'Streaming', meta: '3 subscriptions', price: '$242.82', pct: 47, k: 'k1', icons: [{ b: 'netflix' }, { b: 'prime-video' }, { b: 'hbo-max', bg: '#5a17d6' }] },
+  { name: 'Wellness', meta: 'Headspace', price: '$77.94', pct: 15, k: 'k2', icons: [{ b: 'headspace', bg: '#fff' }] },
+  { name: 'Music', meta: 'Spotify', price: '$59.94', pct: 11, k: 'k3', icons: [{ b: 'spotify' }] },
+  { name: 'Learning', meta: 'Duolingo', price: '$41.94', pct: 8, k: 'k4', icons: [{ b: 'duolingo' }] },
+];
+const other = 19; // %, shown only in the stacked bar
+---
+
+<div class="mg glance">
+  <AppStatus />
+
+  <div class="body">
+    <header class="top">
+      <span class="title">Insights</span>
+      <span class="iconbtn" aria-hidden="true">
+        <svg viewBox="0 0 16 16"><rect x="2.5" y="3.5" width="11" height="10" rx="2.6" /><path d="M2.5 6.8h11M5.6 2.2v2.4M10.4 2.2v2.4" /></svg>
+      </span>
+    </header>
+
+    <div class="period" aria-hidden="true">
+      <span>1M</span><span>3M</span><span class="on">6M</span><span>1Y</span>
+    </div>
+
+    <div class="total">
+      <div>
+        <p class="k">Spent · Jun – Nov 2026</p>
+        <p class="big">$521<span>.64</span></p>
+      </div>
+      <div class="delta">
+        <span class="chip">
+          <svg viewBox="0 0 10 10"><path d="M5 2v6M2.5 5.5 5 8l2.5-2.5" /></svg>8%
+        </span>
+        <span class="vs">vs prev. 6 mo</span>
+      </div>
+    </div>
+
+    <!-- hero: monthly bars, this month glows; dashed line = 6-month average -->
+    <div class="card chart">
+      <p class="chart-head"><span>Per month</span><span class="lg"><i></i>6-mo average</span></p>
+      <div class="plot" style={`--avg:${avgY}px`}>
+        <span class="avg" aria-hidden="true"></span>
+        {months.map((d) => (
+          <div class:list={['col', d.now && 'now']}>
+            {d.now && <span class="tip">${d.v.toFixed(2)}</span>}
+            <span class="bar" style={`height:${((d.v / MAX) * H).toFixed(1)}px`}></span>
+            <span class="mo">{d.m}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <p class="label">By category<span>See all</span></p>
+    <div class="card cats">
+      <div class="stack" aria-hidden="true">
+        {cats.map((c) => <i class={c.k} style={`flex:${c.pct}`}></i>)}
+        <i class="k5" style={`flex:${other}`}></i>
+      </div>
+      {cats.map((c) => (
+        <div class="row">
+          <span class="ic">
+            <AppIcon brand={c.icons[0].b} size={26} radius={7.5} bg={c.icons[0].bg} />
+            {c.icons.length > 1 && <span class="more">+{c.icons.length - 1}</span>}
+          </span>
+          <div class="txt">
+            <p class="n"><i class:list={['sw', c.k]}></i>{c.name}</p>
+            <p class="m">{c.meta}</p>
+          </div>
+          <div class="val">
+            <p class="p">{c.price}</p>
+            <p class="pct">{c.pct}%</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <span class="fade" aria-hidden="true"></span>
+  <AppTabBar active="insights" />
+</div>
+
+<style>
+  /* category tones: one indigo ramp (brand family) + a neutral for "other" */
+  .glance {
+    --k1: #3d32c4;
+    --k2: #6a60f5;
+    --k3: #9d97fb;
+    --k4: #cbc7fd;
+    --k5: rgba(11, 16, 32, 0.12);
+    --track: rgba(11, 16, 32, 0.08);
+    --bar: rgba(11, 16, 32, 0.05);
+    --bar-top: rgba(11, 16, 32, 0.1);
+    --bar-hl: rgba(255, 255, 255, 0.9);
+    --lens: #ffffff;
+    --lens-shadow: 0 1px 2px rgba(28, 36, 70, 0.12), 0 2px 6px -2px rgba(28, 36, 70, 0.12);
+    --tip-bg: #0b1020;
+    --tip-ink: #ffffff;
+  }
+  :global([data-theme='dark']) .glance {
+    --k1: #5a4fee;
+    --k2: #8279ff;
+    --k3: #aea8ff;
+    --k4: #d9d6ff;
+    --k5: rgba(255, 255, 255, 0.14);
+    --track: rgba(255, 255, 255, 0.08);
+    --bar: rgba(255, 255, 255, 0.05);
+    --bar-top: rgba(255, 255, 255, 0.11);
+    --bar-hl: rgba(255, 255, 255, 0.14);
+    --lens: rgba(255, 255, 255, 0.12);
+    --lens-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.2), 0 1px 3px rgba(0, 0, 0, 0.4);
+    --tip-bg: #eceef4;
+    --tip-ink: #0b1020;
+  }
+
+  .body {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    top: 44px;
+    display: flex;
+    flex-direction: column;
+  }
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+  .iconbtn {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 13px;
+    background: var(--btn-bg);
+    box-shadow: var(--btn-shadow);
+  }
+  .iconbtn svg {
+    width: 12px;
+    height: 12px;
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* period switch: track + lens, same language as the tab bar */
+  .period {
+    display: flex;
+    margin-top: 12px;
+    padding: 2px;
+    height: 26px;
+    border-radius: 13px;
+    background: var(--track);
+  }
+  .period span {
+    flex: 1;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--ink-3);
+  }
+  .period .on {
+    background: var(--lens);
+    box-shadow: var(--lens-shadow);
+    color: var(--ink);
+  }
+
+  .total {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-top: 14px;
+  }
+  .k {
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--ink-3);
+  }
+  .big {
+    margin-top: 6px;
+    font-size: 36px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.045em;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .big span {
+    font-size: 20px;
+    letter-spacing: -0.02em;
+    color: var(--ink-3);
+  }
+  .delta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    padding-bottom: 2px;
+  }
+  /* spending went down = money saved → mint */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px 7px 3px 5px;
+    border-radius: 10px;
+    background: rgb(var(--success-rgb) / 0.14);
+    color: var(--mint-ink);
+    font-size: 9.4px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .chip svg {
+    width: 9px;
+    height: 9px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .vs {
+    font-size: 8px;
+    font-weight: 500;
+    color: var(--ink-3);
+  }
+
+  .card {
+    border-radius: 14px;
+    background: var(--glass);
+    border: 0.5px solid var(--glass-line);
+    box-shadow: var(--card-shadow);
+  }
+
+  /* ---- monthly bars ---- */
+  .chart {
+    margin-top: 12px;
+    padding: 10px 12px 9px;
+  }
+  .chart-head {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8.6px;
+    font-weight: 500;
+    color: var(--ink-3);
+  }
+  .lg {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .lg i {
+    width: 12px;
+    border-top: 1px dashed rgb(var(--brand-light-rgb) / 0.8);
+  }
+  .plot {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 86px;
+    margin-top: 6px;
+    padding: 0 4px;
+  }
+  .avg {
+    /* dashed 6-month average, measured from the bars' baseline (month labels are 15px) */
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(15px + var(--avg));
+    border-top: 1px dashed rgb(var(--brand-light-rgb) / 0.45);
+  }
+  .col {
+    position: relative;
+    z-index: 1;
+    width: 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .bar {
+    display: block;
+    width: 18px;
+    border-radius: 6px;
+    background: linear-gradient(180deg, var(--bar-top) 0%, var(--bar) 100%);
+    box-shadow: inset 0 0.5px 0 var(--bar-hl);
+  }
+  .now .bar {
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 0.28) 0%, rgb(255 255 255 / 0) 40%),
+      linear-gradient(180deg, var(--color-brand-light) 0%, var(--color-brand) 100%);
+    box-shadow:
+      inset 0 0.5px 0 rgb(255 255 255 / 0.5),
+      0 6px 14px -4px rgb(var(--brand-rgb) / 0.6);
+  }
+  .tip {
+    position: absolute;
+    bottom: calc(15px + var(--avg) + 7px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 3px 6px;
+    border-radius: 6px;
+    background: var(--tip-bg);
+    color: var(--tip-ink);
+    font-size: 8px;
+    font-weight: 600;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .tip::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -3px;
+    width: 6px;
+    height: 6px;
+    margin-left: -3px;
+    background: var(--tip-bg);
+    transform: rotate(45deg);
+    border-radius: 1px;
+    z-index: -1;
+  }
+  .mo {
+    height: 15px;
+    padding-top: 5px;
+    font-size: 7.6px;
+    font-weight: 500;
+    color: var(--ink-3);
+  }
+  .now .mo {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* ---- categories ---- */
+  .label {
+    display: flex;
+    align-items: center;
+    margin: 14px 2px 8px;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .label span {
+    margin-left: auto;
+    font-size: 8.6px;
+    font-weight: 600;
+    color: var(--color-brand-text);
+  }
+  .cats {
+    overflow: hidden;
+  }
+  .stack {
+    display: flex;
+    gap: 2px;
+    height: 6px;
+    margin: 11px 10px 3px;
+  }
+  .stack i {
+    border-radius: 3px;
+  }
+  .k1 { background: var(--k1); }
+  .k2 { background: var(--k2); }
+  .k3 { background: var(--k3); }
+  .k4 { background: var(--k4); }
+  .k5 { background: var(--k5); }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    height: 38px;
+    padding: 0 10px;
+  }
+  .row + .row {
+    border-top: 0.5px solid var(--sep);
+  }
+  .ic {
+    position: relative;
+    flex: none;
+    width: 26px;
+    height: 26px;
+  }
+  .ic :global(.app-icon) {
+    box-shadow: 0 0 0 0.5px var(--sep);
+  }
+  .more {
+    position: absolute;
+    right: -5px;
+    bottom: -3px;
+    min-width: 15px;
+    height: 12px;
+    padding: 0 3px;
+    display: grid;
+    place-items: center;
+    border-radius: 6px;
+    background: var(--tip-bg);
+    color: var(--tip-ink);
+    box-shadow: 0 0 0 1.5px var(--glass);
+    font-size: 7px;
+    font-weight: 700;
+  }
+  .txt {
+    flex: 1;
+    min-width: 0;
+  }
+  .n,
+  .p {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .n {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .sw {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex: none;
+  }
+  .m {
+    margin-top: 2px;
+    font-size: 8.6px;
+    color: var(--ink-3);
+  }
+  .val {
+    text-align: right;
+  }
+  .p {
+    font-variant-numeric: tabular-nums;
+  }
+  .pct {
+    margin-top: 2px;
+    font-size: 8.6px;
+    font-weight: 500;
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+  .fade {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 78px;
+    background: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--bg) 70%, transparent) 45%, var(--bg) 85%);
+    pointer-events: none;
+  }
+</style>
+
+

@@ -39,10 +39,10 @@ const bars = [
   { m: 'Aug', x: 104.78, h: 118, c: 'var(--bar-past)' },
   { m: 'Sep', x: 143.89, h: 109, c: 'var(--bar-past)' },
   { m: 'Oct', x: 183, h: 129, c: 'var(--bar-past)' },
-  { m: 'Nov', x: 222.11, h: 113, c: '#1d1d1f', on: true },
-  { m: 'Dec', x: 261.22, h: 96, c: 'rgba(63,227,166,.55)' },
-  { m: 'Jan', x: 300.33, h: 96, c: 'rgba(63,227,166,.55)' },
-  { m: 'Feb', x: 339.44, h: 103, c: 'rgba(63,227,166,.55)' },
+  { m: 'Nov', x: 222.11, h: 113, c: '#0b1020', on: true },
+  { m: 'Dec', x: 261.22, h: 96, c: 'rgba(103, 93, 249, .55)' },
+  { m: 'Jan', x: 300.33, h: 96, c: 'rgba(103, 93, 249, .55)' },
+  { m: 'Feb', x: 339.44, h: 103, c: 'rgba(103, 93, 249, .55)' },
 ];
 ---
 
@@ -96,7 +96,7 @@ const bars = [
         <span class="t13 semibold" style="left:16px;top:14px">
           9 subscriptions found
         </span>
-        <span class="mock-pill more" style="left:159px;top:14px;padding:2px 7px;font-size:10px;background:rgba(34,201,138,.14);color:var(--color-mint-ink)">
+        <span class="mock-pill more" style="left:159px;top:14px;padding:2px 7px;font-size:10px;background:rgb(var(--brand-rgb) / .14);color:var(--color-mint-ink)">
           +3 more
         </span>
         {found.map((f, i) => (
@@ -128,7 +128,7 @@ const bars = [
         <span class="t12 danger" style="left:60px;top:31px">
           Not opened in 91 days
         </span>
-        <span class="mock-pill price" style="right:12px;top:20px;padding:3px 8px;font-size:11px;background:var(--color-danger-soft);color:var(--color-danger)">
+        <span class="mock-pill price" style="right:12px;top:20px;padding:3px 8px;font-size:11px;background:var(--color-danger-soft);color:var(--color-zombie-text)">
           $12.99/mo
         </span>
       </div>
@@ -196,16 +196,16 @@ const bars = [
         </span>
       </div>
       <svg class="cursor" width="20" height="24" viewBox="0 0 20 24" aria-hidden="true">
-        <path d="M2 1.5v18.2l4.6-4.4 2.9 6.9 3.3-1.4-2.9-6.8 6.4-.3z" fill="#fff" stroke="#111113" stroke-width="1.4" stroke-linejoin="round" />
+        <path d="M2 1.5v18.2l4.6-4.4 2.9 6.9 3.3-1.4-2.9-6.8 6.4-.3z" fill="#fff" stroke="#0e1424" stroke-width="1.4" stroke-linejoin="round" />
       </svg>
       <div class="mock-card toast">
-        <span class="mock-check" style="left:14px;top:14px;width:30px;height:30px;box-shadow:0 3px 18px rgba(34,201,138,.38),inset 0 1px 0 rgba(255,255,255,.55)">
+        <span class="mock-check" style="left:14px;top:14px;width:30px;height:30px;box-shadow:0 3px 18px rgb(var(--brand-rgb) / .38),inset 0 1px 0 rgba(255,255,255,.55)">
           <img src={check30} alt="" />
         </span>
         <span class="t13 semibold" style="left:54px;top:11px">
           Headspace canceled
         </span>
-        <span class="t12 mint" style="left:54px;top:30px">
+        <span class="t12 success" style="left:54px;top:30px">
           Saving $155.88 a year
         </span>
       </div>
@@ -255,8 +255,11 @@ const bars = [
   .mint {
     color: var(--color-mint-ink);
   }
+  .success {
+    color: var(--color-success-text);
+  }
   .danger {
-    color: var(--color-danger);
+    color: var(--color-zombie-text);
   }
   .t13.done {
     color: rgba(var(--mock-ink-rgb), 0.6);
@@ -287,7 +290,7 @@ const bars = [
     width: 264px;
     height: 8px;
     border-radius: 4px;
-    background: rgba(118, 118, 128, 0.12);
+    background: rgba(107, 115, 145, 0.12);
   }
   .fill {
     position: absolute;
@@ -296,9 +299,9 @@ const bars = [
     width: 190px;
     height: 8px;
     border-radius: 4px;
-    background: linear-gradient(90deg, #6bf0c0 0%, #22c98a 100%);
+    background: linear-gradient(90deg, var(--color-brand-light) 0%, var(--color-brand) 100%);
     box-shadow:
-      0 2px 8px 0 rgba(34, 201, 138, 0.45),
+      0 2px 8px 0 rgb(var(--brand-rgb) / 0.45),
       inset 0 1px 0 0 var(--hl-50);
   }
   .hair {
@@ -310,7 +313,7 @@ const bars = [
     height: 16px;
     border-radius: 8px;
     background: var(--color-mint-2);
-    filter: drop-shadow(0 1px 2px rgba(34, 201, 138, 0.35));
+    filter: drop-shadow(0 1px 2px rgb(var(--brand-rgb) / 0.35));
   }
   .step-check img {
     width: 16px;
@@ -325,11 +328,12 @@ const bars = [
     width: 20px;
     height: 20px;
     border-radius: 10px;
-    border: 4px solid #ff3b30;
+    border: 4px solid var(--color-zombie);
     background: var(--color-surface);
     box-shadow: var(--elevation-small);
   }
   .score {
+    font-family: var(--font-mono);
     left: 0;
     right: 0;
     top: 87px;
@@ -337,7 +341,7 @@ const bars = [
     font-size: 56px;
     font-weight: var(--fw-bold);
     letter-spacing: -0.04em;
-    color: var(--color-danger);
+    color: var(--color-zombie-text);
   }
   .score-label {
     left: 0;
@@ -362,7 +366,7 @@ const bars = [
     width: 148px;
     height: 26px;
     border-radius: 8px;
-    background: rgba(118, 118, 128, 0.12);
+    background: rgba(107, 115, 145, 0.12);
   }
   .seg > span {
     position: absolute;
@@ -404,7 +408,7 @@ const bars = [
     top: 83px;
     padding: 3px 7px;
     border-radius: 7px;
-    background: #1d1d1f;
+    background: #0b1020;
     color: #fff;
     font-size: 11px;
     font-weight: var(--fw-semibold);
@@ -415,7 +419,7 @@ const bars = [
     top: 38px;
     padding: 9px 14px;
     border-radius: 18px 18px 6px 18px;
-    background: linear-gradient(180deg, #2a2a2e 0%, #111113 100%);
+    background: linear-gradient(180deg, #232c47 0%, #0e1424 100%);
     color: #fff;
     font-size: 14px;
     white-space: nowrap;
@@ -440,7 +444,7 @@ const bars = [
     padding: 5px 10px;
     font-size: 12px;
     font-weight: var(--fw-medium);
-    background: rgba(34, 201, 138, 0.12);
+    background: rgb(var(--brand-rgb) / 0.12);
     color: var(--color-mint-ink);
   }
   .open-btn {

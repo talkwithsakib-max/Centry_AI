@@ -178,7 +178,7 @@ import { links, linkAttrs } from '../config/links';
     background: var(--color-fill-3);
   }
   .item[open]:not([data-closing]) summary:hover .toggle {
-    background: #333336;
+    background: #232c47;
   }
   /* Smooth height: the grid row animates 0fr → 1fr (accordion.ts drives it) */
   .answer {
@@ -207,9 +207,8 @@ import { links, linkAttrs } from '../config/links';
   }
   .answer p {
     padding: 0 24px 22px;
-    font-size: 15px;
-    line-height: 24px;
-    letter-spacing: -0.1px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
     color: var(--color-ink-2);
   }
 

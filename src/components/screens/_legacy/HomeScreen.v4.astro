@@ -1,0 +1,624 @@
+---
+/**
+ * Hero phone screen — signature redesign (2026-11-14), light + dark (follows site theme).
+ * Hero = "spend arc": a 240° gauge split by category (budget $120) around a glass
+ * sphere holding the month's total. Below: this week's renewals as a day strip,
+ * then the zombie insight. Shared tokens/chrome: styles/app-screen.css.
+ * Mobbin refs: Lifesum (arc + glowing sphere), Sweatcoin (day strip under the hero),
+ * Google Health (ring + compact stats). Previous versions: ./_legacy/.
+ */
+import AppIcon from '../brand/AppIcon.astro';
+import CentryMark from '../brand/CentryMark.astro';
+import AppStatus from './app/AppStatus.astro';
+import AppTabBar from './app/AppTabBar.astro';
+import badge from '../../assets/icons/badges/sparkle-24.svg?url';
+import type { Brand } from '../brand/brands';
+import '../../styles/app-screen.css';
+
+/* ---- arc geometry (SVG 260 × 184, centre 130,122) ---- */
+const CX = 130, CY = 122, R = 102, A0 = 150, SWEEP = 240;
+const budget = 120, spent = 86.94;
+const pt = (a: number, r = R) => {
+  const t = (a * Math.PI) / 180;
+  return [+(CX + r * Math.cos(t)).toFixed(2), +(CY + r * Math.sin(t)).toFixed(2)];
+};
+const arc = (a: number, b: number, r = R) => {
+  const [x0, y0] = pt(a, r), [x1, y1] = pt(b, r);
+  return `M${x0} ${y0} A${r} ${r} 0 ${b - a > 180 ? 1 : 0} 1 ${x1} ${y1}`;
+};
+const cats = [
+  { label: 'Streaming', v: 40, c: '#ff6b5a' },
+  { label: 'Music', v: 12.2, c: '#1ed760' },
+  { label: 'AI tools', v: 14, c: 'var(--ai)' },
+  { label: 'Learning', v: 10.99, c: '#58cc02' },
+  { label: 'Other', v: 9.75, c: 'var(--ink-3)' },
+];
+const GAP = 5.5;
+let cur = A0;
+const segs = cats.map((c) => {
+  const span = (c.v / budget) * SWEEP;
+  const s = { ...c, d: arc(cur + GAP / 2, cur + span - GAP / 2) };
+  cur += span;
+  return s;
+});
+const endA = A0 + (spent / budget) * SWEEP;
+const [ex, ey] = pt(endA);
+const ticks = Array.from({ length: 41 }, (_, i) => {
+  const a = A0 + (i * SWEEP) / 40;
+  const major = i % 10 === 0;
+  const [x0, y0] = pt(a, R + 9), [x1, y1] = pt(a, R + (major ? 15 : 12));
+  return { x0, y0, x1, y1, major };
+});
+
+/* ---- this week ---- */
+type Day = { d: string; n: number; today?: boolean; b?: Brand; price?: string; z?: boolean };
+const week: Day[] = [
+  { d: 'M', n: 10 },
+  { d: 'T', n: 11, today: true, b: 'netflix', price: '$15.99' },
+  { d: 'W', n: 12 },
+  { d: 'T', n: 13, b: 'spotify', price: '$9.99', z: true },
+  { d: 'F', n: 14 },
+  { d: 'S', n: 15 },
+  { d: 'S', n: 16, b: 'prime-video', price: '$14.99' },
+];
+---
+
+<div class="mg home">
+  <AppStatus />
+
+  <div class="body">
+    <header class="top">
+      <span class="brand">
+        <CentryMark size={20} />
+        <span>CentryAI</span>
+      </span>
+      <span class="right">
+        <span class="sync"><i class="live"></i>Gmail synced</span>
+        <span class="iconbtn" aria-hidden="true">
+          <svg viewBox="0 0 16 16"><path d="M4 11.5V7.2a4 4 0 0 1 8 0v4.3l1 1.2H3Z" /><path d="M6.6 14a1.5 1.5 0 0 0 2.8 0" /></svg>
+          <i class="ping"></i>
+        </span>
+      </span>
+    </header>
+
+    <!-- hero: spend arc around a glass sphere -->
+    <div class="gauge">
+      <span class="halo" aria-hidden="true"></span>
+      <svg class="arc" viewBox="0 0 260 184" aria-hidden="true">
+        <defs>
+          <!-- spent arc in the CentryMark gradient: mint → sky -->
+          <linearGradient id="hs-spend" gradientUnits="userSpaceOnUse" x1="24" y1="0" x2="236" y2="0">
+            <stop offset="0" stop-color="#675df9" />
+            <stop offset="0.55" stop-color="#675df9" />
+            <stop offset="1" stop-color="#8b83ff" />
+          </linearGradient>
+        </defs>
+        {ticks.map((t) => (
+          <line x1={t.x0} y1={t.y0} x2={t.x1} y2={t.y1} class:list={['tick', t.major && 'major']} />
+        ))}
+        <path d={arc(A0, A0 + SWEEP)} class="track" />
+        {segs.map((s) => <path d={s.d} class="seg" />)}
+        <circle cx={ex} cy={ey} r="7" class="knob-glow" />
+        <circle cx={ex} cy={ey} r="3.4" class="knob" />
+      </svg>
+      <div class="sphere">
+        <span class="sheen" aria-hidden="true"></span>
+        <p class="k">Spent this month</p>
+        <p class="big">$86<span>.94</span></p>
+        <p class="saved">
+          <svg viewBox="0 0 10 10"><path d="M5 2v6M2.5 5.5 5 8l2.5-2.5" /></svg>
+          $10.99 saved
+        </p>
+      </div>
+    </div>
+    <p class="budget"><b>$33.06</b> left of $120 budget</p>
+
+    <!-- this week's renewals -->
+    <p class="label">This week<span>3 renewals · $40.97</span></p>
+    <div class="week">
+      {week.map((w) => (
+        <div class:list={['day', w.today && 'today', w.b && 'has', w.z && 'z']}>
+          <span class="dn">{w.d}</span>
+          <span class="dd">{w.n}</span>
+          {w.b ? (
+            <span class="ic"><AppIcon brand={w.b} size={16} radius={4.5} /></span>
+          ) : (
+            <span class="empty"></span>
+          )}
+          <span class="pr">{w.price ?? ''}</span>
+        </div>
+      ))}
+    </div>
+
+    <div class="insight">
+      <img class="badge" src={badge} alt="" aria-hidden="true" />
+      <div class="ins-txt">
+        <p class="t">2 zombie subscriptions</p>
+        <p class="s">Cancel them to save <b>$23.98/mo</b></p>
+      </div>
+      <span class="go">Review</span>
+    </div>
+
+    <div class="row done">
+      <AppIcon brand="duolingo" size={26} radius={7.5} />
+      <div class="txt"><p class="n">Duolingo canceled</p><p class="m">Saving $10.99 every month</p></div>
+      <span class="check" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="m3 6.2 2 2 4-4.4" /></svg></span>
+    </div>
+  </div>
+
+  <span class="fade" aria-hidden="true"></span>
+  <AppTabBar active="home" />
+</div>
+
+<style>
+  .home {
+    --sheen: rgba(255, 255, 255, 0.8);
+    --track: rgba(11, 16, 32, 0.07);
+    --tick: rgba(11, 16, 32, 0.16);
+    --ai: #0b1020;
+    --sphere-bg:
+      radial-gradient(circle at 50% 118%, rgb(var(--brand-light-rgb) / 0.35), transparent 58%),
+      radial-gradient(circle at 50% 30%, #ffffff 0%, var(--color-brand-tint) 55%, var(--color-brand-tint) 100%);
+    --sphere-shadow:
+      inset 0 -14px 26px rgb(var(--brand-light-rgb) / 0.18),
+      inset 0 10px 24px rgb(var(--brand-rgb) / 0.14),
+      0 18px 36px -14px rgba(28, 36, 70, 0.3),
+      0 0 0 0.75px rgb(var(--brand-rgb) / 0.3);
+  }
+  :global([data-theme='dark']) .home {
+    --sheen: rgba(255, 255, 255, 0.06);
+    --track: rgba(255, 255, 255, 0.07);
+    --tick: rgba(255, 255, 255, 0.16);
+    --ai: #eceef4;
+    --sphere-bg:
+      radial-gradient(circle at 50% 118%, rgb(var(--brand-light-rgb) / 0.26), transparent 58%),
+      radial-gradient(circle at 50% 40%, #141737 0%, #0a0d17 60%, #0a0d17 100%);
+    --sphere-shadow:
+      inset 0 -14px 26px rgb(var(--brand-light-rgb) / 0.12),
+      inset 0 10px 24px rgb(var(--brand-rgb) / 0.12),
+      inset 0 0.75px 0 rgba(255, 255, 255, 0.2),
+      0 18px 36px -14px rgba(0, 0, 0, 0.8),
+      0 0 0 0.75px rgb(var(--brand-rgb) / 0.28),
+      0 0 34px rgb(var(--brand-rgb) / 0.14);
+  }
+
+  .body {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    top: 44px;
+    display: flex;
+    flex-direction: column;
+  }
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+  .right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .sync {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    height: 22px;
+    padding: 0 8px 0 7px;
+    border-radius: 11px;
+    background: var(--btn-bg);
+    box-shadow: var(--btn-shadow);
+    font-size: 8.2px;
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+  .live {
+    position: relative;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--mint);
+    box-shadow: 0 0 6px var(--mint);
+  }
+  .live::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 1px solid var(--mint);
+    animation: live 2.4s ease-out infinite;
+  }
+  @keyframes live {
+    0% { transform: scale(0.6); opacity: 0.9; }
+    80%, 100% { transform: scale(1.9); opacity: 0; }
+  }
+  .iconbtn {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    background: var(--btn-bg);
+    box-shadow: var(--btn-shadow);
+  }
+  .iconbtn svg {
+    width: 11px;
+    height: 11px;
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 1.3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .ping {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    width: 4.5px;
+    height: 4.5px;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 0 1.2px var(--bg);
+  }
+
+  /* ---------- gauge ---------- */
+  .gauge {
+    position: relative;
+    width: 260px;
+    height: 184px;
+    margin: 18px auto 0;
+  }
+  .halo {
+    position: absolute;
+    left: 50%;
+    top: 122px;
+    width: 290px;
+    height: 250px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(closest-side, rgb(var(--brand-rgb) / 0.2), rgb(var(--brand-light-rgb) / 0.06) 60%, transparent);
+    pointer-events: none;
+  }
+  .arc {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .tick {
+    stroke: var(--tick);
+    stroke-width: 0.7;
+    stroke-linecap: round;
+  }
+  .tick.major {
+    stroke-width: 1.1;
+    stroke: var(--ink-3);
+  }
+  .track {
+    fill: none;
+    stroke: var(--track);
+    stroke-width: 12;
+    stroke-linecap: round;
+  }
+  .seg {
+    fill: none;
+    stroke: url(#hs-spend);
+    stroke-width: 12;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 5px rgb(var(--brand-rgb) / 0.45));
+  }
+  .knob {
+    fill: #fff;
+    stroke: var(--bg);
+    stroke-width: 1.4;
+  }
+  .knob-glow {
+    fill: var(--color-brand-light);
+    opacity: 0.45;
+    filter: blur(2.5px);
+  }
+  .end {
+    font-size: 7.4px;
+    font-weight: 600;
+    fill: var(--ink-3);
+    font-family: inherit;
+  }
+  .sphere {
+    position: absolute;
+    left: 50%;
+    top: 122px;
+    width: 146px;
+    height: 146px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--sphere-bg);
+    box-shadow: var(--sphere-shadow);
+    text-align: center;
+  }
+  .sphere::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    padding: 1px;
+    background: conic-gradient(from 200deg, var(--color-brand), var(--color-brand-light) 22%, #ffffff 30%, rgb(var(--brand-light-rgb) / 0.2) 45%,
+      rgb(var(--brand-rgb) / 0.12) 70%, var(--color-brand) 92%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.75;
+    pointer-events: none;
+  }
+  .sheen {
+    position: absolute;
+    left: 18%;
+    top: 5%;
+    width: 64%;
+    height: 34%;
+    border-radius: 50%;
+    background: linear-gradient(180deg, var(--sheen), transparent);
+    pointer-events: none;
+  }
+  .k {
+    position: relative;
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+  .big {
+    position: relative;
+    margin-top: 5px;
+    font-size: 38px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.045em;
+    font-variant-numeric: tabular-nums;
+  }
+  .big span {
+    font-size: 20px;
+    letter-spacing: -0.02em;
+    color: var(--ink-3);
+  }
+  .saved {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    margin-top: 9px;
+    padding: 3.5px 8px 3.5px 6px;
+    border-radius: 99px;
+    background: color-mix(in srgb, var(--mint) 16%, transparent);
+    color: var(--mint-ink);
+    font-size: 8px;
+    font-weight: 600;
+  }
+  .saved svg {
+    width: 7.5px;
+    height: 7.5px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .budget {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 9.4px;
+    font-weight: 500;
+    color: var(--ink-3);
+  }
+  .budget b {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* ---------- this week ---------- */
+  .label {
+    display: flex;
+    align-items: center;
+    margin: 22px 2px 8px;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .label span {
+    margin-left: auto;
+    font-size: 8.6px;
+    font-weight: 500;
+    color: var(--ink-3);
+  }
+  .week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+  .day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 7px 0 7px;
+    border-radius: 11px;
+    background: var(--glass);
+    box-shadow: var(--card-shadow);
+  }
+  .dn {
+    font-size: 7px;
+    font-weight: 600;
+    color: var(--ink-3);
+  }
+  .dd {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .ic,
+  .empty {
+    display: grid;
+    place-items: center;
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+  }
+  .ic :global(.app-icon) {
+    box-shadow: 0 0 0 0.5px var(--sep);
+  }
+  .empty::before {
+    content: '';
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--sep);
+  }
+  .pr {
+    height: 8px;
+    font-size: 6.4px;
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+  .day.today {
+    background:
+      linear-gradient(180deg, rgb(var(--brand-rgb) / 0.22), rgb(var(--brand-light-rgb) / 0.12)),
+      var(--glass);
+    box-shadow: var(--card-shadow), inset 0 0 0 0.75px rgb(var(--brand-rgb) / 0.55);
+  }
+  .day.today .dn {
+    color: var(--mint-ink);
+  }
+  .day.z .ic {
+    position: relative;
+  }
+  .day.z .ic::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: -2px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 0 1.2px var(--glass), 0 0 6px var(--red);
+  }
+  .day.z .pr {
+    color: var(--red-text);
+  }
+
+  /* ---------- insight + done ---------- */
+  .insight {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    padding: 10px 10px 10px 11px;
+    border-radius: 14px;
+    background: var(--glass);
+    box-shadow: var(--card-shadow);
+  }
+  .badge {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    transform: scale(1.5);
+    transform-origin: 40% 40%;
+  }
+  .ins-txt,
+  .txt {
+    flex: 1;
+    min-width: 0;
+  }
+  .t,
+  .n {
+    font-size: 10.4px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .s,
+  .m {
+    margin-top: 2px;
+    font-size: 8.6px;
+    color: var(--ink-2);
+  }
+  .s b {
+    font-weight: 600;
+    color: var(--mint-ink);
+  }
+  .go {
+    flex: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: linear-gradient(180deg, var(--color-brand-light) 0%, var(--color-brand) 100%);
+    box-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.5), 0 2px 8px rgb(var(--brand-rgb) / 0.3);
+    color: var(--color-on-brand, #fff);
+    font-size: 8.8px;
+    font-weight: 600;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+    padding: 9px 11px 9px 10px;
+    border-radius: 14px;
+    background: var(--glass);
+    box-shadow: var(--card-shadow);
+  }
+  .row :global(.app-icon) {
+    opacity: 0.55;
+    filter: grayscale(0.3);
+  }
+  .check {
+    display: grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgb(var(--success-rgb) / 0.85) 0%, var(--color-success) 72%);
+    box-shadow: 0 2px 6px rgb(var(--success-rgb) / 0.35);
+  }
+  .check svg {
+    width: 10px;
+    height: 10px;
+    fill: none;
+    stroke: var(--color-on-brand, #fff);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .fade {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 78px;
+    background: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--bg) 70%, transparent) 45%, var(--bg) 85%);
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .live::after { animation: none; opacity: 0; }
+  }
+</style>
+
+
+
+
+
+

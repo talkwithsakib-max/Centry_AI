@@ -1,0 +1,161 @@
+---
+/**
+ * Standard buttons (latest Figma):
+ *  - dark: 48px (or 40px "sm"), 12px radius, #2A2A2E→#111113, Elevation/Small
+ *  - mint: Pro "Start 7-day free trial". Dark theme = luminous mint glass
+ *    (glossy mint body, glass reflection, mint halo, hover sheen).
+ * Renders <a> when href is given, otherwise <button>. Labels are always centred.
+ */
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+  variant?: 'dark' | 'mint';
+  size?: 'md' | 'sm';
+  block?: boolean;
+  href?: string;
+  class?: string;
+} & Omit<HTMLAttributes<'a'> & HTMLAttributes<'button'>, 'class'>;
+
+const { variant = 'dark', size = 'md', block = false, href, class: className, ...rest } = Astro.props;
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag class:list={['btn', variant, size, block && 'block', className]} href={href} {...rest}>
+  <slot />
+</Tag>
+
+<style>
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 48px;
+    padding: 0 22px;
+    border-radius: var(--radius-button);
+    white-space: nowrap;
+    font-size: 15px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.1px;
+    line-height: normal;
+    transition:
+      background var(--dur-base) var(--ease-out),
+      box-shadow var(--dur-base) var(--ease-out),
+      filter var(--dur-base) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out);
+  }
+  .sm {
+    height: 40px;
+    padding: 0 16px 0 18px;
+    font-size: 14px;
+  }
+  .block {
+    display: flex;
+    width: 100%;
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .dark {
+    color: var(--color-btn-ink);
+    background: var(--gradient-btn);
+    box-shadow: var(--elevation-small);
+  }
+  .mint {
+    color: #0b3b2a;
+    background: var(--gradient-btn-mint);
+    box-shadow:
+      0 8px 20px -6px rgba(33, 201, 138, 0.4),
+      inset 0 1px 0 0 var(--hl-50);
+  }
+  /* ---------- Dark theme: luminous mint glass (2026-11-14) ----------
+     The brightest object on the page: glossy mint body (same family as the
+     "Most popular" badge and the check badges), glass reflection on the top
+     half, white→mint→sky gradient edge, mint halo. Hover: sheen sweep. */
+  :global([data-theme='dark']) .mint {
+    isolation: isolate;
+    overflow: hidden;
+    color: #04221a;
+    font-weight: var(--fw-semibold);
+    background: linear-gradient(180deg, #8af6cf 0%, #46e3a9 48%, #22c98a 100%);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.5),
+      inset 0 -2px 6px 0 rgba(10, 120, 80, 0.3),
+      0 0 0 1px rgba(63, 227, 166, 0.35),
+      0 0 24px -4px rgba(63, 227, 166, 0.55),
+      0 14px 34px -12px rgba(63, 227, 166, 0.75);
+    transition:
+      box-shadow var(--dur-slow) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out),
+      filter var(--dur-base) var(--ease-out);
+  }
+  /* glass reflection: soft white band over the top half */
+  :global([data-theme='dark']) .mint::before {
+    content: '';
+    position: absolute;
+    left: 1px;
+    right: 1px;
+    top: 1px;
+    height: 48%;
+    z-index: -1;
+    border-radius: 11px 11px 40% 40% / 11px 11px 8px 8px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
+    pointer-events: none;
+  }
+  /* sheen that sweeps across on hover */
+  :global([data-theme='dark']) .mint::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -60%;
+    width: 40%;
+    z-index: -1;
+    background: linear-gradient(100deg, transparent 0%, rgba(255, 255, 255, 0.35) 50%, transparent 100%);
+    transform: skewX(-18deg);
+    transition: left 750ms var(--ease-out);
+    pointer-events: none;
+  }
+  @media (hover: hover) {
+    :global([data-theme='dark']) .mint:hover {
+      filter: brightness(1.04);
+      box-shadow:
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.6),
+        inset 0 -2px 6px 0 rgba(10, 120, 80, 0.3),
+        0 0 0 1px rgba(63, 227, 166, 0.5),
+        0 0 34px -2px rgba(63, 227, 166, 0.7),
+        0 18px 40px -12px rgba(63, 227, 166, 0.85);
+    }
+    :global([data-theme='dark']) .mint:hover::after {
+      left: 120%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global([data-theme='dark']) .mint::after {
+      display: none;
+    }
+  }
+
+  @media (hover: hover) {
+    .dark:hover {
+      background: var(--gradient-btn-hover);
+    }
+    .mint:hover {
+      filter: brightness(1.04);
+    }
+  }
+  .btn :global(svg),
+  .btn :global(img) {
+    flex: none;
+  }
+  /* white icons on the dark button turn near-black with it (dark theme) */
+  :global([data-theme='dark']) .dark :global(img.on-dark) {
+    filter: brightness(0) invert(0.07);
+  }
+</style>
+
+
+
+
+

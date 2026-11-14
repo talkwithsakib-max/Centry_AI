@@ -1,0 +1,388 @@
+---
+/** Figma "AI Inbox Scanner" (477:7884): copy + checklist, inbox mock on silk. */
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import CheckList from '../components/ui/CheckList.astro';
+import Fit from '../components/ui/Fit.astro';
+import BentoPanel from '../components/features/BentoPanel.astro';
+import SubTile from '../components/brand/SubTile.astro';
+import CentryMark from '../components/brand/CentryMark.astro';
+import silk from '../assets/icons/features/silk-scanner.svg?url';
+import search from '../assets/icons/search.svg?url';
+import type { Brand } from '../components/brand/brands';
+
+type Mail = {
+  from: string;
+  subject: string;
+  date: string;
+  brand?: Brand;
+  avatar?: string;
+  pill?: string;
+  tone?: 'mint' | 'danger';
+};
+const mails: Mail[] = [
+  { from: 'Netflix', subject: 'Your Netflix receipt', date: 'Nov 5', brand: 'netflix', pill: '$15.49/mo', tone: 'mint' },
+  { from: 'Mom', subject: 'Dinner on Sunday?', date: 'Nov 4', avatar: 'M' },
+  { from: 'Spotify', subject: 'Spotify Premium payment', date: 'Nov 1', brand: 'spotify', pill: '$9.99/mo', tone: 'mint' },
+  { from: 'LinkedIn', subject: '5 new jobs for you', date: 'Oct 30', avatar: 'L' },
+  { from: 'Headspace', subject: 'Headspace annual receipt', date: 'Mar 2023', brand: 'headspace', pill: 'Forgotten · 3 yrs', tone: 'danger' },
+];
+---
+
+<section class="split scanner" aria-labelledby="scanner-title" data-reveal>
+  <div class="container">
+    <div class="text">
+      <SectionHeading eyebrow="AI inbox scanner" line1="You forgot you had them." line2="Your inbox didn’t." id="scanner-title" />
+      <p class="body">
+        Most subscription trackers ask you to add everything manually. But if you’ve already forgotten a subscription
+        exists, how would you know to add it?
+      </p>
+      <p class="body second">
+        CentryAI connects to Gmail or iCloud, scans your receipts and surfaces every recurring charge, including ones
+        from 3 years ago.
+      </p>
+      <CheckList
+        items={[
+          'Gmail & iCloud supported',
+          'Read-only access, emails never stored',
+          '90+ services detected automatically',
+          'Scans complete in under 60 seconds',
+        ]}
+      />
+    </div>
+
+    <div class="visual" aria-hidden="true">
+      <Fit w={640} h={540}>
+        <BentoPanel w={640} h={540} silk={silk} bleed={[29.81, 30.86, 19.96, 35.31]} angle={139.84} smoke="a" radius={28} dark={{ mint: [-64, -81, 384, 324], aqua: [352, 108, 320, 324], spotlight: [96, 81, 448, 378], dots: false }}>
+          <div class="mock-card inbox fx-loop">
+            <span class="h">Inbox</span>
+            <span class="mock-pill scanning">Scanning receipts</span>
+            <span class="search"><img src={search} alt="" />receipt OR invoice OR renewal</span>
+            {
+              mails.map((m, i) => (
+                <div class:list={['mail', m.tone, !m.brand && 'faded']} style={`top:${102 + i * 62}px;--i:${i}`}>
+                  {m.tone && <span class="accent" />}
+                  {m.brand ? (
+                    <SubTile brand={m.brand} size={36} style="position:absolute;left:18px;top:13px" />
+                  ) : (
+                    <span class="avatar">{m.avatar}</span>
+                  )}
+                  <span class="from">{m.from}</span>
+                  <span class="subject">{m.subject}</span>
+                  <span class="date">{m.date}</span>
+                  {m.pill && (
+                    <span class:list={['mock-pill', 'tag', m.tone]}>
+                      {m.pill.startsWith('$') ? (
+                        <span data-count={m.pill.slice(1, -3)} data-format="${int}.{dec}/mo" data-at={(0.75 + i * 0.16).toFixed(2)} data-for="0.9">
+                          {m.pill}
+                        </span>
+                      ) : (
+                        m.pill
+                      )}
+                    </span>
+                  )}
+                  <span class="rule" />
+                </div>
+              ))
+            }
+          </div>
+          <div class="mock-card toast">
+            <CentryMark size={34} class="toast-mark" />
+            <span class="t1" data-count="9" data-format="{n} recurring charges" data-at="1.5" data-for="0.8">9 recurring charges</span>
+            <span class="t2" data-count="41" data-format="found in {n} seconds" data-at="1.5" data-for="0.8">found in 41 seconds</span>
+          </div>
+        </BentoPanel>
+      </Fit>
+    </div>
+  </div>
+</section>
+
+<style>
+  .split {
+    padding: 100px 0;
+  }
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 64px;
+    max-width: calc(1240px + 2 * var(--gutter));
+  }
+  .text {
+    flex: 0 1 500px;
+  }
+  .visual {
+    flex: 0 1 640px;
+    min-width: 0;
+  }
+  .body {
+    margin-top: 24px;
+    font-size: 17px;
+    line-height: 26px;
+    letter-spacing: -0.15px;
+    color: var(--color-ink-2);
+  }
+  .body.second {
+    margin-top: 14px;
+    margin-bottom: 32px;
+  }
+
+  .inbox {
+    left: 90px;
+    top: 28px;
+    width: 400px;
+    height: 420px;
+    border-radius: 24px;
+    overflow: hidden;
+  }
+  .h {
+    left: 20px;
+    top: 18px;
+    font-size: 22px;
+    font-weight: var(--fw-bold);
+    letter-spacing: -0.5px;
+  }
+  .scanning {
+    right: 20px;
+    top: 22px;
+    padding: 3px 8px;
+    font-size: 11px;
+    background: rgba(34, 201, 138, 0.14);
+    color: var(--color-mint-ink);
+  }
+  .search {
+    left: 20px;
+    top: 56px;
+    width: 360px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding-left: 11px;
+    border-radius: 10px;
+    background: rgba(118, 118, 128, 0.1);
+    font-size: 13px;
+    letter-spacing: -0.2px;
+    color: var(--color-ink-3);
+  }
+  .search img {
+    width: 14px;
+    height: 14px;
+  }
+  .mail {
+    left: 0;
+    width: 400px;
+    height: 62px;
+  }
+  .mail > * {
+    position: absolute;
+  }
+  .mail.mint {
+    background: rgba(34, 201, 138, 0.06);
+  }
+  .mail.danger {
+    background: rgba(255, 59, 48, 0.05);
+  }
+  .mail.faded {
+    opacity: 0.45;
+  }
+  .accent {
+    left: 0;
+    top: 12px;
+    width: 3px;
+    height: 38px;
+    border-radius: 2px;
+    background: var(--color-mint-2);
+  }
+  .danger .accent {
+    background: #ff3b30;
+  }
+  .avatar {
+    left: 18px;
+    top: 13px;
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border-radius: 18px;
+    background: rgba(118, 118, 128, 0.14);
+    font-size: 14px;
+    font-weight: var(--fw-semibold);
+    color: var(--color-ink-3);
+  }
+  .from {
+    left: 66px;
+    top: 12px;
+    font-size: 14px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.2px;
+  }
+  .subject {
+    left: 66px;
+    top: 32px;
+    font-size: 12px;
+    letter-spacing: -0.2px;
+    color: var(--color-ink-3);
+  }
+  .date {
+    right: 20px;
+    top: 12px;
+    font-size: 12px;
+    font-weight: var(--fw-medium);
+    letter-spacing: -0.2px;
+    color: var(--color-ink-3);
+  }
+  .tag {
+    right: 20px;
+    top: 31px;
+    padding: 2px 7px;
+    font-size: 10px;
+  }
+  .tag.mint {
+    background: rgba(34, 201, 138, 0.14);
+    color: var(--color-mint-ink);
+  }
+  .tag.danger {
+    background: var(--color-danger-soft);
+    color: var(--color-danger);
+  }
+  .rule {
+    left: 66px;
+    top: 61.5px;
+    width: 334px;
+    height: 0.5px;
+    background: var(--mock-hair);
+  }
+  .toast {
+    left: 382px;
+    top: 454px;
+    width: 230px;
+    height: 64px;
+  }
+  .toast :global(.toast-mark) {
+    position: absolute;
+    left: 16px;
+    top: 15px;
+  }
+  .t1 {
+    left: 60px;
+    top: 13px;
+    font-size: 14px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.2px;
+  }
+  .t2 {
+    left: 60px;
+    top: 33px;
+    font-size: 12px;
+    letter-spacing: -0.2px;
+    color: var(--color-mint-ink);
+  }
+
+  @media (max-width: 1023px) {
+    .split {
+      padding: 72px 0;
+    }
+    .container {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 48px;
+    }
+    .text,
+    .visual {
+      flex: none;
+      max-width: 640px;
+      width: 100%;
+      margin-inline: auto;
+    }
+  }
+
+  /* ---- Motion (user brief 2026-11-10): the inbox fills progressively — receipts
+     slide in one by one, amounts count up, the forgotten charge glows red, then
+     the result toast pops in (no floating: user, 2026-11-10). ---- */
+  :global(.fx) .scanner:not(:global(.is-in)) .inbox,
+  :global(.fx) .scanner:not(:global(.is-in)) .mail,
+  :global(.fx) .scanner:not(:global(.is-in)) .toast,
+  :global(.fx) .scanner:not(:global(.is-in)) .text :global(.checklist li) {
+    opacity: 0;
+  }
+  :global(.fx) .scanner:global(.is-in) .inbox {
+    animation: s-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+  :global(.fx) .scanner:global(.is-in) .scanning {
+    animation: s-breathe 2.4s ease-in-out 1.6s infinite;
+  }
+  :global(.fx) .scanner:global(.is-in) .mail {
+    animation: s-slide 0.65s cubic-bezier(0.22, 1, 0.36, 1) calc(0.35s + var(--i) * 0.16s) backwards;
+  }
+  :global(.fx) .scanner:global(.is-in) .accent {
+    transform-origin: center;
+    animation: s-grow 0.5s cubic-bezier(0.22, 1, 0.36, 1) calc(0.6s + var(--i) * 0.16s) backwards;
+  }
+  :global(.fx) .scanner:global(.is-in) .tag {
+    animation: s-pop 0.55s cubic-bezier(0.34, 1.45, 0.64, 1) calc(0.7s + var(--i) * 0.16s) backwards;
+  }
+  :global(.fx) .scanner:global(.is-in) .tag.danger {
+    animation:
+      s-pop 0.55s cubic-bezier(0.34, 1.45, 0.64, 1) calc(0.7s + var(--i) * 0.16s) backwards,
+      s-red-glow 2.8s ease-in-out 1.6s infinite;
+  }
+  :global(.fx) .scanner:global(.is-in) .mail.danger {
+    animation:
+      s-slide 0.65s cubic-bezier(0.22, 1, 0.36, 1) calc(0.35s + var(--i) * 0.16s) backwards,
+      s-row-glow 2.8s ease-in-out 1.6s infinite;
+  }
+  :global(.fx) .scanner:global(.is-in) .toast {
+    animation: s-pop 0.6s cubic-bezier(0.34, 1.45, 0.64, 1) 1.4s backwards;
+  }
+  :global(.fx) .scanner:global(.is-in) .text :global(.checklist li) {
+    animation: s-left 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+  :global(.fx) .scanner:global(.is-in) .text :global(.checklist li:nth-child(1)) { animation-delay: 0.25s; }
+  :global(.fx) .scanner:global(.is-in) .text :global(.checklist li:nth-child(2)) { animation-delay: 0.33s; }
+  :global(.fx) .scanner:global(.is-in) .text :global(.checklist li:nth-child(3)) { animation-delay: 0.41s; }
+  :global(.fx) .scanner:global(.is-in) .text :global(.checklist li:nth-child(4)) { animation-delay: 0.49s; }
+  @keyframes s-rise {
+    from {
+      opacity: 0;
+      translate: 0 24px;
+    }
+  }
+  @keyframes s-slide {
+    from {
+      opacity: 0;
+      translate: 22px 0;
+    }
+  }
+  @keyframes s-left {
+    from {
+      opacity: 0;
+      translate: -12px 0;
+    }
+  }
+  @keyframes s-grow {
+    from {
+      scale: 1 0;
+    }
+  }
+  @keyframes s-pop {
+    from {
+      opacity: 0;
+      scale: 0.6;
+    }
+  }
+  @keyframes s-breathe {
+    50% {
+      opacity: 0.6;
+    }
+  }
+  @keyframes s-red-glow {
+    50% {
+      box-shadow: 0 0 12px 1px rgba(255, 59, 48, 0.4);
+    }
+  }
+  @keyframes s-row-glow {
+    50% {
+      box-shadow: inset 0 0 26px 0 rgba(255, 59, 48, 0.1);
+    }
+  }
+</style>

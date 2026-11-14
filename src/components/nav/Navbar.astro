@@ -7,7 +7,6 @@ import CentryMark from '../brand/CentryMark.astro';
 import FeaturesDropdown from './FeaturesDropdown.astro';
 import MobileMenu from './MobileMenu.astro';
 import ThemeToggle from '../ui/ThemeToggle.astro';
-import arrow from '../../assets/icons/arrow-up-right.svg?url';
 import { anchors, links, linkAttrs } from '../../config/links';
 ---
 
@@ -32,7 +31,7 @@ import { anchors, links, linkAttrs } from '../../config/links';
       <a class="nav-link login" {...linkAttrs(links.logIn)}>Log in</a>
       <a class="download" {...linkAttrs(links.downloadApp)}>
         <span class="download-label">Download<span class="download-app"> app</span></span>
-        <span class="arrow-chip"><img src={arrow} alt="" width="28" height="28" /></span>
+        <span class="arrow-chip" aria-hidden="true"><svg viewBox="0 0 28 28" width="20" height="20" fill="none"><path d="M10.5 17.5 17.5 10.5M17.5 16.19V10.5h-5.69" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
       </a>
       <MobileMenu />
     </div>
@@ -56,11 +55,11 @@ import { anchors, links, linkAttrs } from '../../config/links';
     position: relative;
     width: 846px;
     max-width: 100%;
-    height: 52px;
+    height: 60px;
     display: grid;
     grid-template-columns: minmax(max-content, 1fr) auto minmax(max-content, 1fr);
     align-items: center;
-    padding: 0 6px 0 18px;
+    padding: 0 8px 0 22px;
     border-radius: var(--radius-pill);
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.72) 100%);
     backdrop-filter: blur(12px);
@@ -75,7 +74,7 @@ import { anchors, links, linkAttrs } from '../../config/links';
   .left,
   .right {
     min-width: 0;
-    height: 40px;
+    height: 44px;
     display: flex;
     align-items: center;
   }
@@ -132,8 +131,9 @@ import { anchors, links, linkAttrs } from '../../config/links';
   .download {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 4px 4px 4px 16px;
+    gap: 10px;
+    height: 44px;
+    padding: 6px 6px 6px 20px;
     border-radius: var(--radius-pill);
     background: var(--gradient-nav-button);
     box-shadow:
@@ -141,7 +141,7 @@ import { anchors, links, linkAttrs } from '../../config/links';
       0 6px 14px -4px rgba(0, 0, 0, 0.16),
       inset 0 1px 0 0 rgba(255, 255, 255, 0.22);
     color: var(--color-btn-ink);
-    font-size: 14px;
+    font-size: 15px;
     font-weight: var(--fw-semibold);
     letter-spacing: -0.15px;
     line-height: 17px;
@@ -158,18 +158,28 @@ import { anchors, links, linkAttrs } from '../../config/links';
   .download:active {
     transform: translateY(1px);
   }
+  /* white chip + brand arrow, so it reads on the indigo button in both themes */
   .arrow-chip {
-    width: 28px;
-    height: 28px;
-    border-radius: 14px;
-    background: var(--color-mint);
-    box-shadow: inset 0 0.875px 0 0 var(--hl-50);
+    width: 32px;
+    height: 32px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    background: #fff;
+    color: var(--color-brand);
+    box-shadow: 0 1px 2px rgba(20, 14, 90, 0.25), inset 0 -1px 0 rgba(20, 14, 90, 0.08);
     flex: none;
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  @media (hover: hover) {
+    .download:hover .arrow-chip {
+      transform: rotate(45deg);
+    }
   }
 
   /* ---------- Dark (Figma "Home 2 — Dark" navbar) ---------- */
   :global([data-theme='dark']) .navbar {
-    background: linear-gradient(180deg, rgba(22, 24, 29, 0.88) 0%, rgba(22, 24, 29, 0.72) 100%);
+    background: linear-gradient(180deg, rgba(14, 20, 36, 0.88) 0%, rgba(14, 20, 36, 0.72) 100%);
     box-shadow:
       0 30px 60px -20px rgba(0, 0, 0, 0.3),
       0 14px 32px -8px rgba(0, 0, 0, 0.42),
@@ -185,12 +195,6 @@ import { anchors, links, linkAttrs } from '../../config/links';
       0 1px 2px 0 rgba(0, 0, 0, 0.36),
       0 6px 14px -4px rgba(0, 0, 0, 0.48),
       inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
-  }
-  :global([data-theme='dark']) .arrow-chip {
-    box-shadow: inset 0 0.875px 0 0 rgba(255, 255, 255, 0.1);
-  }
-  :global([data-theme='dark']) .arrow-chip img {
-    filter: brightness(0.4);
   }
 
   /* ---------- Compact (tablet + mobile) ---------- */
@@ -218,3 +222,5 @@ import { anchors, links, linkAttrs } from '../../config/links';
     }
   }
 </style>
+
+

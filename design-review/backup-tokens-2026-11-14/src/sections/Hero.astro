@@ -1,0 +1,387 @@
+---
+/**
+ * Figma "Hero" (378:1587) + the floating "iPhone (realistic)" (420:2457).
+ *
+ * ≥1024px: the 1424×1008 card is rendered at design size and scaled as one
+ * unit (--hs) so the composition is exact. The phone sits outside the card and
+ * overlaps into Stats, as in Figma.
+ *
+ * <1024px (approved adaptation): copy flows at readable sizes; the pile, scan
+ * beam and split tiles stay as a scaled band anchored to the card bottom; the
+ * floating tiles are re-placed at the side edges (data: compactTiles) so they
+ * never sit behind text; the phone still overlaps into Stats.
+ */
+import Navbar from '../components/nav/Navbar.astro';
+import StoreBadge from '../components/ui/StoreBadge.astro';
+import IPhone from '../components/devices/IPhone.astro';
+import HomeScreen from '../components/screens/HomeScreen.astro';
+import SubTile from '../components/brand/SubTile.astro';
+import CancelBadge from '../components/brand/CancelBadge.astro';
+import HeroScene from './HeroScene.astro';
+---
+
+<section class="hero-wrap" data-hero data-motion="running" aria-labelledby="hero-title">
+  <div class="hero-card">
+    <div class="stage">
+      <HeroScene />
+    </div>
+
+    <div class="copy-layer">
+      <div class="copy">
+        <h1 id="hero-title" class="title">Forgotten subscriptions?<br />Never again.</h1>
+        <p class="lede">
+          CentryAI scans your Gmail or iCloud inbox, finds every<br class="br-lg" /> subscription you’re paying for, and
+          tells you which ones to cut.
+        </p>
+        <div class="cta" id="download">
+          <div class="badges">
+            <StoreBadge store="google" />
+            <StoreBadge store="apple" />
+          </div>
+          <p class="fine">7-day free trial&nbsp;&nbsp;·&nbsp;&nbsp;No bank account needed</p>
+        </div>
+      </div>
+    </div>
+    <Navbar />
+  </div>
+
+  <div class="phone">
+    <IPhone label="CentryAI home screen showing $86.94 spent this month and subscriptions renewing soon">
+      <HomeScreen />
+    </IPhone>
+    <!-- Two icons on the phone's top corners (user, 2026-11-12): left active,
+         right cancelled. They drop in with the load intro, then float. -->
+    <div class="corner-icons" aria-hidden="true">
+      <span class="ci ci-l" style="--bob-dur:5.6s;--bob-delay:-1.2s">
+        <SubTile brand="netflix" size={64} class="tile" style="--rot:-14deg" />
+      </span>
+      <span class="ci ci-r" style="--bob-dur:6.2s;--bob-delay:-3.1s">
+        <SubTile brand="hbo-max" state="cancelled" size={64} class="tile" style="--rot:16deg" />
+        <CancelBadge class="badge" />
+      </span>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initHeroScale } from '../scripts/hero';
+  import { initSmoke } from '../scripts/smoke';
+  import { initPileHover } from '../scripts/pile-hover';
+  initHeroScale();
+  initPileHover(); // pile icons nudge away from the cursor
+  initSmoke(); // hero, footer and Privacy smoke
+</script>
+
+<style>
+  .hero-wrap {
+    --hs: 1;
+    position: relative;
+    z-index: 2;
+    padding: var(--section-inset);
+  }
+  /* Full-bleed card: the background stretches with the viewport; the 1424px
+     composition stays centred at design size (scaled down below 1440px). */
+  .hero-card {
+    position: relative;
+    width: 100%;
+    height: calc(1008px * var(--hs));
+    border-radius: 24px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #d2e5ff 0%, #e5eefa 20%, var(--color-page) 33%, var(--color-page) 100%);
+  }
+  .stage,
+  .copy-layer {
+    position: absolute;
+    left: calc(50% - 712px * var(--hs));
+    top: 0;
+    width: 1424px;
+    height: 1008px;
+    transform: scale(var(--hs));
+    transform-origin: 0 0;
+  }
+  /* Dark (Figma "Home 2 — Dark" hero fill) */
+  /* Dark: no grey wash — the hero sits on the clean black page (user, 2026-11-11) */
+  :global([data-theme='dark']) .hero-card {
+    background: var(--color-page);
+  }
+  :global([data-theme='dark']) .title {
+    color: var(--color-ink-1);
+  }
+  .copy-layer {
+    pointer-events: none;
+  }
+  .copy-layer > * {
+    pointer-events: auto;
+  }
+  .edge-tiles {
+    display: none;
+  }
+
+  /* Hero copy — Figma frame y174 w702, gap 24. Centred on the card (approved Q3;
+     Figma has it 53px left of centre). */
+  .copy {
+    position: absolute;
+    left: 361px;
+    top: 174px;
+    width: 702px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    text-align: center;
+  }
+  .title {
+    font-size: 68px;
+    font-weight: var(--fw-semibold);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--color-ink);
+    white-space: nowrap;
+  }
+  .lede {
+    font-size: 21px;
+    line-height: 1.3;
+    color: var(--color-ink-soft);
+    white-space: nowrap;
+  }
+  .cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding-top: 16px;
+  }
+  .badges {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .fine {
+    font-size: 12px;
+    color: var(--color-ink-soft);
+    white-space: pre;
+  }
+
+  /* Phone — Figma x570 y575 on the page = 567px below the card top, centred */
+  .phone {
+    position: absolute;
+    left: 50%;
+    top: calc(var(--section-inset) + 567px * var(--hs));
+    transform: translateX(-50%) scale(var(--hs));
+    transform-origin: 50% 0;
+  }
+
+  /* Corner icons: perched above the phone's top-left / top-right corners */
+  .corner-icons {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .ci {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    animation: ci-bob var(--bob-dur) ease-in-out var(--bob-delay) infinite;
+  }
+  /* centred just above each top corner; the rotated tile's lowest point stays
+     above the screen (which starts 9.5px inside the frame) */
+  .ci-l {
+    left: -40px;
+    top: -12px;
+  }
+  .ci-r {
+    left: 276px;
+    top: -8px;
+  }
+  /* compact: the copy sits right above the phone, so the icons step out to the
+     sides of the top corners instead (still clear of the screen) */
+  @media (max-width: 1023px) {
+    .ci-l {
+      left: -62px;
+      top: 18px;
+    }
+    .ci-r {
+      left: 298px;
+      top: 10px;
+    }
+  }
+  .ci :global(.tile) {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: rotate(var(--rot));
+  }
+  .ci :global(.badge) {
+    position: absolute;
+    left: 41px;
+    top: -8px;
+  }
+  @keyframes ci-bob {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+  /* load intro (desktop): they drop in with the falling icons and settle as the
+     pile lands, then the float starts from rest */
+  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+    .ci {
+      animation:
+        ci-in 1.15s cubic-bezier(0.22, 1, 0.36, 1) var(--ci-d, 1.3s) both,
+        ci-bob var(--bob-dur) ease-in-out calc(var(--ci-d, 1.3s) + 1.15s) infinite;
+    }
+    .ci-r {
+      --ci-d: 1.42s;
+    }
+  }
+  @keyframes ci-in {
+    from {
+      translate: 0 -640px;
+      opacity: 0;
+    }
+    12% {
+      opacity: 1;
+    }
+    to {
+      translate: 0 0;
+    }
+  }
+  [data-motion='paused'] .ci {
+    animation-play-state: paused;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ci {
+      animation: none;
+    }
+  }
+
+  /* ================= Compact hero (< 1024px) ================= */
+  @media (max-width: 1023px) {
+    .hero-wrap {
+      --band-scale: 0.75; /* pile / beam band scale */
+      --zone: 300px; /* height of the phone + pile zone below the copy */
+      --phone-scale: 0.8;
+    }
+    .hero-card {
+      height: auto;
+      padding: 120px 0 var(--zone);
+    }
+    /* Pile/beam band: the full stage, scaled, centred and anchored to the bottom */
+    .stage {
+      top: auto;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%) scale(var(--band-scale));
+      transform-origin: 50% 100%;
+    }
+    /* Floating stage tiles are replaced by the edge set below */
+    .stage :global(.active) {
+      display: none;
+    }
+    /* keep the "Canceled" bubble inside the cropped band */
+    .stage :global(.bubble) {
+      left: 1040px !important;
+    }
+    .copy-layer {
+      position: relative;
+      left: 0;
+      width: auto;
+      height: auto;
+      transform: none;
+      z-index: 2;
+    }
+    .copy {
+      position: relative;
+      left: auto;
+      top: auto;
+      width: auto;
+      gap: 20px;
+      padding-inline: var(--gutter);
+    }
+    .title {
+      font-size: clamp(38px, 6.4vw, 56px);
+      line-height: 1.02;
+      white-space: normal;
+    }
+    .lede {
+      font-size: clamp(17px, 2.5vw, 20px);
+      white-space: normal;
+      max-width: 600px;
+    }
+    .cta {
+      padding-top: 8px;
+    }
+    .edge-tiles {
+      display: block;
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .edge {
+      position: absolute;
+      animation: bob var(--bob-dur) ease-in-out var(--bob-delay) infinite;
+    }
+    .edge :global(.edge-tag) {
+      position: absolute;
+      right: -26px;
+      bottom: -8px;
+      transform: rotate(11deg);
+    }
+    .phone {
+      top: auto;
+      bottom: calc(var(--section-inset) + var(--zone) - 40px);
+      transform: translateX(-50%) translateY(100%) scale(var(--phone-scale));
+      transform-origin: 50% 0;
+    }
+    @keyframes bob {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-5px);
+      }
+    }
+  }
+  @media (max-width: 1023px) and (min-width: 768px) {
+    .only-mobile {
+      display: none;
+    }
+  }
+  @media (max-width: 767px) {
+    .hero-wrap {
+      --band-scale: 0.5;
+      --zone: 230px;
+      --phone-scale: 0.74;
+    }
+    .hero-card {
+      padding-top: 100px;
+      border-radius: 20px;
+    }
+    .br-lg {
+      display: none;
+    }
+    .badges :global(.badge) {
+      --s: 0.857;
+    }
+    .only-tablet {
+      display: none;
+    }
+    .stage :global(.bubble) {
+      left: 850px !important;
+      top: 740px !important;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .edge {
+      animation: none;
+    }
+  }
+  :global([data-motion='paused']) .edge {
+    animation-play-state: paused;
+  }
+</style>

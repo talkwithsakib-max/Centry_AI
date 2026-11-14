@@ -1,0 +1,233 @@
+---
+/** Screen 5 "Inbox, scanned" (453:9656). 330px Figma coordinates. */
+import ScreenFrame from './ScreenFrame.astro';
+import AppIcon from '../brand/AppIcon.astro';
+import { vecStyle } from './geom';
+import dial from '../../assets/icons/screens/s5-dial.svg?url';
+import marker from '../../assets/icons/screens/s5-marker.svg?url';
+import close from '../../assets/icons/screens/s5-close.svg?url';
+import glow from '../../assets/icons/screens/s5-glow.svg?url';
+import track from '../../assets/icons/screens/s5-track.svg?url';
+import progress from '../../assets/icons/screens/s5-progress.svg?url';
+import core from '../../assets/icons/screens/s5-core.svg?url';
+import envelope from '../../assets/icons/screens/s5-envelope.svg?url';
+import lock from '../../assets/icons/screens/s5-lock.svg?url';
+import check from '../../assets/icons/screens/s5-check.svg?url';
+import type { Brand } from '../brand/brands';
+
+const orbitIcons: { b: Brand; x: number; y: number; bg?: string }[] = [
+  { b: 'netflix', x: 52.25, y: 125.71 },
+  { b: 'spotify', x: 229.52, y: 128.8 },
+  { b: 'prime-video', x: 240.35, y: 252.58 },
+  { b: 'hbo-max', x: 42.9, y: 259.47, bg: '#5a17d6' },
+  { b: 'midjourney', x: 135.65, y: 85.03, bg: '#fff' },
+];
+const found: { b: Brand; bg?: string }[] = [
+  { b: 'netflix' },
+  { b: 'spotify' },
+  { b: 'prime-video' },
+  { b: 'hbo-max', bg: '#5a17d6' },
+  { b: 'duolingo' },
+  { b: 'midjourney', bg: '#fff' },
+];
+---
+
+<ScreenFrame>
+  <div class="scr">
+    <span class="round-btn" style="left:15.73px;top:45.63px">
+      <img src={close} alt="" style={vecStyle(28.32, [36.11, 36.11, 36.11, 36.11], [-8.5, -8.5, -8.5, -8.5])} />
+    </span>
+    <span class="hdr">Inbox scan</span>
+    <img class="orbit" src={dial} alt="" />
+    <img class="glow" src={glow} alt="" />
+    <div class="ring">
+      <img src={track} alt="" style="left:0;top:0;width:157.332px;height:157.332px" />
+      <img src={progress} alt="" style="left:-8.606px;top:-6px;width:175.939px;height:177.333px" />
+      <img src={core} alt="" style="left:3.44px;top:5.44px;width:150.453px;height:150.453px" />
+      <img src={envelope} alt="" style="left:66.87px;top:36.19px;width:23.6px;height:23.6px" />
+      <span class="pct">72%</span>
+      <span class="read">1,284 emails read</span>
+      <img src={marker} alt="" style="left:-5.42px;top:82.23px;width:26px;height:26px" />
+    </div>
+    {
+      orbitIcons.map((o) => (
+        <AppIcon
+          brand={o.b}
+          size={29.893}
+          radius={7.473}
+          bg={o.bg}
+          style={`position:absolute;left:${o.x}px;top:${o.y}px;box-shadow:0 4.72px 9.44px -3.147px rgba(0,0,0,.14)`}
+        />
+      ))
+    }
+    <span class="finding">Finding your subscriptions…</span>
+    <span class="note"><img src={lock} alt="" />Read-only access · nothing is stored</span>
+
+    <div class="found">
+      <span class="t-name" style="left:12.59px;top:12.59px">Found so far</span>
+      <span class="pill nine">9 subscriptions</span>
+      {
+        found.map((f, i) => (
+          <AppIcon brand={f.b} size={28.32} radius={7.08} bg={f.bg} style={`position:absolute;left:${12.59 + i * 20.45}px;top:39.33px`} />
+        ))
+      }
+      <span class="pill more">+3</span>
+      <span class="hair" style="left:12.59px;top:80.24px;width:252.518px"></span>
+      <AppIcon brand="headspace" size={26.746} radius={6.687} bg="#fff" style="position:absolute;left:12.59px;top:91.25px" />
+      <span class="hn">Headspace</span>
+      <span class="hm">Just found · receipt from Oct 20</span>
+      <span class="ck"><img src={check} alt="" /></span>
+    </div>
+
+    <span class="review">Review 9 subscriptions</span>
+  </div>
+</ScreenFrame>
+
+<style>
+  .hdr {
+    left: 0;
+    right: 0;
+    top: 51.92px;
+    text-align: center;
+    font-size: 13.373px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.157px;
+  }
+  /* Figma "Orbit dial" (759:16124): 72 mint ticks, export padded 3.7px each side */
+  .orbit {
+    left: 36.83px;
+    top: 96.23px;
+    width: 235.5px;
+    height: 235.5px;
+    max-width: none;
+  }
+  .glow {
+    left: 36.59px;
+    top: 95.98px;
+    width: 236px;
+    height: 236px;
+    max-width: none;
+  }
+  .ring {
+    left: 75.91px;
+    top: 135.31px;
+    width: 157.332px;
+    height: 157.332px;
+  }
+  .ring > * {
+    position: absolute;
+    max-width: none;
+  }
+  .pct {
+    left: 0;
+    right: 0;
+    top: 62.93px;
+    text-align: center;
+    font-size: 31.466px;
+    font-weight: var(--fw-bold);
+    letter-spacing: -0.944px;
+  }
+  .read {
+    left: 0;
+    right: 0;
+    top: 102.27px;
+    text-align: center;
+    font-size: 9.44px;
+    font-weight: var(--fw-medium);
+    letter-spacing: -0.157px;
+    color: var(--color-ink-3);
+  }
+  .finding {
+    left: 0;
+    right: 0;
+    top: 349.28px;
+    text-align: center;
+    font-size: 16.52px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.393px;
+  }
+  .note {
+    left: 0;
+    right: 0;
+    top: 374.45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4.72px;
+    font-size: 10.227px;
+    font-weight: var(--fw-medium);
+    color: var(--color-ink-3);
+  }
+  .note img {
+    width: 9.44px;
+    height: 11.013px;
+  }
+  .found {
+    left: 15.73px;
+    top: 405.92px;
+    width: 277.691px;
+    height: 129.012px;
+    border-radius: 15.733px;
+    background: #fff;
+    box-shadow: 0 0.787px 2.36px rgba(0, 0, 0, 0.04);
+  }
+  .found > * {
+    position: absolute;
+  }
+  .nine {
+    right: 12.59px;
+    top: 11.8px;
+    padding: 3.147px 7.867px;
+    font-size: 9.44px;
+    background: rgba(34, 201, 138, 0.14);
+    color: var(--color-mint-ink);
+  }
+  .more {
+    left: 147.89px;
+    top: 45.63px;
+    padding: 3.147px 7.08px;
+    font-size: 9.44px;
+    background: rgba(118, 118, 128, 0.12);
+  }
+  .hn {
+    left: 47.2px;
+    top: 90.47px;
+    font-size: 11.013px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.157px;
+  }
+  .hm {
+    left: 47.2px;
+    top: 105.41px;
+    font-size: 9.44px;
+    letter-spacing: -0.157px;
+    color: var(--color-ink-3);
+  }
+  .ck {
+    left: 247.8px;
+    top: 95.97px;
+    width: 17.307px;
+    height: 17.307px;
+    border-radius: 8.653px;
+    background: var(--color-mint-2);
+  }
+  .ck img {
+    width: 100%;
+    height: 100%;
+  }
+  .review {
+    left: 15.73px;
+    top: 596.29px;
+    width: 277.691px;
+    height: 42.48px;
+    display: grid;
+    place-items: center;
+    border-radius: 12.587px;
+    background: var(--gradient-btn);
+    box-shadow: inset 0 0.787px 0 rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font-size: 12.587px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.157px;
+  }
+</style>

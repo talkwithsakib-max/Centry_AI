@@ -26,7 +26,7 @@ const { free, pro } = plans;
         <p class="tagline">{free.tagline}</p>
         <p class="price"><span class="amount">{free.price}</span><span class="period">{free.period}</span></p>
         <p class="note">{free.note}</p>
-        <Button {...linkAttrs(links.downloadApp)} block class="plan-btn" data-magnetic>{free.cta}</Button>
+        <Button variant="secondary" {...linkAttrs(links.downloadApp)} block class="plan-btn" data-magnetic>{free.cta}</Button>
         <p class="list-title">{free.listTitle}</p>
         <ul class="features">
           {
@@ -135,31 +135,59 @@ const { free, pro } = plans;
     position: relative;
   }
   .free {
-    background: linear-gradient(180deg, #fff 0%, #faf8f5 100%);
+    background: linear-gradient(180deg, #fff 0%, #f7f8fb 100%);
     box-shadow: var(--elevation-large);
   }
   .pro {
     --pro-shadow:
-      0 20px 44px -12px rgba(14, 42, 34, 0.25), inset 0 -30px 60px 0 rgba(63, 227, 166, 0.18),
+      0 20px 44px -12px rgba(18, 16, 56, 0.25), inset 0 -30px 60px 0 rgb(var(--brand-rgb) / 0.18),
       inset 0 1px 0 0 rgba(255, 255, 255, 0.16);
     color: #fff;
-    background: linear-gradient(126.1deg, #1a1a1d 0%, #09090a 71.43%);
+    background: linear-gradient(126.1deg, #131a2e 0%, #0a0d17 71.43%);
     box-shadow: var(--pro-shadow);
   }
   /* ---- Dark theme (Figma "Home 2 — Dark") ---- */
+  /* dark Free card = glass card token */
   :global([data-theme='dark']) .free {
-    background: linear-gradient(180deg, #111113 0%, #18181b 100%);
+    background: var(--glass-fill);
+    box-shadow: inset 0 0 0 1px var(--glass-border), var(--elevation-large);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
   }
+  /* Dark Pro card (2026-11-14): neutral graphite, the mint light comes from the
+     top only (behind the price), a mint→clear gradient edge, so the glossy mint
+     button stays the single brightest thing on the card. */
   :global([data-theme='dark']) .pro {
     --pro-shadow:
-      0 20px 44px -12px rgba(0, 0, 0, 0.6), inset 0 -30px 60px 0 rgba(63, 227, 166, 0.18),
+      0 30px 60px -20px rgba(0, 0, 0, 0.75),
+      0 0 0 0.5px rgba(255, 255, 255, 0.04),
       inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+    background:
+      radial-gradient(75% 45% at 78% 0%, rgb(var(--brand-rgb) / 0.16) 0%, rgb(var(--brand-light-rgb) / 0.05) 50%, transparent 80%),
+      linear-gradient(180deg, #0e1424 0%, #0c1120 60%, #0a0d17 100%);
+  }
+  :global([data-theme='dark']) .pro::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(180deg, rgb(var(--brand-rgb) / 0.55) 0%, rgb(var(--brand-light-rgb) / 0.18) 28%, rgba(255, 255, 255, 0.06) 55%, rgba(255, 255, 255, 0.03) 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
   }
   :global([data-theme='dark']) .pro-smoke.dark-smoke {
-    opacity: 0.75;
+    opacity: 0.18;
+  }
+  /* calmer pulse in dark: no full mint border, only a soft halo */
+  :global(.fx[data-theme='dark']) .pricing:global(.is-in) .pro::after {
+    animation: none;
+    box-shadow: none;
   }
   :global([data-theme='dark']) .free-check {
-    background: linear-gradient(180deg, #111113 0%, #18181b 100%);
+    background: linear-gradient(180deg, #0e1424 0%, #131a2e 100%);
   }
   :global([data-theme='dark']) .free-check img {
     filter: brightness(0) invert(0.96);
@@ -188,8 +216,8 @@ const { free, pro } = plans;
   .badge {
     padding: 4px 10px;
     border-radius: var(--radius-pill);
-    background: linear-gradient(90deg, #6bf0c0 0%, #22c98a 100%);
-    color: #0b3b2a;
+    background: linear-gradient(90deg, var(--color-brand) 0%, var(--color-brand-deep) 100%);
+    color: var(--color-on-brand, #fff);
     font-size: 12px;
     font-weight: var(--fw-semibold);
   }
@@ -232,11 +260,11 @@ const { free, pro } = plans;
     color: var(--color-ink-3);
   }
   .save {
-    color: #a1a1a6;
+    color: #9aa3be;
   }
   .save strong {
     font-weight: var(--fw-semibold);
-    color: #3ccf96;
+    color: var(--color-success-text);
   }
   .plan :global(.plan-btn) {
     margin-top: 24px;
@@ -288,7 +316,7 @@ const { free, pro } = plans;
   }
   .pro-check {
     background: var(--gradient-mint);
-    box-shadow: 0 2px 6px 0 rgba(34, 201, 138, 0.35);
+    box-shadow: 0 2px 6px 0 rgb(var(--brand-rgb) / 0.35);
   }
   .tile {
     position: absolute !important;
@@ -335,7 +363,7 @@ const { free, pro } = plans;
     font-size: 20px;
     font-weight: var(--fw-semibold);
     letter-spacing: -0.2px;
-    color: #0f7a52;
+    color: var(--color-success-text);
   }
   .n2 {
     margin-top: 2px;
@@ -431,15 +459,15 @@ const { free, pro } = plans;
     border-radius: inherit;
     pointer-events: none;
     box-shadow:
-      inset 0 0 0 1px rgba(63, 227, 166, 0.28),
-      0 0 0 0 rgba(63, 227, 166, 0);
+      inset 0 0 0 1px rgb(var(--brand-rgb) / 0.28),
+      0 0 0 0 rgb(var(--brand-rgb) / 0);
     animation: pro-glow 4.5s ease-in-out 1s infinite;
   }
   @keyframes pro-glow {
     50% {
       box-shadow:
-        inset 0 0 0 1px rgba(63, 227, 166, 0.5),
-        inset 0 0 40px 0 rgba(63, 227, 166, 0.12);
+        inset 0 0 0 1px rgb(var(--brand-rgb) / 0.5),
+        inset 0 0 40px 0 rgb(var(--brand-rgb) / 0.12);
     }
   }
   :global(.fx) .pricing:global(.is-in) .plan.pro {
@@ -454,7 +482,7 @@ const { free, pro } = plans;
     50% {
       box-shadow:
         var(--pro-shadow),
-        0 0 46px -6px rgba(63, 227, 166, 0.38);
+        0 0 46px -6px rgb(var(--brand-rgb) / 0.38);
     }
   }
   :global(.fx) .pricing:global(.is-in) .tile,
@@ -464,4 +492,7 @@ const { free, pro } = plans;
   :global(.fx) .pricing:global(.is-in) .tiles {
     animation-delay: 1.8s;
   }
+
 </style>
+
+

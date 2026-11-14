@@ -1,0 +1,336 @@
+/*
+ * Shared tokens + chrome for the redesigned in-phone app screens (2026-11-14).
+ * Light by default, dark under [data-theme='dark'] — screens follow the site theme.
+ * Every rule is scoped under .mg so nothing leaks into the page.
+ * Markup: components/screens/app/AppStatus.astro, AppTabBar.astro.
+ */
+.mg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-phone);
+  -webkit-font-smoothing: antialiased;
+  /* Light (default) — follows the site theme; dark overrides at the bottom */
+  --bg: #f1f3f8;
+  --ink: #0b1020;
+  --ink-2: var(--color-ink-2);
+  --ink-3: var(--color-ink-3);
+  --glass: #ffffff;
+  --glass-line: rgba(11, 16, 32, 0.1);
+  --card-shadow: 0 1px 2px rgba(28, 36, 70, 0.05), 0 6px 16px -6px rgba(28, 36, 70, 0.1), inset 0 1px 0 #fff;
+  --sep: rgba(11, 16, 32, 0.12);
+  --status: #000;
+  --btn-bg: linear-gradient(180deg, #ffffff 0%, #eef0f2 100%);
+  --btn-shadow: 0 1px 2px rgba(28, 36, 70, 0.1), 0 3px 8px -2px rgba(28, 36, 70, 0.12), inset 0 1px 0 #fff;
+  --meter: rgba(11, 16, 32, 0.08);
+  --tab-bg: rgba(255, 255, 255, 0.82);
+  --tab-shadow: inset 0 0.5px 0 #fff, inset 0 0 0 0.5px rgba(11, 16, 32, 0.08), 0 12px 28px -8px rgba(28, 36, 70, 0.22);
+  --tab-ink: var(--color-ink-3);
+  --tab-on: linear-gradient(90deg, rgb(var(--brand-rgb) / 0.26) 0%, rgb(var(--brand-light-rgb) / 0.2) 100%);
+  --home: #111;
+  --lg-fill: #ffffff;
+  --lg-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 0 0 0.5px rgba(11, 16, 32, 0.07), 0 10px 26px -10px rgba(28, 36, 70, 0.28), 0 2px 6px rgba(28, 36, 70, 0.06);
+  --lg-lens: rgba(82, 70, 232, 0.09);
+  --lg-lens-shadow: inset 0 0 0 0.5px rgba(82, 70, 232, 0.14);
+  --ask-bloom: 0.35;
+  --orb-bg:
+    radial-gradient(circle at 50% 120%, rgb(var(--brand-light-rgb) / 0.3), transparent 55%),
+    radial-gradient(circle at 50% 40%, #ffffff 0%, var(--color-brand-tint) 55%, var(--color-brand-tint) 100%);
+  --orb-shadow:
+    inset 0 -16px 30px rgb(var(--brand-light-rgb) / 0.18),
+    inset 0 12px 30px rgb(var(--brand-rgb) / 0.14),
+    0 22px 44px -14px rgba(28, 36, 70, 0.28),
+    0 0 40px rgb(var(--brand-rgb) / 0.22);
+  --globe-filter: saturate(1.5) brightness(0.68);
+  --pulse-line: rgb(var(--brand-rgb) / 0.55);
+  --sweep-edge: rgb(var(--brand-rgb) / 0.95);
+  --spec: rgba(255, 255, 255, 0.7);
+  /* semantic: --mint = success (money saved / healthy), --red = zombie, --amber = warning */
+  --mint: var(--color-success);
+  --mint-ink: var(--color-success-text);
+  --red: var(--color-zombie);
+  --red-text: var(--color-zombie-text);
+  --amber: var(--color-warning);
+  --brand: var(--color-brand);
+  line-height: 1.2;
+}
+:where(.mg *) {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+
+/* status bar */
+.mg .sb-time {
+  position: absolute;
+  left: 36.5px;
+  top: 13.6px;
+  font-size: 12.2px;
+  font-weight: 600;
+  color: var(--status);
+}
+.mg .sb-island {
+  position: absolute;
+  left: 95.5px;
+  top: 7.9px;
+  width: 90.1px;
+  height: 26.5px;
+  border-radius: 13.2px;
+  background: #000;
+}
+.mg .sb-icons {
+  position: absolute;
+  left: 214px;
+  top: 16px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.mg .bars {
+  display: flex;
+  gap: 1.5px;
+  align-items: flex-end;
+  height: 9px;
+}
+.mg .bars b {
+  width: 2.6px;
+  border-radius: 1px;
+  background: var(--status);
+}
+.mg .bars b:nth-child(1) { height: 3.5px; }
+.mg .bars b:nth-child(2) { height: 5px; }
+.mg .bars b:nth-child(3) { height: 7px; }
+.mg .bars b:nth-child(4) { height: 9px; }
+.mg .batt {
+  position: relative;
+  width: 21px;
+  height: 10px;
+  border: 1px solid color-mix(in srgb, var(--status) 45%, transparent);
+  border-radius: 3px;
+  padding: 1.2px;
+}
+.mg .batt b {
+  display: block;
+  width: 80%;
+  height: 100%;
+  border-radius: 1.5px;
+  background: var(--status);
+}
+
+
+.mg .tabbar {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: 535px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+/* liquid glass surface shared by the pill and the Ask button */
+.mg .tabbar .pill,
+.mg .tabbar .ask {
+  height: 48px;
+  background: var(--lg-fill);
+  backdrop-filter: blur(18px) saturate(1.6);
+  -webkit-backdrop-filter: blur(18px) saturate(1.6);
+  box-shadow: var(--lg-shadow);
+}
+.mg .tabbar .pill {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 24px;
+}
+.mg .tab {
+  flex: 1;
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  border-radius: 20px;
+  font-size: 7px;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  color: var(--tab-ink);
+}
+.mg .tab svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.mg .tab svg .dotf {
+  fill: currentColor;
+  stroke: none;
+}
+.mg .tab svg .soft {
+  opacity: 0.55;
+}
+/* active: a glass capsule (lens) + brand duotone icon */
+.mg .tab.on {
+  color: var(--ink);
+  background: var(--lg-lens);
+  box-shadow: var(--lg-lens-shadow);
+}
+.mg .tab.on svg {
+  stroke: none;
+}
+.mg .tab.on svg .fill {
+  fill: var(--color-brand);
+}
+.mg .tab.on svg .soft {
+  fill: var(--color-brand-light);
+  opacity: 0.75;
+}
+.mg .tab.on svg .cut,
+.mg .tab.on svg path:not(.fill):not(.cut) {
+  stroke: var(--color-on-brand, #fff);
+}
+.mg .tab.on svg path:not(.fill):not(.cut):not([class]) {
+  stroke: var(--color-brand-text);
+  stroke-width: 1.8;
+}
+.mg .tab.on svg .dotf {
+  fill: var(--color-on-brand, #fff);
+}
+/* Ask: round glass button with a gradient sparkle and a soft brand bloom */
+.mg .tabbar .ask {
+  position: relative;
+  isolation: isolate;
+  width: 48px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+/* glowing indigo core inside the glass ring */
+.mg .tabbar .ask::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background:
+    radial-gradient(60% 42% at 50% 10%, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(90% 70% at 50% 100%, #a9a3ff 0%, rgba(169, 163, 255, 0) 60%),
+    linear-gradient(160deg, #7b72ff 0%, #5a50ec 50%, #3b31c2 100%);
+  box-shadow:
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.35),
+    inset 0 -4px 8px rgba(24, 16, 110, 0.5),
+    0 2px 5px -1px rgb(var(--brand-rgb) / 0.55);
+  animation: ask-breathe 3.2s ease-in-out infinite;
+}
+.mg .tabbar .ask svg {
+  position: relative;
+  width: 19px;
+  height: 19px;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.7)) drop-shadow(0 1px 1px rgba(24, 16, 110, 0.5));
+  animation: ask-twinkle 3.2s ease-in-out infinite;
+}
+.mg .tabbar .ask svg path {
+  fill: #fff;
+}
+@keyframes ask-breathe {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.15); }
+}
+@keyframes ask-twinkle {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.08) rotate(8deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mg .tabbar .ask::before,
+  .mg .tabbar .ask svg { animation: none; }
+}
+
+.mg .home-ind {
+  position: absolute;
+  left: 90.5px;
+  top: 600px;
+  width: 100px;
+  height: 3.6px;
+  border-radius: 2px;
+  background: var(--home);
+}
+
+/* ---------- Dark theme ---------- */
+[data-theme='dark'] .mg {
+  /* The IPhone wrapper is .theme-light (old screens stay light), which pins light
+     token values inside the phone. The redesigned screens follow the site theme, so
+     the dark tokens are re-declared here. */
+  --color-ink: #eceef4;
+  --color-ink-2: #9aa3be;
+  --color-ink-3: #7a84a6;
+  --color-brand: #675df9;
+  --color-brand-text: #8b83ff;
+  --color-brand-light: #8b83ff;
+  --color-brand-deep: #4a3fd6;
+  --color-brand-soft: rgba(103, 93, 249, 0.16);
+  --color-brand-tint: #171a3d;
+  --brand-rgb: 103 93 249;
+  --brand-light-rgb: 139 131 255;
+  --color-success: #34d399;
+  --color-success-soft: rgba(52, 211, 153, 0.14);
+  --success-rgb: 52 211 153;
+  --color-zombie: #ff6b5a;
+  --color-zombie-soft: rgba(255, 107, 90, 0.14);
+  --zombie-rgb: 255 107 90;
+  --color-warning: #f5b54a;
+  --warning-rgb: 245 181 74;
+  --color-success-text: #34d399;
+  --color-zombie-text: #ff6b5a;
+  --color-warning-text: #f5b54a;
+  --glass-fill: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --bg: #07090f;
+  --ink: #eceef4;
+  --ink-2: var(--color-ink-2);
+  --ink-3: var(--color-ink-3);
+  /* glass card tokens: 6% white fill, 10% white 1px border */
+  --glass: var(--glass-fill);
+  --glass-line: var(--glass-border);
+  --card-shadow: inset 0 0 0 1px var(--glass-border), inset 0 1px 0 0 rgba(255, 255, 255, 0.05), 0 12px 24px -14px rgba(0, 0, 0, 0.7);
+  --sep: rgba(255, 255, 255, 0.06);
+  --status: #fff;
+  --btn-bg: linear-gradient(180deg, #232c47 0%, #131a2e 100%);
+  --btn-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.14), 0 2px 6px rgba(0, 0, 0, 0.4);
+  --meter: rgba(255, 255, 255, 0.08);
+  --tab-bg: rgba(19, 26, 46, 0.8);
+  --tab-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.14), inset 0 0 0 0.5px rgba(255, 255, 255, 0.06), 0 12px 28px -6px rgba(0, 0, 0, 0.6);
+  --tab-ink: var(--color-ink-3);
+  --tab-on: linear-gradient(90deg, rgb(var(--brand-rgb) / 0.2) 0%, rgb(var(--brand-light-rgb) / 0.14) 100%);
+  --home: rgba(255, 255, 255, 0.85);
+  --lg-fill: linear-gradient(180deg, #1a2036 0%, #121729 100%);
+  --lg-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), inset 0 0 0 0.5px rgba(255, 255, 255, 0.1), inset 0 -8px 16px -10px rgba(0, 0, 0, 0.5), 0 14px 30px -10px rgba(0, 0, 0, 0.75);
+  --lg-lens: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.04) 100%);
+  --lg-lens-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.22), inset 0 0 0 0.5px rgba(255, 255, 255, 0.08);
+  --ask-bloom: 0.55;
+  --orb-bg:
+    radial-gradient(circle at 50% 120%, rgb(var(--brand-light-rgb) / 0.28), transparent 55%),
+    radial-gradient(circle at 50% 45%, #141737 0%, #0a0d17 55%, #0a0d17 100%);
+  --orb-shadow:
+    inset 0 -16px 30px rgb(var(--brand-light-rgb) / 0.12),
+    inset 0 12px 30px rgb(var(--brand-rgb) / 0.12),
+    0 22px 44px -14px rgba(0, 0, 0, 0.85),
+    0 0 40px rgb(var(--brand-rgb) / 0.16);
+  --globe-filter: none;
+  --pulse-line: rgb(var(--brand-rgb) / 0.5);
+  --sweep-edge: rgba(255, 255, 255, 0.9);
+  --spec: rgba(255, 255, 255, 0.16);
+  --mint: var(--color-success);
+  --mint-ink: var(--color-success-text);
+  --red: var(--color-zombie);
+  --red-text: var(--color-zombie-text);
+  --amber: var(--color-warning);
+  --brand: var(--color-brand);
+}
+

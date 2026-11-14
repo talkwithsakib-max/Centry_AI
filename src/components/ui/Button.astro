@@ -1,14 +1,17 @@
 ---
 /**
  * Standard buttons (latest Figma):
- *  - dark: 48px (or 40px "sm"), 12px radius, #2A2A2E→#111113, Elevation/Small
- *  - mint: Pro "Start 7-day free trial"
+ *  - dark: 48px (or 40px "sm"), 12px radius, #232c47→#0e1424, Elevation/Small
+ *  - secondary: quiet glass/outline button for the lesser action next to a primary
+ *    (e.g. Free "Download free" beside Pro's trial CTA), 2026-11-14.
+ *  - mint: Pro "Start 7-day free trial". Dark theme = luminous mint glass
+ *    (glossy mint body, glass reflection, mint halo, hover sheen).
  * Renders <a> when href is given, otherwise <button>. Labels are always centred.
  */
 import type { HTMLAttributes } from 'astro/types';
 
 type Props = {
-  variant?: 'dark' | 'mint';
+  variant?: 'dark' | 'mint' | 'secondary';
   size?: 'md' | 'sm';
   block?: boolean;
   href?: string;
@@ -62,12 +65,111 @@ const Tag = href ? 'a' : 'button';
     box-shadow: var(--elevation-small);
   }
   .mint {
-    color: #0b3b2a;
+    color: var(--color-on-brand, #fff);
     background: var(--gradient-btn-mint);
     box-shadow:
-      0 8px 20px -6px rgba(33, 201, 138, 0.4),
+      0 8px 20px -6px rgb(var(--brand-rgb) / 0.4),
       inset 0 1px 0 0 var(--hl-50);
   }
+  /* ---------- Dark theme: luminous mint glass (2026-11-14) ----------
+     The brightest object on the page: glossy mint body (same family as the
+     "Most popular" badge and the check badges), glass reflection on the top
+     half, white→mint→sky gradient edge, mint halo. Hover: sheen sweep. */
+  :global([data-theme='dark']) .mint {
+    isolation: isolate;
+    overflow: hidden;
+    color: var(--color-on-brand, #fff);
+    font-weight: var(--fw-semibold);
+    background: linear-gradient(180deg, #5a50ec 0%, #4f45e0 55%, #4a3fd6 100%);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.5),
+      inset 0 -2px 6px 0 rgb(var(--brand-rgb) / 0.3),
+      0 0 0 1px rgb(var(--brand-rgb) / 0.35),
+      0 0 24px -4px rgb(var(--brand-rgb) / 0.55),
+      0 14px 34px -12px rgb(var(--brand-rgb) / 0.75);
+    transition:
+      box-shadow var(--dur-slow) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out),
+      filter var(--dur-base) var(--ease-out);
+  }
+  /* glass reflection: soft white band over the top half */
+  :global([data-theme='dark']) .mint::before {
+    content: '';
+    position: absolute;
+    left: 1px;
+    right: 1px;
+    top: 1px;
+    height: 48%;
+    z-index: -1;
+    border-radius: 11px 11px 40% 40% / 11px 11px 8px 8px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 100%);
+    pointer-events: none;
+  }
+  /* sheen that sweeps across on hover */
+  :global([data-theme='dark']) .mint::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -60%;
+    width: 40%;
+    z-index: -1;
+    background: linear-gradient(100deg, transparent 0%, rgba(255, 255, 255, 0.35) 50%, transparent 100%);
+    transform: skewX(-18deg);
+    transition: left 750ms var(--ease-out);
+    pointer-events: none;
+  }
+  @media (hover: hover) {
+    :global([data-theme='dark']) .mint:hover {
+      filter: brightness(1.04);
+      box-shadow:
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.6),
+        inset 0 -2px 6px 0 rgb(var(--brand-rgb) / 0.3),
+        0 0 0 1px rgb(var(--brand-rgb) / 0.5),
+        0 0 34px -2px rgb(var(--brand-rgb) / 0.7),
+        0 18px 40px -12px rgb(var(--brand-rgb) / 0.85);
+    }
+    :global([data-theme='dark']) .mint:hover::after {
+      left: 120%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global([data-theme='dark']) .mint::after {
+      display: none;
+    }
+  }
+
+  /* ---------- Secondary (2026-11-14): one primary per view — this one recedes ---------- */
+  .secondary {
+    color: var(--color-ink);
+    background: var(--color-surface);
+    box-shadow:
+      inset 0 0 0 1px var(--color-border),
+      0 1px 2px 0 rgba(11, 16, 32, 0.06);
+  }
+  :global([data-theme='dark']) .secondary {
+    color: var(--color-ink);
+    background: var(--glass-fill);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+  }
+  @media (hover: hover) {
+    .secondary:hover {
+      box-shadow:
+        inset 0 0 0 1px rgb(var(--brand-rgb) / 0.45),
+        0 1px 2px 0 rgba(11, 16, 32, 0.06);
+    }
+    :global([data-theme='dark']) .secondary:hover {
+      background: rgba(255, 255, 255, 0.09);
+      box-shadow:
+        inset 0 0 0 1px rgb(var(--brand-light-rgb) / 0.4),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+    }
+  }
+
   @media (hover: hover) {
     .dark:hover {
       background: var(--gradient-btn-hover);
@@ -85,3 +187,9 @@ const Tag = href ? 'a' : 'button';
     filter: brightness(0) invert(0.07);
   }
 </style>
+
+
+
+
+
+

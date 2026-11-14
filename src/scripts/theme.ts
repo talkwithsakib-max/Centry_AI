@@ -26,7 +26,7 @@ function sync() {
     const label = btn.querySelector('[data-theme-label]');
     if (label) label.textContent = dark ? 'Light mode' : 'Dark mode';
   });
-  document.querySelector('meta[data-theme-color]')?.setAttribute('content', dark ? '#050506' : '#fefaf7');
+  document.querySelector('meta[data-theme-color]')?.setAttribute('content', dark ? '#07090f' : '#f7f8fb');
 }
 
 function apply(theme: Theme) {

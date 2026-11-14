@@ -22,7 +22,14 @@ const {
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#fefaf7" data-theme-color />
+    <!-- Fonts (Google Fonts, 2026-11-14): Geist (UI), Geist Mono (scores), Instrument Serif Italic (one hero accent word) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=Geist+Mono:wght@400..600&family=Instrument+Serif:ital@1&display=swap"
+    />
+    <meta name="theme-color" content="#f7f8fb" data-theme-color />
     <!-- Theme before first paint: saved choice, else the OS preference. -->
     <script is:inline>
       (function () {
@@ -35,7 +42,7 @@ const {
         }
         document.documentElement.setAttribute('data-theme', t);
         var m = document.querySelector('meta[data-theme-color]');
-        if (m) m.setAttribute('content', t === 'dark' ? '#050506' : '#fefaf7');
+        if (m) m.setAttribute('content', t === 'dark' ? '#07090f' : '#f7f8fb');
         // Scroll motion (scripts/reveal.ts): only when allowed. Module scripts run
         // before DOMContentLoaded, so if it hasn't run by then it failed: drop the
         // class so nothing stays hidden.

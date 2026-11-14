@@ -1,0 +1,310 @@
+---
+/** Screen 4 "Just ask" (452:9804) — Cancel Finder chat. 330px Figma coordinates. */
+import ScreenFrame from './ScreenFrame.astro';
+import AppIcon from '../brand/AppIcon.astro';
+import CentryMark from '../brand/CentryMark.astro';
+import { vecStyle } from './geom';
+import back from '../../assets/icons/screens/s3-prev.svg?url';
+import more from '../../assets/icons/screens/s4-more.svg?url';
+import sparkle from '../../assets/icons/screens/s4-sparkle.svg?url';
+import copy from '../../assets/icons/screens/s4-copy.svg?url';
+import up from '../../assets/icons/screens/s4-thumbup.svg?url';
+import down from '../../assets/icons/screens/s4-thumbdown.svg?url';
+import arrowSug from '../../assets/icons/screens/s4-arrow.svg?url';
+import attach from '../../assets/icons/screens/s4-attach.svg?url';
+import mic from '../../assets/icons/screens/s4-mic.svg?url';
+import send from '../../assets/icons/screens/s4-send.svg?url';
+import openArrow from '../../assets/icons/arrow-up-right-sm.svg?url';
+
+const steps = ['Open the direct cancel page', 'Sign in with your Apple ID', 'Tap “Cancel Subscription”'];
+const sugg = ['Cancel Duolingo too', 'Which subscriptions overlap?', 'Find a cheaper HBO Max plan'];
+---
+
+<ScreenFrame>
+  <div class="scr">
+    <span class="round-btn" style="left:15.73px;top:45.63px">
+      <img src={back} alt="" style={vecStyle(28.32, [33.33, 44.44, 33.33, 38.89], [-7.08, -14.17, -7.08, -14.17])} />
+    </span>
+    <span class="round-btn" style="left:265.1px;top:45.63px">
+      <img src={more} alt="" style="left:8.43px;top:13.49px;width:11.47px;height:1.34px" />
+    </span>
+    <span class="title" style="left:97.55px;top:50.35px">
+      <span class="spark"><img src={sparkle} alt="" /></span>Cancel Finder
+    </span>
+    <span class="t-meta medium" style="left:0;right:0;text-align:center;top:86.53px">Today 9:41</span>
+    <span class="user">How do I cancel Headspace?</span>
+    <CentryMark size={18.88} class="avatar" />
+    <span class="who">CentryAI</span>
+
+    <div class="answer">
+      <p class="lead">Headspace bills you through the App Store. Here’s the fastest way to cancel it:</p>
+      <div class="app">
+        <AppIcon brand="headspace" size={28.32} radius={7.08} bg="#fff" style="position:absolute;left:7.08px;top:7.08px" />
+        <span class="an">Headspace</span>
+        <span class="am">$12.99/mo · not opened in 91 days</span>
+      </div>
+      {
+        steps.map((s, i) => (
+          <>
+            <span class="step" style={`top:${106.99 + i * 25.17}px`}>
+              {i + 1}
+            </span>
+            <span class="st" style={`top:${108.56 + i * 25.17}px`}>
+              {s}
+            </span>
+          </>
+        ))
+      }
+      <span class="open">Open cancel page <img src={openArrow} alt="" /></span>
+      <span class="save">✓&nbsp;&nbsp;You’ll save $155.88 a year</span>
+    </div>
+
+    <span class="fb" style="left:18.88px;top:445.25px">
+      <span><img src={copy} alt="" style={vecStyle(14.16, [16.67, 16.67, 16.67, 16.67], [-5.83, -5.83, -5.83, -5.83])} /></span>
+      <span><img src={up} alt="" style={vecStyle(14.16, [19.44, 8.59, 11.11, 27.78], [-5.6, -6.11, -5.6, -6.11])} /></span>
+      <span><img src={down} alt="" style={vecStyle(14.16, [11.11, 8.59, 19.44, 27.78], [-5.6, -6.11, -5.6, -6.11])} /></span>
+    </span>
+
+    <div class="sugg" style="left:15.73px;top:472px">
+      {
+        sugg.map((s, i) => (
+          <div class="sg" style={`top:${i * 34.613}px`}>
+            <img src={arrowSug} alt="" />
+            <span>{s}</span>
+            {i < 2 && <i />}
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="ask" style="left:15.73px;top:593.14px">
+      <span class="att"><img src={attach} alt="" /></span>
+      <span class="ph">Ask about any subscription</span>
+      <img class="mic" src={mic} alt="" />
+      <span class="send"><img src={send} alt="" /></span>
+    </div>
+  </div>
+</ScreenFrame>
+
+<style>
+  .title {
+    display: flex;
+    align-items: center;
+    gap: 5.507px;
+    font-size: 13.373px;
+    font-weight: var(--fw-semibold);
+  }
+  .spark {
+    position: relative;
+    width: 18.88px;
+    height: 18.88px;
+    border-radius: 9.44px;
+    background: var(--gradient-mint);
+  }
+  .spark img {
+    width: 18.88px;
+    height: 18.88px;
+  }
+  .user {
+    right: 15.73px;
+    top: 105.41px;
+    padding: 8.653px 12.587px;
+    border-radius: 15.733px 15.733px 4.72px 15.733px;
+    background: linear-gradient(170.65deg, #25262c 0%, #0e0f12 71.43%);
+    color: #fff;
+    font-size: 12.587px;
+  }
+  .scr :global(.avatar) {
+    position: absolute;
+    left: 15.73px;
+    top: 154.19px;
+  }
+  .who {
+    left: 40.91px;
+    top: 157.33px;
+    font-size: 10.227px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.157px;
+  }
+  .answer {
+    left: 15.73px;
+    top: 180.93px;
+    width: 277.691px;
+    height: 253.305px;
+    border-radius: 4.72px 17.307px 17.307px 17.307px;
+    background: #fff;
+    box-shadow: 0 0.787px 2.36px rgba(0, 0, 0, 0.04);
+  }
+  .answer > * {
+    position: absolute;
+  }
+  .lead {
+    left: 12.59px;
+    top: 12.59px;
+    width: 252.518px;
+    white-space: normal;
+    font-size: 11.8px;
+    line-height: 16.52px;
+    letter-spacing: -0.157px;
+  }
+  .app {
+    left: 12.59px;
+    top: 51.92px;
+    width: 252.518px;
+    height: 42.48px;
+    border-radius: 11.013px;
+    background: #f2f2f7;
+  }
+  .app > * {
+    position: absolute;
+  }
+  .an {
+    left: 42.48px;
+    top: 7.08px;
+    font-size: 11.013px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.157px;
+  }
+  .am {
+    left: 42.48px;
+    top: 22.81px;
+    font-size: 9.44px;
+    letter-spacing: -0.157px;
+    color: var(--color-ink-3);
+  }
+  .step {
+    left: 12.59px;
+    width: 17.307px;
+    height: 17.307px;
+    display: grid;
+    place-items: center;
+    border-radius: 8.653px;
+    background: rgba(34, 201, 138, 0.14);
+    font-size: 9.44px;
+    font-weight: var(--fw-semibold);
+    color: var(--color-mint-ink);
+  }
+  .st {
+    left: 37.76px;
+    font-size: 11.013px;
+    letter-spacing: -0.157px;
+  }
+  .open {
+    left: 12.59px;
+    top: 187.23px;
+    width: 252.518px;
+    height: 36.186px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4.72px;
+    border-radius: 11.013px;
+    background: linear-gradient(171.84deg, #25262c 0%, #0e0f12 71.43%);
+    color: #fff;
+    font-size: 11.8px;
+    font-weight: var(--fw-semibold);
+  }
+  .open img {
+    width: 11.013px;
+    height: 11.013px;
+  }
+  .save {
+    left: 0;
+    right: 0;
+    top: 232.85px;
+    text-align: center;
+    font-size: 10.227px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.157px;
+    color: var(--color-mint-ink);
+  }
+  .fb {
+    display: flex;
+    gap: 14.16px;
+  }
+  .fb > span {
+    position: relative;
+    width: 14.16px;
+    height: 14.16px;
+  }
+  .fb img {
+    position: absolute;
+  }
+  .sugg {
+    width: 277.691px;
+    height: 103.839px;
+  }
+  .sg {
+    position: absolute;
+    left: 0;
+    width: 277.691px;
+    height: 34.613px;
+  }
+  .sg > * {
+    position: absolute;
+  }
+  .sg img {
+    left: 3.15px;
+    top: 11.01px;
+    width: 12.587px;
+    height: 12.587px;
+  }
+  .sg span {
+    left: 23.6px;
+    top: 9.44px;
+    font-size: 11.8px;
+    font-weight: var(--fw-medium);
+    letter-spacing: -0.157px;
+  }
+  .sg i {
+    left: 23.6px;
+    top: 34.22px;
+    width: 254.092px;
+    height: 0.393px;
+    background: rgba(60, 60, 67, 0.14);
+  }
+  .ask {
+    width: 277.691px;
+    height: 47.2px;
+    border-radius: 23.6px;
+    background: #fff;
+    box-shadow: 0 4.72px 15.73px rgba(0, 0, 0, 0.08);
+  }
+  .ask > * {
+    position: absolute;
+  }
+  .att {
+    left: 9.44px;
+    top: 9.44px;
+    width: 28.32px;
+    height: 28.32px;
+    border-radius: 14.16px;
+    background: rgba(118, 118, 128, 0.12);
+  }
+  .att img,
+  .send img {
+    width: 100%;
+    height: 100%;
+  }
+  .ph {
+    left: 45.63px;
+    top: 15.73px;
+    font-size: 11.8px;
+    letter-spacing: -0.157px;
+    color: var(--color-ink-3);
+  }
+  .mic {
+    left: 208.47px;
+    top: 15.73px;
+    width: 15.733px;
+    height: 15.733px;
+  }
+  .send {
+    left: 238.36px;
+    top: 8.65px;
+    width: 29.893px;
+    height: 29.893px;
+    border-radius: 14.947px;
+    background: #1d1d1f;
+  }
+</style>

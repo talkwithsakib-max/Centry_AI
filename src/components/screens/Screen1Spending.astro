@@ -24,7 +24,7 @@ const arcs = [
   { src: arcOther, i: [0, 51.05, 87.91, 28.49] },
 ] as const;
 const cats = [
-  { name: 'Streaming', meta: '3 subscriptions', price: '$242.82', pct: '47%', bg: 'rgba(255,59,48,.14)', src: catStreaming, i: [25, 16.67, 16.67, 16.67], p: [-6.43, -5.62, -6.43, -5.63] },
+  { name: 'Streaming', meta: '3 subscriptions', price: '$242.82', pct: '47%', bg: 'rgba(255, 107, 90, .14)', src: catStreaming, i: [25, 16.67, 16.67, 16.67], p: [-6.43, -5.62, -6.43, -5.63] },
   { name: 'Wellness', meta: 'Headspace', price: '$77.94', pct: '15%', bg: 'rgba(255,149,0,.14)', src: catWellness, i: [27.68, 20.82, 16.67, 20.82], p: [-6.74, -6.43, -6.74, -6.43] },
   { name: 'AI tools', meta: 'Midjourney', price: '$60.00', pct: '12%', bg: 'rgba(124,92,255,.14)', src: catAi, i: [16.67, 25, 33.33, 25], p: [-7.5, -7.5, -7.5, -7.5] },
   { name: 'Music', meta: 'Spotify', price: '$59.94', pct: '11%', bg: 'rgba(52,199,89,.14)', src: catMusic, i: [16.67, 24.17, 20, 20], p: [-5.92, -6.72, -5.92, -6.72] },
@@ -111,7 +111,7 @@ const cats = [
     letter-spacing: -0.944px;
   }
   .amount span {
-    color: rgba(29, 29, 31, 0.32);
+    color: rgba(11, 16, 32, 0.32);
   }
   .range {
     left: 0;
@@ -126,7 +126,7 @@ const cats = [
   .trend {
     padding: 3.933px 9.44px;
     font-size: 9.44px;
-    background: rgba(34, 201, 138, 0.14);
+    background: rgb(var(--brand-rgb) / 0.14);
     color: var(--color-mint-ink);
   }
   .cat-row {

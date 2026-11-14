@@ -1,0 +1,222 @@
+---
+/** Screen 3 "Never surprised" (452:9644) — renewal calendar. 330px Figma coordinates. */
+import ScreenFrame from './ScreenFrame.astro';
+import AppIcon from '../brand/AppIcon.astro';
+import { vecStyle } from './geom';
+import prev from '../../assets/icons/screens/s3-prev.svg?url';
+import next from '../../assets/icons/screens/s3-next.svg?url';
+import today from '../../assets/icons/screens/s3-today.svg?url';
+import sw from '../../assets/icons/screens/s3-switch.svg?url';
+import type { Brand } from '../brand/brands';
+
+const days = 'SMTWTFS'.split('');
+const dayX = [32.25, 70.8, 111.71, 150.25, 191.16, 230.49, 270.61];
+// Column centres for the month grid, derived from Figma's date positions.
+const colX = [20.6, 59.4, 99.17, 138.9, 178.2, 218.3, 258.4];
+const rowY = [9.44, 53.49, 97.55, 141.6, 185.65];
+type Cell = { d: number; c: number; r: number; tone?: 'muted' | 'weekend' | 'today'; icon?: Brand; bg?: string };
+const cells: Cell[] = [];
+let n = 1;
+for (let r = 0; r < 5 && n <= 30; r++)
+  for (let c = 0; c < 7 && n <= 30; c++) {
+    const tone = n <= 2 ? 'muted' : n === 3 ? 'today' : c === 0 || c === 6 ? 'weekend' : undefined;
+    cells.push({ d: n, c, r, tone });
+    n++;
+  }
+const icons: { b: Brand; c: number; r: number; bg?: string }[] = [
+  { b: 'netflix', c: 4, r: 0 },
+  { b: 'spotify', c: 0, r: 1 },
+  { b: 'midjourney', c: 4, r: 1, bg: '#fff' },
+  { b: 'prime-video', c: 3, r: 2 },
+  { b: 'headspace', c: 5, r: 2, bg: '#fff' },
+  { b: 'duolingo', c: 0, r: 3 },
+  { b: 'hbo-max', c: 5, r: 3, bg: '#5a17d6' },
+];
+const iconX = [11.18, 0, 0, 130.19, 169.86, 209.53, 0];
+---
+
+<ScreenFrame tab="calendar">
+  <div class="scr">
+    <span class="title-xl" style="left:15.73px;top:44.05px">November <span style="color:#aeaeb2">2026</span></span>
+    <span class="round-btn" style="left:230.49px;top:48.77px">
+      <img src={prev} alt="" style={vecStyle(28.32, [33.33, 44.44, 33.33, 38.89], [-7.08, -14.17, -7.08, -14.17])} />
+    </span>
+    <span class="round-btn" style="left:265.1px;top:48.77px">
+      <img src={next} alt="" style={vecStyle(28.32, [33.33, 38.89, 33.33, 44.44], [-7.08, -14.17, -7.08, -14.17])} />
+    </span>
+    <span class="pill p1" style="left:15.73px;top:84.96px">7 renewals</span>
+    <span class="pill p2" style="left:95.19px;top:84.96px">$80.44 due this month</span>
+    {days.map((d, i) => <span class="dow" style={`left:${dayX[i]}px`}>{d}</span>)}
+
+    <div class="grid" style="left:15.73px;top:135.31px">
+      {
+        cells.map((cell) => (
+          <>
+            {cell.tone === 'today' && <img class="today-disc" src={today} alt="" style={`left:${colX[cell.c] - 11.01}px;top:5.51px`} />}
+            <span class:list={['date', cell.tone]} style={`left:${colX[cell.c]}px;top:${rowY[cell.r]}px`}>
+              {cell.d}
+            </span>
+          </>
+        ))
+      }
+      {
+        icons.map((ic) => (
+          <AppIcon
+            brand={ic.b}
+            size={17.307}
+            radius={4.327}
+            bg={ic.bg}
+            style={`position:absolute;left:${ic.c === 0 ? 11.18 : iconX[ic.c]}px;top:${rowY[ic.r] + 18.09}px`}
+          />
+        ))
+      }
+    </div>
+
+    <div class="next" style="left:15.73px;top:372.88px">
+      <AppIcon brand="netflix" size={37.76} radius={9.44} style="position:absolute;left:12.59px;top:20.45px" />
+      <span class="nu">NEXT UP</span>
+      <span class="nt">Netflix renews in 2 days</span>
+      <span class="nm">Thu, Nov 5 · $15.49</span>
+      <img class="sw" src={sw} alt="" />
+      <span class="rm">Remind me</span>
+    </div>
+
+    <span class="later" style="left:15.73px;top:468.85px">Later this month</span>
+    <span class="t-meta medium" style="right:15.73px;top:471.21px;font-size:11.013px">$64.95</span>
+
+    <div class="row-card" style="left:15.73px;top:492.45px;width:277.691px;height:94.399px">
+      <div class="lrow" style="top:0">
+        <AppIcon brand="spotify" size={29.893} radius={7.473} style="position:absolute;left:11.01px;top:8.65px" />
+        <span class="t-name" style="left:50.35px;top:8.65px">Spotify</span>
+        <span class="t-meta" style="left:50.35px;top:25.17px">Sun, Nov 8 · in 5 days</span>
+        <span class="t-name" style="right:15.73px;top:8.65px">$9.99</span>
+        <span class="hair" style="left:50.35px;top:46.81px;width:227.345px"></span>
+      </div>
+      <div class="lrow" style="top:47.2px">
+        <AppIcon brand="midjourney" size={29.893} radius={7.473} bg="#fff" style="position:absolute;left:11.01px;top:8.65px" />
+        <span class="t-name" style="left:50.35px;top:8.65px">Midjourney</span>
+        <span class="t-meta" style="left:50.35px;top:25.17px">Thu, Nov 12 · in 9 days</span>
+        <span class="t-name" style="right:15.73px;top:8.65px">$10.00</span>
+        <span class="pill zombie" style="right:15.73px;top:25.17px">Zombie</span>
+      </div>
+    </div>
+  </div>
+</ScreenFrame>
+
+<style>
+  .p1,
+  .p2 {
+    padding: 4.72px 9.44px;
+    font-size: 10.227px;
+  }
+  .p1 {
+    background: rgba(29, 29, 31, 0.06);
+  }
+  .p2 {
+    background: rgba(34, 201, 138, 0.14);
+    color: var(--color-mint-ink);
+  }
+  .dow {
+    top: 118px;
+    font-size: 9.44px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.157px;
+    color: var(--color-ink-3);
+  }
+  .grid {
+    width: 277.691px;
+    height: 228.132px;
+    border-radius: 15.733px;
+    background: #fff;
+    box-shadow: 0 0.787px 2.36px rgba(0, 0, 0, 0.04);
+  }
+  .grid > * {
+    position: absolute;
+  }
+  .date {
+    transform: translateX(-50%);
+    font-size: 11.013px;
+    font-weight: var(--fw-medium);
+    letter-spacing: -0.157px;
+  }
+  .date.muted {
+    color: #c7c7cc;
+  }
+  .date.weekend {
+    color: var(--color-ink-3);
+  }
+  .date.today {
+    color: #fff;
+    font-weight: var(--fw-semibold);
+  }
+  .today-disc {
+    width: 22.027px;
+    height: 22.027px;
+  }
+  .next {
+    width: 277.691px;
+    height: 78.666px;
+    border-radius: 15.733px;
+    background: linear-gradient(164.18deg, #25262c 0%, #0e0f12 71.43%);
+    box-shadow: 0 7.867px 17.3px 0 rgba(0, 0, 0, 0.14);
+  }
+  .next > * {
+    position: absolute;
+  }
+  .nu {
+    left: 59.79px;
+    top: 17.31px;
+    font-size: 8.653px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: 0.787px;
+    color: var(--color-mint);
+  }
+  .nt {
+    left: 59.79px;
+    top: 31.47px;
+    font-size: 12.587px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.157px;
+    color: #fff;
+  }
+  .nm {
+    left: 59.79px;
+    top: 48.77px;
+    font-size: 10.227px;
+    letter-spacing: -0.157px;
+    color: rgba(255, 255, 255, 0.55);
+  }
+  .sw {
+    left: 228.92px;
+    top: 28.32px;
+    width: 37.76px;
+    height: 25.17px;
+  }
+  .rm {
+    right: 12.59px;
+    top: 53.49px;
+    font-size: 8.653px;
+    font-weight: var(--fw-medium);
+    letter-spacing: -0.157px;
+    color: rgba(255, 255, 255, 0.55);
+  }
+  .later {
+    font-size: 13.373px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.315px;
+  }
+  .lrow {
+    left: 0;
+    width: 277.691px;
+    height: 47.2px;
+  }
+  .lrow > * {
+    position: absolute;
+  }
+  .zombie {
+    padding: 0.787px 4.72px;
+    font-size: 8.653px;
+    background: var(--color-danger-soft);
+    color: var(--color-danger);
+  }
+</style>

@@ -1,0 +1,14 @@
+---
+/* Dev-only QA board for the redesigned app screens (not linked anywhere). */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import IPhone from '../components/devices/IPhone.astro';
+import HomeScreen from '../components/screens/HomeScreen.astro';
+import Screen2Subscriptions from '../components/screens/Screen2Subscriptions.astro';
+---
+
+<BaseLayout title="QA — app screens">
+  <main style="display:flex;gap:60px;justify-content:center;align-items:flex-start;padding:40px;zoom:1.35">
+    <IPhone width={300}><HomeScreen /></IPhone>
+    <IPhone width={300}><Screen2Subscriptions /></IPhone>
+  </main>
+</BaseLayout>

@@ -28,7 +28,7 @@ const product = [
 const resources = Object.values(links.resources);
 const company = [links.support, links.feedback, links.privacyPolicy, links.termsOfUse];
 // Figma front wisps: horizontal bleed (%) each side, bottom bleed (%)
-// Dark theme: the same wisps stroked #334542 (Figma "Home 2 — Dark").
+// Dark theme: the same wisps stroked #2e334d (navy, 2026-11-14 rebrand; was #334542).
 const wisps = [
   { src: w1, dark: w1d, x: 11.69, b: 0 },
   { src: w2, dark: w2d, x: 11.39, b: 0 },
@@ -46,9 +46,12 @@ const wisps = [
       <!-- Dark (Figma): the same smoke as "Dark smoke" (80%) -->
       <span class="texture dark-smoke only-dark" style={`--mask:url(${smoke.src})`}></span>
       <!-- rising smoke (WebGL, scripts/smoke.ts); replaces the two layers above once drawing -->
-      <canvas class="texture smoke-gl" data-smoke data-src={smoke.src}></canvas>
+      <canvas class="texture smoke-gl" data-smoke data-tint="light" data-src={smoke.src}></canvas>
     </div>
 
+    <!-- Dark (2026-11-14): indigo aurora rising behind the wordmark + a soft top sheen -->
+    <span class="aurora only-dark" aria-hidden="true"></span>
+    <span class="sheen-top only-dark" aria-hidden="true"></span>
     <div class="inner">
       <div class="brand-col">
         <a class="brand" href={anchors.top} id="footer-brand">
@@ -161,10 +164,12 @@ const wisps = [
   .smoke.smoke-gl-on :global(.texture:not(.smoke-gl)) {
     display: none !important;
   }
+  /* Dark (2026-11-14): the footer is its own slightly lifted navy surface, so it
+     separates from the page by tone alone — no edge stroke, softer divider. */
   :global([data-theme='dark']) .card {
-    --footer-divider: rgba(255, 255, 255, 0.14);
-    background: var(--color-page);
-    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+    --footer-divider: rgba(255, 255, 255, 0.06);
+    background: linear-gradient(180deg, #0f1428 0%, #0b0f1f 55%, #080b16 100%);
+    box-shadow: none;
   }
   :global([data-theme='dark']) .lang img {
     filter: brightness(0) invert(0.85);
@@ -275,7 +280,7 @@ const wisps = [
     align-items: center;
     margin-top: 52px;
     padding-top: 22px;
-    border-top: 1px solid var(--footer-divider, rgba(60, 60, 67, 0.1));
+    border-top: 1px solid var(--footer-divider, rgba(11, 16, 32, 0.1));
   }
   .copy {
     font-size: 13px;
@@ -324,14 +329,14 @@ const wisps = [
     color: transparent;
     background: linear-gradient(
       180deg,
-      rgba(34, 201, 138, 0.95) 10%,
-      rgba(63, 227, 166, 0.82) 42%,
-      rgba(124, 200, 240, 0.5) 72%,
+      rgb(var(--brand-rgb) / 0.95) 10%,
+      rgb(var(--brand-rgb) / 0.82) 42%,
+      rgb(var(--brand-light-rgb) / 0.5) 72%,
       rgba(255, 255, 255, 0) 97%
     );
     -webkit-background-clip: text;
     background-clip: text;
-    text-shadow: 0 10px 30px rgba(34, 201, 138, 0.18);
+    text-shadow: 0 10px 30px rgb(var(--brand-rgb) / 0.18);
     user-select: none;
     pointer-events: none;
   }
@@ -396,5 +401,67 @@ const wisps = [
       top: auto;
       bottom: -6vw;
     }
+  }
+
+  /* ---- Dark footer (2026-11-14 polish) ----
+     Same language as the dark hero: navy surface, the light smoke texture glowing
+     indigo (screen) behind the wordmark, an aurora from below, a lit wordmark. */
+  :global([data-theme='dark']) .smoke .smoke-gl {
+    /* bluer, deeper indigo than --tex-indigo (which reads grey-mauve on dark) */
+    filter: grayscale(1) sepia(1) saturate(6) hue-rotate(186deg) brightness(0.7);
+    mix-blend-mode: screen;
+    opacity: 0.45;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, transparent 38%, #000 70%, #000 100%);
+    mask-image: linear-gradient(180deg, transparent 0%, transparent 38%, #000 70%, #000 100%);
+  }
+  :global([data-theme='dark']) .smoke .dark-smoke {
+    display: none;
+  }
+  .aurora,
+  .sheen-top {
+    position: absolute;
+    pointer-events: none;
+  }
+  .aurora {
+    left: 50%;
+    bottom: -220px;
+    width: 1500px;
+    height: 620px;
+    transform: translateX(-50%);
+    background:
+      radial-gradient(closest-side, rgb(var(--brand-rgb) / 0.28) 0%, rgb(var(--brand-rgb) / 0.1) 45%, transparent 100%);
+    filter: blur(24px);
+  }
+  .sheen-top {
+    /* light falling on the top edge — replaces the stroke */
+    left: 50%;
+    top: -160px;
+    width: 1100px;
+    height: 320px;
+    transform: translateX(-50%);
+    background: radial-gradient(closest-side, rgb(var(--brand-light-rgb) / 0.14), transparent);
+  }
+  .inner {
+    position: relative;
+    z-index: 1;
+  }
+  .wordmark {
+    z-index: 1;
+  }
+  :global([data-theme='dark']) .wordmark {
+    /* brand indigo, lit only at the very top; no filter (a drop-shadow on clipped
+       text painted a box-shaped glow) */
+    background: linear-gradient(
+      180deg,
+      #a49dff 0%,
+      #7c73fb 24%,
+      #675df9 48%,
+      #4a3fd6 72%,
+      rgb(74 63 214 / 0) 96%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    text-shadow: none;
+    filter: none;
   }
 </style>

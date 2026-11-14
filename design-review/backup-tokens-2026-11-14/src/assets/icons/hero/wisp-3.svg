@@ -1,0 +1,17 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="1438" height="1008" viewBox="0 0 1438 1008" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Wisp 3" opacity="0.7" filter="url(#filter0_f_0_4)">
+<g clip-path="url(#clip0_0_4)">
+<path id="Vector" d="M880 853.2C896.1 853.7 944.4 857.3 976.7 856.6C1008.9 855.9 1041.1 853.2 1073.3 849C1105.6 844.8 1137.8 834.7 1170 831.3C1201.36 828.086 1232.73 828.477 1264.18 828.869L1266.7 828.9C1298.9 829.2 1331.1 832.3 1363.3 833.2C1395.6 834 1443.9 834 1460 834.1" stroke-width="34" stroke-linecap="round" stroke="white"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_f_0_4" x="-14" y="-14" width="1452" height="1036" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="7" result="effect1_foregroundBlur_0_4"/>
+</filter>
+<clipPath id="clip0_0_4">
+<rect width="1424" height="1008" fill="white"/>
+</clipPath>
+</defs>
+</svg>

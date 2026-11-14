@@ -1,0 +1,58 @@
+---
+/**
+ * Floating glass tab bar for the redesigned app screens (styles: styles/app-screen.css).
+ * 2026-11-14: icon-only tabs, the active one opens into a pill with its label, and
+ * "Ask" (the AI) sits in the middle as a raised glowing orb.
+ * Previous version: ./_legacy/AppTabBar.pre-orb.astro
+ */
+interface Props {
+  active?: 'home' | 'subs' | 'calendar' | 'ask' | 'insights' | 'none';
+}
+const { active = 'subs' } = Astro.props;
+---
+
+<nav class="tabbar" aria-hidden="true">
+  <span class:list={['tab', active === 'home' && 'on']}>
+    <svg viewBox="0 0 20 20">
+      <path d="M3.6 8.6 10 3.4l6.4 5.2v6.6a2 2 0 0 1-2 2H5.6a2 2 0 0 1-2-2Z" class="fill" />
+      <path d="M8.2 17.2v-3.6a1.8 1.8 0 0 1 3.6 0v3.6" class="cut" />
+    </svg>
+    <span class="lbl">Home</span>
+  </span>
+  <span class:list={['tab', active === 'subs' && 'on']}>
+    <svg viewBox="0 0 20 20">
+      <rect x="5.5" y="3" width="9" height="2.2" rx="1.1" class="soft" />
+      <rect x="3" y="6.6" width="14" height="10.4" rx="3" class="fill" />
+      <path d="M6.3 10.4h4.2M6.3 13.2h2.4" class="cut" />
+    </svg>
+    <span class="lbl">Subs</span>
+  </span>
+
+  <!-- Ask: the AI, raised orb in the middle -->
+  <span class:list={['ask', active === 'ask' && 'on']}>
+    <span class="ring"></span>
+    <span class="core">
+      <svg viewBox="0 0 20 20">
+        <path d="M10 2.6c.55 3.6 2.2 5.4 6.2 6.4-4 1-5.65 2.8-6.2 6.4-.55-3.6-2.2-5.4-6.2-6.4 4-1 5.65-2.8 6.2-6.4Z" />
+        <path d="M15.6 13.4c.2 1.3.8 1.9 2 2.2-1.2.3-1.8.9-2 2.2-.2-1.3-.8-1.9-2-2.2 1.2-.3 1.8-.9 2-2.2Z" />
+      </svg>
+    </span>
+  </span>
+
+  <span class:list={['tab', active === 'calendar' && 'on']}>
+    <svg viewBox="0 0 20 20">
+      <rect x="3" y="4.2" width="14" height="12.8" rx="3.2" class="fill" />
+      <path d="M3 8.4h14M7 2.8v2.6M13 2.8v2.6" />
+      <circle cx="7.2" cy="12.4" r="0.95" class="dotf" />
+      <circle cx="10.6" cy="12.4" r="0.95" class="dotf" />
+    </svg>
+    <span class="lbl">Calendar</span>
+  </span>
+  <span class:list={['tab', active === 'insights' && 'on']}>
+    <svg viewBox="0 0 20 20">
+      <path d="M4.5 16.5v-4.2M10 16.5V7.5M15.5 16.5V3.8" />
+    </svg>
+    <span class="lbl">Insights</span>
+  </span>
+</nav>
+<span class="home-ind"></span>

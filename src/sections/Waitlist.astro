@@ -101,7 +101,7 @@ import { waitlistEndpoint } from '../config/links';
     top: 50px;
     width: 200px;
     height: 90px;
-    background: radial-gradient(closest-side, rgba(34, 201, 138, 0.18), rgba(34, 201, 138, 0.07) 60%, rgba(34, 201, 138, 0));
+    background: radial-gradient(closest-side, rgb(var(--brand-rgb) / 0.18), rgb(var(--brand-rgb) / 0.07) 60%, rgb(var(--brand-rgb) / 0));
     transform: scale(1.5);
   }
   .backdrop,
@@ -123,14 +123,14 @@ import { waitlistEndpoint } from '../config/links';
     top: 30px;
     width: 96px;
     height: 96px;
-    background: radial-gradient(closest-side, #22c98a, rgba(34, 201, 138, 0.4) 55%, rgba(34, 201, 138, 0));
+    background: radial-gradient(closest-side, var(--color-brand), rgb(var(--brand-rgb) / 0.4) 55%, rgb(var(--brand-rgb) / 0));
   }
   .b2 {
     left: 52px;
     top: 4px;
     width: 84px;
     height: 84px;
-    background: radial-gradient(closest-side, #5ac8fa, rgba(90, 200, 250, 0.4) 55%, rgba(90, 200, 250, 0));
+    background: radial-gradient(closest-side, var(--color-brand-light), rgb(var(--brand-light-rgb) / 0.4) 55%, rgb(var(--brand-light-rgb) / 0));
   }
   .glass {
     border-radius: 29px;
@@ -140,7 +140,7 @@ import { waitlistEndpoint } from '../config/links';
     -webkit-backdrop-filter: blur(11px);
     box-shadow:
       0 1px 2px 0 rgba(0, 0, 0, 0.08),
-      0 20px 40px -10px rgba(15, 61, 46, 0.16),
+      0 20px 40px -10px rgba(24, 20, 72, 0.16),
       inset 1.5px 1.5px 0.5px 0 var(--hl-100),
       inset -1px -1.5px 0.5px 0 rgba(255, 255, 255, 0.8),
       inset 0 0 14px 0 var(--hl-55);
@@ -170,12 +170,12 @@ import { waitlistEndpoint } from '../config/links';
     position: absolute;
     left: 26px;
     top: 25px;
-    filter: drop-shadow(0 5px 5px rgba(15, 122, 82, 0.3));
+    filter: drop-shadow(0 5px 5px rgb(var(--brand-rgb) / 0.3));
   }
 
   /* ---- Dark theme (Figma "Home 2 — Dark": glass app icon, glow, input) ---- */
   :global([data-theme='dark']) .icon-glow {
-    background: radial-gradient(closest-side, rgba(34, 201, 138, 0.3), rgba(34, 201, 138, 0.12) 60%, rgba(34, 201, 138, 0));
+    background: radial-gradient(closest-side, rgb(var(--brand-rgb) / 0.3), rgb(var(--brand-rgb) / 0.12) 60%, rgb(var(--brand-rgb) / 0));
   }
   :global([data-theme='dark']) .b1 {
     opacity: 0.7;
@@ -196,11 +196,11 @@ import { waitlistEndpoint } from '../config/links';
     background: radial-gradient(closest-side, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0));
   }
   :global([data-theme='dark']) .caustic {
-    background: #3fe3a6;
+    background: var(--color-brand);
     opacity: 0.18;
   }
   :global([data-theme='dark']) .glass :global(.glass-mark) {
-    filter: drop-shadow(0 5px 5px rgba(15, 122, 82, 0.55));
+    filter: drop-shadow(0 5px 5px rgb(var(--brand-rgb) / 0.55));
   }
   :global([data-theme='dark']) .input {
     box-shadow:
@@ -212,7 +212,7 @@ import { waitlistEndpoint } from '../config/links';
     box-shadow:
       0 1px 2px 0 rgba(0, 0, 0, 0.4),
       inset 0 1px 0 0 rgba(255, 255, 255, 0.1),
-      0 0 0 2px rgba(229, 48, 42, 0.55);
+      0 0 0 2px rgb(var(--zombie-rgb) / 0.55);
   }
   .copy {
     position: relative;
@@ -226,9 +226,8 @@ import { waitlistEndpoint } from '../config/links';
   }
   .sub {
     margin-top: 20px;
-    font-size: 17px;
-    line-height: 26px;
-    letter-spacing: -0.2px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
     color: var(--color-ink-2);
   }
   .form {
@@ -259,7 +258,7 @@ import { waitlistEndpoint } from '../config/links';
   .input[aria-invalid='true'] {
     box-shadow:
       var(--elevation-control),
-      0 0 0 2px rgba(229, 48, 42, 0.55);
+      0 0 0 2px rgb(var(--zombie-rgb) / 0.55);
   }
   .submit {
     flex: none;
@@ -298,7 +297,7 @@ import { waitlistEndpoint } from '../config/links';
     margin-top: 14px;
   }
   .status[data-tone='error'] {
-    color: var(--color-danger);
+    color: var(--color-zombie-text);
   }
   .status[data-tone='info'] {
     color: var(--color-ink-2);
@@ -328,7 +327,7 @@ import { waitlistEndpoint } from '../config/links';
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' fill='none'%3E%3Cpath d='M7 11.3l2.7 2.7L15 8.5' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
         center / 22px no-repeat,
       var(--gradient-mint);
-    box-shadow: 0 3px 8px rgba(34, 201, 138, 0.4);
+    box-shadow: 0 3px 8px rgb(var(--brand-rgb) / 0.4);
   }
   .fine {
     margin-top: 20px;

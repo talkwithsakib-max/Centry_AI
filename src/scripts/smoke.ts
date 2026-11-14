@@ -14,7 +14,8 @@
  *                    width shows it mirrored (hero wide-screen bleed)
  *   data-fit="fill"  texture stretched over the whole canvas (CSS mask-size = box)
  *   (neither)        object-fit: cover over the canvas itself
- *   data-tint="dark" always tinted as Figma "Dark smoke"; default follows the theme
+ *   data-tint="dark" always tinted as Figma "Dark smoke"; data-tint="light" always draws the
+ *   texture's own colours (hero, 2026-11-14); default follows the theme
  * The still layers stay as first paint and fallback: the canvases' [data-smoke-root]
  * gets .smoke-gl-on once they draw. Motion eases in from zero so the hand-over is
  * seamless. No WebGL or reduced motion → the still smoke stays.
@@ -90,9 +91,9 @@ void main() {
   c.a = min(c.a, 1.0);
 
   if (uDark > 0.5) {
-    vec3 a = vec3(0.200, 0.271, 0.259); // #334542
-    vec3 b = vec3(0.161, 0.220, 0.220); // #293838
-    vec3 e = vec3(0.200, 0.251, 0.278); // #334047
+    vec3 a = vec3(0.180, 0.200, 0.302); // #2e334d
+    vec3 b = vec3(0.145, 0.165, 0.259); // #252a42
+    vec3 e = vec3(0.208, 0.200, 0.329); // #353354
     vec3 g = bx < 0.5 ? mix(a, b, bx * 2.0) : mix(b, e, bx * 2.0 - 1.0);
     gl_FragColor = vec4(g * c.a, c.a);
   } else {
@@ -226,7 +227,8 @@ export function initSmoke() {
     const { gl, u } = l;
     gl.uniform1f(u.uTime, secs);
     gl.uniform1f(u.uEase, e * e * (3 - 2 * e)); // smoothstep
-    gl.uniform1f(u.uDark, l.canvas.dataset.tint === 'dark' || isDark() ? 1 : 0);
+    const tint = l.canvas.dataset.tint;
+    gl.uniform1f(u.uDark, tint === 'light' ? 0 : tint === 'dark' || isDark() ? 1 : 0);
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);

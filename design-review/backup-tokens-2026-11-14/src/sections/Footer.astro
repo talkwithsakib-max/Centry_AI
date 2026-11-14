@@ -1,0 +1,400 @@
+---
+/** Figma "Footer" (449:7834): white top-rounded card, link columns, giant gradient wordmark over mint smoke. */
+import CentryMark from '../components/brand/CentryMark.astro';
+import StoreBadge from '../components/ui/StoreBadge.astro';
+import smoke from '../assets/textures/footer-smoke-blur.webp';
+import haze from '../assets/icons/footer/haze.svg?url';
+import hazeDark from '../assets/icons/footer/haze-dark.svg?url';
+import ThemeToggle from '../components/ui/ThemeToggle.astro';
+import globe from '../assets/icons/footer/globe.svg?url';
+import w1 from '../assets/icons/footer/wisp-1.svg?url';
+import w2 from '../assets/icons/footer/wisp-2.svg?url';
+import w3 from '../assets/icons/footer/wisp-3.svg?url';
+import w4 from '../assets/icons/footer/wisp-4.svg?url';
+import w1d from '../assets/icons/footer/wisp-1-dark.svg?url';
+import w2d from '../assets/icons/footer/wisp-2-dark.svg?url';
+import w3d from '../assets/icons/footer/wisp-3-dark.svg?url';
+import w4d from '../assets/icons/footer/wisp-4-dark.svg?url';
+import { anchors, links, linkAttrs } from '../config/links';
+
+const product = [
+  { label: 'Features', href: anchors.features },
+  { label: 'App preview', href: anchors.appPreview },
+  { label: 'How it works', href: anchors.howItWorks },
+  { label: 'Pricing', href: anchors.pricing },
+  { label: 'FAQ', href: anchors.faq },
+  { label: 'Download', href: anchors.download },
+];
+const resources = Object.values(links.resources);
+const company = [links.support, links.feedback, links.privacyPolicy, links.termsOfUse];
+// Figma front wisps: horizontal bleed (%) each side, bottom bleed (%)
+// Dark theme: the same wisps stroked #334542 (Figma "Home 2 — Dark").
+const wisps = [
+  { src: w1, dark: w1d, x: 11.69, b: 0 },
+  { src: w2, dark: w2d, x: 11.39, b: 0 },
+  { src: w3, dark: w3d, x: 12.18, b: 3.8 },
+  { src: w4, dark: w4d, x: 12.47, b: 10.13 },
+];
+---
+
+<footer class="footer" aria-labelledby="footer-brand">
+  <div class="card">
+    <div class="smoke" aria-hidden="true" data-smoke-root>
+      <img class="haze only-light" src={haze} alt="" />
+      <img class="haze only-dark" src={hazeDark} alt="" />
+      <img class="texture only-light" src={smoke.src} alt="" />
+      <!-- Dark (Figma): the same smoke as "Dark smoke" (80%) -->
+      <span class="texture dark-smoke only-dark" style={`--mask:url(${smoke.src})`}></span>
+      <!-- rising smoke (WebGL, scripts/smoke.ts); replaces the two layers above once drawing -->
+      <canvas class="texture smoke-gl" data-smoke data-src={smoke.src}></canvas>
+    </div>
+
+    <div class="inner">
+      <div class="brand-col">
+        <a class="brand" href={anchors.top} id="footer-brand">
+          <CentryMark size={24} />
+          <span>CentryAI</span>
+        </a>
+        <p class="tagline">Track, detect and cancel recurring subscriptions.<br />Free to start on Google Play.</p>
+        <div class="badges">
+          <StoreBadge store="google" size="md" />
+          <StoreBadge store="apple" size="md" />
+        </div>
+      </div>
+
+      <nav class="col" aria-label="Product">
+        <p class="col-title">Product</p>
+        <ul>{product.map((l) => <li><a href={l.href}>{l.label}</a></li>)}</ul>
+      </nav>
+      <nav class="col" aria-label="Resources">
+        <p class="col-title">Resources</p>
+        <ul>{resources.map((l) => <li><a {...linkAttrs(l)}>{l.label}</a></li>)}</ul>
+      </nav>
+      <nav class="col" aria-label="Company">
+        <p class="col-title">Company</p>
+        <ul>{company.map((l) => <li><a {...linkAttrs(l)}>{l.label}</a></li>)}</ul>
+      </nav>
+
+      <div class="bottom">
+        <p class="copy">© 2026 CentryAI. All rights reserved.</p>
+        <ul class="legal">
+          <li><a {...linkAttrs(links.privacy)}>Privacy</a></li>
+          <li><a {...linkAttrs(links.terms)}>Terms</a></li>
+          <li><a {...linkAttrs(links.cookies)}>Cookies</a></li>
+        </ul>
+        <div class="end">
+          <ThemeToggle variant="pill" />
+          <p class="lang"><img src={globe} alt="" width="14" height="14" />English</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="wordmark" aria-hidden="true" data-reveal>CentryAI</p>
+
+    <div class="front" aria-hidden="true">
+      {wisps.map((w) => <img class="only-light" src={w.src} alt="" style={`left:${-w.x}%;width:${100 + 2 * w.x}%;height:${100 + w.b}%`} />)}
+      {wisps.map((w) => <img class="only-dark" src={w.dark} alt="" style={`left:${-w.x}%;width:${100 + 2 * w.x}%;height:${100 + w.b}%`} />)}
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding: 0 var(--section-inset);
+  }
+  /* Full-bleed card; the 1224px content stays centred */
+  .card {
+    position: relative;
+    min-height: 770px;
+    border-radius: 32px 32px 0 0;
+    overflow: hidden;
+    background: var(--color-surface);
+    box-shadow: var(--elevation-large);
+  }
+  .smoke,
+  .front {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .haze {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .smoke :global(.texture) {
+    position: absolute;
+    left: -40px;
+    top: -10px;
+    width: calc(100% + 80px);
+    height: 850px;
+    max-width: none;
+    object-fit: cover;
+    animation: smoke-drift 40s ease-in-out infinite alternate;
+  }
+  @keyframes smoke-drift {
+    from {
+      transform: translateX(-1.5%) scale(1.03);
+    }
+    to {
+      transform: translateX(1.5%) scale(1.06);
+    }
+  }
+  /* Dark (user, 2026-11-12): clean black like the hero — no grey haze or wisps;
+     only soft smoke drifting like clouds (30%, Figma 80%) */
+  :global([data-theme='dark']) .smoke .dark-smoke,
+  :global([data-theme='dark']) .smoke .smoke-gl {
+    opacity: 0.3;
+  }
+  :global([data-theme='dark']) .haze,
+  :global([data-theme='dark']) .front {
+    display: none;
+  }
+  .smoke-gl {
+    display: none;
+  }
+  .smoke.smoke-gl-on .smoke-gl {
+    display: block;
+    animation: none;
+  }
+  .smoke.smoke-gl-on :global(.texture:not(.smoke-gl)) {
+    display: none !important;
+  }
+  :global([data-theme='dark']) .card {
+    --footer-divider: rgba(255, 255, 255, 0.14);
+    background: var(--color-page);
+    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+  }
+  :global([data-theme='dark']) .lang img {
+    filter: brightness(0) invert(0.85);
+  }
+  .front {
+    opacity: 0.38;
+    height: 737px;
+  }
+  .front img {
+    position: absolute;
+    top: 0;
+    max-width: none;
+  }
+
+  .inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 486px 150px 270px 150px;
+    column-gap: 56px;
+    padding: 88px 100px 0;
+    max-width: 1424px;
+    margin-inline: auto;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 6.3px;
+    font-size: 18px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.18px;
+    border-radius: 8px;
+  }
+  .tagline {
+    margin-top: 16px;
+    font-size: 15px;
+    line-height: 24px;
+    letter-spacing: -0.1px;
+    color: var(--color-ink-2);
+  }
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 28px;
+  }
+  .col {
+    padding-top: 4px;
+  }
+  .col-title {
+    font-size: 14px;
+    font-weight: var(--fw-semibold);
+    line-height: 20px;
+    letter-spacing: -0.1px;
+  }
+  .col ul {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 16px;
+  }
+  .col a,
+  .legal a {
+    color: var(--color-ink-2);
+    border-radius: 4px;
+    transition: color var(--dur-base) var(--ease-out);
+  }
+  .col a {
+    font-size: 15px;
+    line-height: 20px;
+    letter-spacing: -0.15px;
+    white-space: nowrap;
+  }
+  .col a {
+    display: inline-block;
+    transition:
+      color var(--dur-base) var(--ease-out),
+      translate var(--dur-base) var(--ease-out);
+  }
+  .col a:hover,
+  .legal a:hover {
+    color: var(--color-ink);
+  }
+  @media (hover: hover) {
+    .col a:hover {
+      translate: 3px 0;
+    }
+  }
+  /* brand reveal (user brief 2026-11-10): the wordmark rises out of the card's
+     bottom edge and its gradient brightens into place */
+  :global(.fx) .wordmark:not(:global(.is-in)) {
+    opacity: 0;
+  }
+  :global(.fx) .wordmark:global(.is-in) {
+    animation: wordmark-in 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.15s backwards;
+  }
+  @keyframes wordmark-in {
+    from {
+      opacity: 0;
+      translate: 0 28%;
+      letter-spacing: -0.01em;
+    }
+  }
+  .bottom {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    margin-top: 52px;
+    padding-top: 22px;
+    border-top: 1px solid var(--footer-divider, rgba(60, 60, 67, 0.1));
+  }
+  .copy {
+    font-size: 13px;
+    line-height: 18px;
+    letter-spacing: -0.1px;
+    color: var(--color-ink-3);
+  }
+  .legal {
+    display: flex;
+    gap: 24px;
+    font-size: 13px;
+    font-weight: var(--fw-medium);
+    line-height: 18px;
+    letter-spacing: -0.1px;
+  }
+  /* Static language display (approved: no dropdown, no chevron) */
+  .end {
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .lang {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    background: var(--color-fill-1);
+    font-size: 13px;
+    font-weight: var(--fw-medium);
+    line-height: 18px;
+    letter-spacing: -0.1px;
+  }
+
+  .wordmark {
+    position: absolute;
+    left: 50%;
+    top: 480px;
+    transform: translateX(-50%);
+    font-size: min(330px, 22.9vw);
+    font-weight: var(--fw-bold);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    white-space: nowrap;
+    color: transparent;
+    background: linear-gradient(
+      180deg,
+      rgba(34, 201, 138, 0.95) 10%,
+      rgba(63, 227, 166, 0.82) 42%,
+      rgba(124, 200, 240, 0.5) 72%,
+      rgba(255, 255, 255, 0) 97%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    text-shadow: 0 10px 30px rgba(34, 201, 138, 0.18);
+    user-select: none;
+    pointer-events: none;
+  }
+  /* dark only: fades out toward the bottom (user, 2026-11-12) */
+  :global([data-theme='dark']) .wordmark {
+    -webkit-mask-image: linear-gradient(180deg, #000 12%, rgba(0, 0, 0, 0.55) 45%, rgba(0, 0, 0, 0.15) 68%, transparent 82%);
+    mask-image: linear-gradient(180deg, #000 12%, rgba(0, 0, 0, 0.55) 45%, rgba(0, 0, 0, 0.15) 68%, transparent 82%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .smoke :global(.texture) {
+      animation: none;
+    }
+  }
+
+  @media (max-width: 1199px) {
+    .inner {
+      grid-template-columns: 1fr 1fr 1.6fr 1fr;
+      column-gap: 32px;
+      padding: 72px var(--gutter) 0;
+    }
+    .brand-col {
+      grid-column: 1 / -1;
+      margin-bottom: 48px;
+    }
+    .col:nth-of-type(1) {
+      grid-column: 1 / 2;
+    }
+  }
+  @media (max-width: 1023px) {
+    .card {
+      min-height: 0;
+      padding-bottom: 34vw;
+      border-radius: 24px 24px 0 0;
+    }
+    .inner {
+      grid-template-columns: 1fr 1fr;
+      row-gap: 40px;
+    }
+    .brand-col {
+      margin-bottom: 0;
+    }
+    .col:nth-of-type(2) {
+      grid-column: 1 / -1;
+      grid-row: 3;
+    }
+    .col a {
+      white-space: normal;
+    }
+    .bottom {
+      margin-top: 8px;
+      grid-template-columns: 1fr auto;
+      row-gap: 16px;
+    }
+    .copy {
+      grid-column: 1 / -1;
+    }
+    .lang {
+      justify-self: end;
+    }
+    .wordmark {
+      top: auto;
+      bottom: -6vw;
+    }
+  }
+</style>

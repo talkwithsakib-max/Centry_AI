@@ -1,149 +1,691 @@
 ---
-/** Screen 2 "Every subscription" (451:10139) — also shown on the CTA flat-lay phone. */
-import ScreenFrame from './ScreenFrame.astro';
+/**
+ * Screen 2 "Every subscription" — redesign (light + dark, follows site theme) (2026-11-14).
+ * Follows the site system: Geist, neutral blacks (#07090f / #0e1424),
+ * mint brand + glossy mint badge, top-edge highlights. Hero = radar orb, from the
+ * CentryMark's radar sweep (mint→blue): subscriptions are blips, zombies glow red.
+ * Layout refs (Mobbin): Orbit (orb hero + count / yearly total),
+ * Cleo AI (insight as a sentence). Laid out in the IPhone slot's 300px space (281 × 609).
+ * Also shown on the CTA flat-lay phone. Previous version: ./_legacy/.
+ */
 import AppIcon from '../brand/AppIcon.astro';
-import add from '../../assets/icons/screens/s2-add.svg?url';
+import AppStatus from './app/AppStatus.astro';
+import AppTabBar from './app/AppTabBar.astro';
+import '../../styles/app-screen.css';
 import type { Brand } from '../brand/brands';
+import { scoreTone } from '../../data/score';
+import badge from '../../assets/icons/badges/sparkle-24.svg?url';
+import { getImage } from 'astro:assets';
+import markPng from '../../assets/images/centry-mark.png';
+const mark = await getImage({ src: markPng, width: 88, format: 'webp' });
 
-type Row = { b: Brand; name: string; meta: string; price: string; score: string; tone: 'red' | 'amber' | 'green'; bg?: string };
+type Row = { b: Brand; name: string; meta: string; price: string; score: number; bg?: string };
 const zombies: Row[] = [
-  { b: 'headspace', name: 'Headspace', meta: 'Not opened in 91 days', price: '$12.99', score: 'Score 99', tone: 'red', bg: '#fff' },
-  { b: 'duolingo', name: 'Duolingo', meta: 'Not opened in 62 days', price: '$6.99', score: 'Score 94', tone: 'red' },
-  { b: 'midjourney', name: 'Midjourney', meta: 'Not opened in 47 days', price: '$10.00', score: 'Score 87', tone: 'red', bg: '#fff' },
+  { b: 'headspace', name: 'Headspace', meta: 'Unused for 91 days', price: '$12.99', score: 99, bg: '#fff' },
+  { b: 'duolingo', name: 'Duolingo', meta: 'Unused for 62 days', price: '$6.99', score: 94 },
+  { b: 'spotify', name: 'Spotify', meta: 'Unused for 47 days', price: '$9.99', score: 87 },
 ];
 const active: Row[] = [
-  { b: 'hbo-max', name: 'HBO Max', meta: 'Renews Nov 27', price: '$15.99', score: 'Score 35', tone: 'amber', bg: '#5a17d6' },
-  { b: 'netflix', name: 'Netflix', meta: 'Renews Nov 5', price: '$15.49', score: 'Score 12', tone: 'green' },
-  { b: 'prime-video', name: 'Prime Video', meta: 'Renews Nov 18', price: '$8.99', score: 'Score 21', tone: 'green' },
-  { b: 'spotify', name: 'Spotify', meta: 'Renews Nov 8', price: '$9.99', score: 'Score 8', tone: 'green' },
+  { b: 'netflix', name: 'Netflix', meta: 'Renews Nov 5', price: '$15.49', score: 12 },
+  { b: 'prime-video', name: 'Prime Video', meta: 'Renews Nov 8', price: '$8.99', score: 8 },
+  { b: 'hbo-max', name: 'HBO Max', meta: 'Renews Nov 27', price: '$15.99', score: 35, bg: '#5a17d6' },
 ];
-const lists = [
-  { label: 'Zombies', dot: '#ff3b30', sum: '3 · $29.98/mo', top: 125.87, listTop: 149.47, rows: zombies },
-  { label: 'Active', dot: '#22c98a', sum: '6 · $56.96/mo', top: 317.81, listTop: 341.41, rows: active },
+/* Dot globe: Fibonacci sphere, orthographic, tilted toward the viewer.
+   Lit from the top-left; colour runs mint (top) → sky blue (bottom) like the CentryMark.
+   scripts below spin it slowly (static when reduced motion). */
+const G = { n: 340, r: 64, c: 75, tilt: -0.38 };
+function globeDots(spin: number) {
+  const out: { x: number; y: number; rad: number; o: number; fill: string }[] = [];
+  const ga = Math.PI * (3 - Math.sqrt(5));
+  const ct = Math.cos(G.tilt), st = Math.sin(G.tilt);
+  const L = [-0.45, -0.6, 0.66];
+  const ll = Math.hypot(...L);
+  for (let i = 0; i < G.n; i++) {
+    const y0 = 1 - (i / (G.n - 1)) * 2;
+    const rr = Math.sqrt(1 - y0 * y0);
+    const th = ga * i + spin;
+    let x = Math.cos(th) * rr, z = Math.sin(th) * rr, y = y0;
+    const y1 = y * ct - z * st, z1 = y * st + z * ct;
+    y = y1; z = z1;
+    const front = z > 0;
+    const lit = Math.max(0, (x * L[0] + y * L[1] + z * L[2]) / ll);
+    const t = (y + 1) / 2;
+    const r = Math.round(103 + (139 - 103) * t), g = Math.round(93 + (131 - 93) * t), b = Math.round(249 + (255 - 249) * t);
+    out.push({
+      x: +(G.c + x * G.r).toFixed(2),
+      y: +(G.c + y * G.r).toFixed(2),
+      rad: +(front ? 0.35 + 0.85 * z * (0.6 + 0.4 * lit) : 0.32).toFixed(2),
+      o: +(front ? 0.18 + 0.82 * Math.pow(z, 1.4) * (0.55 + 0.45 * lit) : 0.07).toFixed(3),
+      fill: `rgb(${r},${g},${b})`,
+    });
+  }
+  return out;
+}
+const dots = globeDots(0);
+
+/* story: only on the Get-the-app phone. Synced to that section's 3.6s sequence
+   (attract.ts plays every animation named in its ONCE list together):
+   tiles are pulled into the phone → their blips light up on the orb (pulse rings
+   flow inward, like the magnet) → the zombies are cancelled as the greyed tiles
+   drop into the pile → zombie blips grey out, totals count down, rows read
+   "Canceled · saving …". Without .fx (reduced motion) the screen stays as-is. */
+interface Props {
+  story?: boolean;
+}
+const { story = false } = Astro.props;
+
+// 9 blips = 9 subscriptions: 3 zombies + 3 named actives + 3 smaller "other" subs
+const blips: { b?: Brand; x: number; y: number; z?: boolean; bg?: string }[] = [
+  { b: 'headspace', x: 70, y: 22, z: true, bg: '#fff' },
+  { b: 'duolingo', x: 22, y: 64, z: true },
+  { b: 'spotify', x: 80, y: 70, z: true },
+  { b: 'netflix', x: 38, y: 26 },
+  { b: 'prime-video', x: 58, y: 84 },
+  { b: 'hbo-max', x: 24, y: 40 },
+  { x: 84, y: 45 },
+  { x: 37, y: 80 },
+  { x: 56, y: 17 },
 ];
 ---
 
-<ScreenFrame tab="home">
-  <div class="scr">
-    <span class="title-xl" style="left:15.73px;top:44.05px">Subscriptions</span>
-    <span class="add" style="left:265.1px;top:48.77px"><img src={add} alt="" /></span>
-    <span class="seg" style="left:15.73px;top:84.96px;width:277.691px">
-      <span class="sel" style="left:1.57px;width:89.417px"></span>
-      <span class="on" style="left:33.83px;white-space:pre">All  9</span>
-      <span style="left:114.85px;white-space:pre;color:var(--color-danger)">Zombie  3</span>
-      <span style="left:210.04px;white-space:pre">Active  6</span>
-    </span>
+<div class="mg" data-story={story ? '' : undefined}>
+  
+  <AppStatus />
 
-    {
-      lists.map((l) => (
-        <>
-          <span class="section" style={`left:15.73px;top:${l.top}px`}>
-            <span class="dot" style={`background:${l.dot}`} />
-            <span class="t-name">{l.label}</span>
-            <span class="sum">{l.sum}</span>
+  <div class="body">
+    <header class="top">
+      <span class="title">Subscriptions</span>
+      <span class="iconbtn" aria-hidden="true">
+        <svg viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9" /></svg>
+      </span>
+    </header>
+
+    <!-- hero: radar orb (CentryMark sweep) — blips are tracked subscriptions -->
+    <div class="radar-wrap" aria-hidden="true">
+      <span class="pulse p1"></span>
+      <span class="pulse p2"></span>
+      <span class="pulse p3"></span>
+      <span class="floor"></span>
+      <div class="radar">
+        <svg class="globe" viewBox="0 0 150 150" data-globe aria-hidden="true">
+          <defs>
+            <radialGradient id="globe-shade" cx="0.42" cy="0.36" r="0.62">
+              <stop offset="0" stop-color="#675df9" stop-opacity="0.14" />
+              <stop offset="1" stop-color="#675df9" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+          <circle cx="75" cy="75" r="64" fill="url(#globe-shade)" />
+          {dots.map((d) => <circle cx={d.x} cy={d.y} r={d.rad} fill={d.fill} opacity={d.o} />)}
+        </svg>
+        <span class="sweep"></span>
+        <span class="spec"></span>
+        <span class="rim"></span>
+        <img class="core" src={mark.src} alt="" />
+        {blips.map((d, i) => (
+          <span class:list={['blip', d.z && 'z', !d.b && 'dot']} style={`left:${d.x}%;top:${d.y}%;--d:${i * 0.9}s;--i:${i}`}>
+            {d.b && <AppIcon brand={d.b} size={15} radius={4.5} bg={d.bg} />}
           </span>
-          <div class="row-card" style={`left:15.73px;top:${l.listTop}px;width:277.691px;height:${l.rows.length * 50.346}px`}>
-            {l.rows.map((r, k) => (
-              <div class="sub-row" style={`top:${k * 50.346}px`}>
-                <AppIcon brand={r.b} size={31.466} radius={7.867} bg={r.bg} style="position:absolute;left:11.01px;top:9.44px" />
-                <span class="n">{r.name}</span>
-                <span class:list={['m', r.tone === 'red' && 'danger']}>{r.meta}</span>
-                <span class="p">{r.price}</span>
-                <span class:list={['pill', 'score', r.tone]}>{r.score}</span>
-                {k < l.rows.length - 1 && <span class="hair" style="left:51.92px;top:49.95px;width:225.772px" />}
-              </div>
-            ))}
-          </div>
-        </>
-      ))
-    }
-  </div>
-</ScreenFrame>
+        ))}
+      </div>
+    </div>
 
-<style>
-  .add {
-    width: 28.32px;
-    height: 28.32px;
-    border-radius: 14.16px;
-    background: #1d1d1f;
-  }
-  .add img {
-    width: 28.32px;
-    height: 28.32px;
-  }
-  .section {
-    width: 277.691px;
-    height: 15.733px;
-  }
-  .section > * {
+    <div class="totals">
+      <div>
+        <p class="big">{story ? <span class="sw"><span class="s0">9</span><span class="s1">6</span></span> : '9'}</p>
+        <p class="k">Subscriptions</p>
+      </div>
+      <div class="r">
+        <p class="big">{story ? (
+          <span class="sw"><span class="s0">$1,042<span>.56</span></span><span class="s1">$682<span>.92</span></span></span>
+        ) : (
+          <>$1,042<span>.56</span></>
+        )}</p>
+        <p class="k">Per year</p>
+      </div>
+    </div>
+
+    <div class="insight">
+      <img class="badge" src={badge} alt="" aria-hidden="true" />
+      {story ? (
+        <p class="sw"><span class="s0"><b>3 zombies</b> are costing you <b>$360 a year.</b></span><span class="s1"><b>3 zombies canceled.</b> You’re saving <b class="ok">$360 a year.</b></span></p>
+      ) : (
+        <p><b>3 zombies</b> are costing you <b>$360 a year.</b></p>
+      )}
+      {story ? <span class="go sw"><span class="s0">Cut all</span><span class="s1">Done ✓</span></span> : <span class="go">Cut all</span>}
+    </div>
+
+    <p class="label"><i class="dot red"></i>Zombies<span>3 · $29.97/mo</span></p>
+    <div class="list zl">
+      {zombies.map((r) => (
+        <div class="row">
+          <AppIcon brand={r.b} size={28} radius={8} bg={r.bg} />
+          <div class="txt">
+            <p class="n">{r.name}</p>
+            {story ? (
+              <p class="m sw"><span class="s0 red">{r.meta}</span><span class="s1 ok">Canceled · saving {r.price}/mo</span></p>
+            ) : (
+              <p class="m red">{r.meta}</p>
+            )}
+          </div>
+          <div class="val">
+            <p class="p"><span class="strike">{r.price}</span></p>
+            <span class:list={['meter', scoreTone(r.score)]}><i style={`width:${r.score}%`}></i></span>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <p class="label"><i class="dot mint"></i>Active<span>6 · $56.91/mo</span></p>
+    <div class="list">
+      {active.map((r) => (
+        <div class="row">
+          <AppIcon brand={r.b} size={28} radius={8} bg={r.bg} />
+          <div class="txt">
+            <p class="n">{r.name}</p>
+            <p class="m">{r.meta}</p>
+          </div>
+          <div class="val">
+            <p class="p">{r.price}</p>
+            <span class:list={['meter', scoreTone(r.score)]}><i style={`width:${r.score}%`}></i></span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <span class="fade" aria-hidden="true"></span>
+
+  <AppTabBar active="subs" />
+</div>
+
+<script>
+  // Spin the dot globe (same maths as the frontmatter). Runs only while on screen.
+  const N = 340, R = 64, C = 75, TILT = -0.38;
+  const ga = Math.PI * (3 - Math.sqrt(5));
+  const ct = Math.cos(TILT), st = Math.sin(TILT);
+  const L = [-0.45, -0.6, 0.66], ll = Math.hypot(...L);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<SVGSVGElement>('[data-globe]').forEach((svg) => {
+    if (reduce) return;
+    const dots = [...svg.querySelectorAll('circle')].slice(1);
+    let inView = false, spin = 0, last = 0;
+    new IntersectionObserver(([e]) => (inView = e.isIntersecting)).observe(svg);
+    const frame = (t: number) => {
+      requestAnimationFrame(frame);
+      const dt = Math.min(48, t - (last || t));
+      last = t;
+      // skip work while off screen or on a hidden tab panel
+      if (!inView || svg.getClientRects().length === 0) return;
+      spin += dt * 0.00018;
+      for (let i = 0; i < N; i++) {
+        const y0 = 1 - (i / (N - 1)) * 2, rr = Math.sqrt(1 - y0 * y0), th = ga * i + spin;
+        const x = Math.cos(th) * rr, z0 = Math.sin(th) * rr;
+        const y = y0 * ct - z0 * st, z = y0 * st + z0 * ct;
+        const lit = Math.max(0, (x * L[0] + y * L[1] + z * L[2]) / ll);
+        const d = dots[i];
+        d.setAttribute('cx', (C + x * R).toFixed(2));
+        d.setAttribute('r', (z > 0 ? 0.35 + 0.85 * z * (0.6 + 0.4 * lit) : 0.32).toFixed(2));
+        d.setAttribute('opacity', (z > 0 ? 0.18 + 0.82 * Math.pow(z, 1.4) * (0.55 + 0.45 * lit) : 0.07).toFixed(3));
+      }
+    };
+    requestAnimationFrame(frame);
+  });
+</script>
+
+<style>  .body {
     position: absolute;
+    left: 14px;
+    right: 14px;
+    top: 44px;
+    display: flex;
+    flex-direction: column;
+  }
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+  .iconbtn {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 13px;
+    background: var(--btn-bg);
+    box-shadow: var(--btn-shadow);
+  }
+  .iconbtn svg {
+    width: 11px;
+    height: 11px;
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+  }
+
+  /* ---------- Radar orb ----------
+   CentryMark sweep (mint var(--color-brand) → sky var(--color-brand-light)). Mobbin refs: WHOOP (dot-matrix
+   sphere), Polestar (soft conic beam), Lightyear (rings fading outward). */
+  .radar-wrap {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 182px;
+    margin-top: 4px;
+  }
+  .radar-wrap::before {
+    content: '';
+    position: absolute;
+    width: 250px;
+    height: 210px;
+    background: radial-gradient(closest-side, rgb(var(--brand-rgb) / 0.2), rgb(var(--brand-light-rgb) / 0.07) 62%, transparent);
+  }
+  .pulse {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 150px;
+    height: 150px;
+    margin: -75px 0 0 -75px;
+    border-radius: 50%;
+    border: 0.6px solid var(--pulse-line);
+    opacity: 0;
+    animation: pulse 5.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  }
+  .p2 { animation-delay: 1.8s; }
+  .p3 { animation-delay: 3.6s; }
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 0.55; }
+    100% { transform: scale(1.75); opacity: 0; }
+  }
+  .floor {
+    /* reflected glow under the orb */
+    position: absolute;
+    left: 50%;
+    bottom: 2px;
+    width: 130px;
+    height: 16px;
+    margin-left: -65px;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(var(--brand-rgb) / 0.35), transparent);
+    filter: blur(3px);
+  }
+  .radar {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--orb-bg);
+    box-shadow: var(--orb-shadow);
+  }
+  .globe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    filter: var(--globe-filter);
+  }
+  .sweep {
+    position: absolute;
+    inset: -1px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg,
+      transparent 0deg, transparent 250deg,
+      rgb(var(--brand-rgb) / 0.06) 290deg,
+      rgb(var(--brand-rgb) / 0.28) 335deg,
+      rgb(var(--brand-light-rgb) / 0.55) 357deg,
+      var(--sweep-edge) 359.6deg,
+      transparent 360deg);
+    mix-blend-mode: screen;
+    animation: sweep 6s linear infinite;
+  }
+  @keyframes sweep {
+    to { transform: rotate(360deg); }
+  }
+  .spec {
+    /* glass highlight */
+    position: absolute;
+    left: 18%;
+    top: 6%;
+    width: 64%;
+    height: 36%;
+    border-radius: 50%;
+    background: linear-gradient(180deg, var(--spec), rgba(255, 255, 255, 0));
+    filter: blur(1px);
+  }
+  .rim {
+    /* iridescent rim in the mark's gradient */
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    padding: 1px;
+    background: conic-gradient(from 200deg, var(--color-brand), var(--color-brand-light) 22%, #ffffff 30%, rgb(var(--brand-light-rgb) / 0.2) 45%,
+      rgb(var(--brand-rgb) / 0.15) 70%, var(--color-brand) 92%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.9;
+  }
+  .core {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 22px;
+    height: 23.5px;
+    margin: -11.75px 0 0 -11px;
+    filter: drop-shadow(0 0 6px rgb(var(--brand-rgb) / 0.85));
+  }
+  .blip {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    border-radius: 5px;
+    box-shadow: 0 0 0 1.5px var(--bg), 0 0 10px rgb(var(--brand-rgb) / 0.45);
+  }
+  /* unnamed subscriptions: small brand dots, so the orb counts 9 */
+  .blip.dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff 0%, #b9b4ff 35%, rgb(var(--brand-rgb)) 100%);
+    box-shadow: 0 0 0 1.5px var(--bg), 0 0 8px rgb(var(--brand-rgb) / 0.8);
+  }
+  .blip.z {
+    box-shadow: 0 0 0 1.5px var(--bg), 0 0 0 2.5px rgb(var(--zombie-rgb) / 0.85), 0 0 12px rgb(var(--zombie-rgb) / 0.7);
+  }
+  .blip.z::after {
+    /* zombie ping */
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 7px;
+    border: 1px solid rgb(var(--zombie-rgb) / 0.8);
+    animation: ping 2.7s ease-out infinite;
+    animation-delay: var(--d);
+  }
+  @keyframes ping {
+    0% { transform: scale(1); opacity: 0.9; }
+    70%, 100% { transform: scale(1.9); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sweep { animation: none; transform: rotate(40deg); }
+    .pulse, .blip.z::after { animation: none; opacity: 0; }
+  }
+
+  .totals {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 4px;
+  }
+  .totals .r {
+    text-align: right;
+  }
+  .big {
+    font-size: 36px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.045em;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .big span {
+    font-size: 20px;
+    letter-spacing: -0.02em;
+    color: var(--ink-3);
+  }
+  .k {
+    margin-top: 5px;
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--ink-3);
+  }
+
+  .insight {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 16px;
+    padding: 10px 10px 10px 11px;
+    border-radius: 14px;
+    background: var(--glass);
+    box-shadow: var(--card-shadow);
+  }
+  .badge {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    transform: scale(1.5);
+    transform-origin: 40% 40%;
+  }
+  .insight p {
+    flex: 1;
+    font-size: 9.6px;
+    line-height: 1.35;
+    color: var(--ink-2);
+    white-space: normal;
+  }
+  .insight b {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .go {
+    flex: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: linear-gradient(180deg, var(--color-brand-light) 0%, var(--color-brand) 100%);
+    box-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.5), 0 2px 8px rgb(var(--brand-rgb) / 0.3);
+    color: var(--color-on-brand, #fff);
+    font-size: 8.8px;
+    font-weight: 600;
+  }
+
+  .label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 18px 2px 8px;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .label span {
+    margin-left: auto;
+    font-size: 8.6px;
+    font-weight: 500;
+    color: var(--ink-3);
   }
   .dot {
-    left: 1.57px;
-    top: 4.72px;
-    width: 6.293px;
-    height: 6.293px;
-    border-radius: 3.147px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
   }
-  .section .t-name {
-    left: 12.59px;
-    top: 0;
+  .dot.red { background: var(--red); box-shadow: 0 0 6px var(--red); }
+  .dot.mint { background: var(--mint); box-shadow: 0 0 6px var(--mint); }
+
+  .list {
+    border-radius: 14px;
+    background: var(--glass);
+    border: 0.5px solid var(--glass-line);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
   }
-  .sum {
-    right: 0;
-    top: 0.79px;
-    font-size: 10.227px;
-    font-weight: var(--fw-medium);
-    letter-spacing: -0.157px;
-    color: var(--color-ink-3);
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    height: 44px;
+    padding: 0 10px;
   }
-  .sub-row {
-    left: 0;
-    width: 277.691px;
-    height: 50.346px;
+  .row + .row {
+    border-top: 0.5px solid var(--sep);
   }
-  .sub-row > * {
+  /* hairline so white icons (Headspace) hold their shape on white cards */
+  .row :global(.app-icon) {
+    box-shadow: 0 0 0 0.5px var(--sep);
+  }
+  .txt {
+    flex: 1;
+    min-width: 0;
+  }
+  .n,
+  .p {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .m {
+    margin-top: 2px;
+    font-size: 8.6px;
+    color: var(--ink-3);
+  }
+  .m.red {
+    color: var(--red-text);
+  }
+  .val {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+  }
+  .meter {
+    width: 34px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--meter);
+    overflow: hidden;
+  }
+  .meter i {
+    display: block;
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #ff8f6b, var(--red));
+  }
+  .meter.warn i {
+    background: linear-gradient(90deg, rgb(var(--warning-rgb) / 0.7), var(--amber));
+  }
+  .meter.ok i {
+    background: linear-gradient(90deg, rgb(var(--success-rgb) / 0.7), var(--mint));
+  }
+
+  .fade {
     position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 78px;
+    background: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--bg) 70%, transparent) 45%, var(--bg) 85%);
+    pointer-events: none;
   }
-  .n,
-  .p {
-    top: 9.44px;
-    font-size: 12.587px;
-    font-weight: var(--fw-semibold);
-    letter-spacing: -0.157px;
+
+  /* ---------- story (Get-the-app phone only) ---------- */
+  .sw {
+    display: inline-grid;
   }
-  .n,
-  .m {
-    left: 51.92px;
+  .sw > * {
+    grid-area: 1 / 1;
   }
-  .p {
-    right: 14.2px;
+  .sw > .s1 {
+    opacity: 0;
   }
-  .m {
-    top: 26.75px;
-    font-size: 10.227px;
-    letter-spacing: -0.157px;
-    color: var(--color-ink-3);
+  .m.sw {
+    display: grid;
   }
-  .m.danger {
-    color: var(--color-danger);
+  .ok {
+    color: var(--mint-ink);
   }
-  .score {
-    right: 14.2px;
-    top: 28.32px;
-    padding: 0.787px 5.507px;
-    font-size: 8.653px;
+  .insight b.ok {
+    color: var(--mint-ink);
   }
-  .score.red {
-    background: rgba(255, 59, 48, 0.1);
-    color: var(--color-danger);
+  .strike {
+    position: relative;
   }
-  .score.amber {
-    background: rgba(255, 149, 0, 0.14);
-    color: #b86200;
+  .strike::after {
+    content: '';
+    position: absolute;
+    left: -1px;
+    right: -1px;
+    top: 52%;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
   }
-  .score.green {
-    background: rgba(52, 199, 89, 0.14);
-    color: #1a8f3c;
+  /* pulse rings flow inward in the story — the magnet pulling */
+  [data-story] .pulse {
+    animation-direction: reverse;
+  }
+  :global(.fx .cta.is-in) [data-story] .blip {
+    animation: story-blip 3.6s calc(var(--i) * 0.07s) both;
+  }
+  :global(.fx .cta.is-in) [data-story] .blip.z {
+    animation: story-blip-z 3.6s calc(var(--i) * 0.07s) both;
+  }
+  :global(.fx .cta.is-in) [data-story] .s0 {
+    animation: story-out 3.6s both;
+  }
+  :global(.fx .cta.is-in) [data-story] .s1 {
+    animation: story-in 3.6s both;
+  }
+  :global(.fx .cta.is-in) [data-story] .zl .strike::after {
+    animation: story-strike 3.6s both;
+  }
+  :global(.fx .cta.is-in) [data-story] .zl .meter {
+    animation: story-fade 3.6s both;
+  }
+  /* blips light up one by one as the tiles land in the phone (≈25–40%) */
+  @keyframes story-blip {
+    0%, 24% { opacity: 0; scale: 0.3; }
+    31% { opacity: 1; scale: 1.25; }
+    36%, 100% { opacity: 1; scale: 1; }
+  }
+  /* zombies: light up, then grey out and fade as the cancelled tiles drop (≈46–60%) */
+  @keyframes story-blip-z {
+    0%, 24% { opacity: 0; scale: 0.3; filter: none; }
+    31% { opacity: 1; scale: 1.25; filter: none; }
+    36%, 46% { opacity: 1; scale: 1; filter: none; }
+    60%, 100% { opacity: 0.3; scale: 0.85; filter: grayscale(1); box-shadow: none; }
+  }
+  @keyframes story-out {
+    0%, 50% { opacity: 1; translate: 0 0; }
+    58%, 100% { opacity: 0; translate: 0 -3px; }
+  }
+  @keyframes story-in {
+    0%, 54% { opacity: 0; translate: 0 3px; }
+    64%, 100% { opacity: 1; translate: 0 0; }
+  }
+  @keyframes story-strike {
+    0%, 50% { transform: scaleX(0); }
+    62%, 100% { transform: scaleX(1); }
+  }
+  @keyframes story-fade {
+    0%, 50% { opacity: 1; }
+    62%, 100% { opacity: 0.25; }
+  }
+
+  /* swap wrappers inside .big are not the grey decimals: keep the big type */
+  .big .sw,
+  .big .sw > .s0,
+  .big .sw > .s1 {
+    font-size: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+  }
+  .big .sw > * > span {
+    font-size: 20px;
+    letter-spacing: -0.02em;
+    color: var(--ink-3);
   }
 </style>
+
+
+

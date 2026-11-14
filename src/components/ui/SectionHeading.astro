@@ -1,8 +1,8 @@
 ---
 /**
  * Eyebrow + two-tone headline (ink line, grey line) + optional subtitle.
- * Figma: eyebrow 13/Semibold +1.8 tracking #13865C; headline 48/Semibold
- * line-height 1.04, -0.96 tracking; second line #8A8A8E.
+ * Figma: eyebrow 13/Semibold +1.8 tracking #4a3fd6; headline 48/Semibold
+ * line-height 1.04, -0.96 tracking; second line #6b7391.
  */
 interface Props {
   eyebrow?: string;
@@ -53,11 +53,12 @@ const { eyebrow, line1, line2, inline = false, align = 'left', as: Tag = 'h2', i
   }
   .eyebrow {
     font-size: 13px;
-    font-weight: var(--fw-semibold);
-    letter-spacing: 1.8px;
+    font-weight: var(--fw-medium);
+    letter-spacing: 1px;
     line-height: 16px;
     text-transform: uppercase;
-    color: var(--color-mint-ink);
+    /* neutral grey, not brand: less blue across the page (2026-11-14) */
+    color: var(--color-ink-3);
     margin-bottom: 16px;
   }
   .title {
@@ -78,9 +79,8 @@ const { eyebrow, line1, line2, inline = false, align = 'left', as: Tag = 'h2', i
   }
   .sub {
     margin-top: 16px;
-    font-size: 17px;
-    line-height: 26px;
-    letter-spacing: -0.2px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
     color: var(--color-ink-2);
   }
 </style>

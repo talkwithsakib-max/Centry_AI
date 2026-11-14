@@ -1,8 +1,9 @@
-/** FAQ content — taken verbatim from the Figma "FAQ item" instances (448:8303). */
+/** FAQ content — from the Figma "FAQ item" instances (448:8303); three answers aligned with
+ *  the Privacy section and the pricing table on 2026-11-14. */
 export const faq = [
   {
     q: 'How does CentryAI detect my subscriptions?',
-    a: 'CentryAI connects to Gmail or iCloud with read-only access and reads only receipts and billing emails to find recurring charges. You can also add or edit subscriptions manually at any time.',
+    a: 'CentryAI scans your Gmail or iCloud receipts with read-only access, reading only billing and receipt emails to find recurring charges. You can also add or edit any subscription manually.',
   },
   {
     q: 'What are “zombie” subscriptions?',
@@ -10,7 +11,7 @@ export const faq = [
   },
   {
     q: 'Is my data safe?',
-    a: 'Yes. CentryAI never connects to your bank account, never stores your email content and never uses your data to train AI models. Your data is encrypted and stays on your device by default.',
+    a: 'Yes. CentryAI uses read-only access to your inbox, so it can’t send, delete or change an email. Your email content is never stored on our servers or used to train AI, and there’s no bank linking: CentryAI never asks for your bank details.',
   },
   {
     q: 'Can CentryAI cancel subscriptions for me?',
@@ -22,6 +23,6 @@ export const faq = [
   },
   {
     q: 'Is CentryAI free?',
-    a: 'The core tracking features are free for up to 3 subscriptions. CentryAI Pro unlocks unlimited tracking, the AI email scanner, zombie detection, analytics and renewal alerts.',
+    a: 'Yes, the Free plan is free forever: track up to 3 subscriptions with manual entry and a renewal calendar. Pro ($7.99/month, 7-day free trial) unlocks unlimited subscriptions, the AI email scanner, zombie scores and alerts, spending analytics, the AI cancel finder and email renewal reminders.',
   },
 ];

@@ -1,0 +1,174 @@
+---
+/** Screen 6 "Worth knowing" (453:9765) — subscription detail. 330px Figma coordinates. */
+import ScreenFrame from './ScreenFrame.astro';
+import AppIcon from '../brand/AppIcon.astro';
+import { vecStyle } from './geom';
+import back from '../../assets/icons/screens/s3-prev.svg?url';
+import more from '../../assets/icons/screens/s4-more.svg?url';
+import chart from '../../assets/icons/screens/s6-chart.svg?url';
+
+const details = [
+  ['Billed through', 'App Store'],
+  ['Paid so far', '$242.79'],
+  ['Member since', 'Mar 2025'],
+];
+---
+
+<ScreenFrame>
+  <div class="scr">
+    <span class="round-btn" style="left:15.73px;top:45.63px">
+      <img src={back} alt="" style={vecStyle(28.32, [33.33, 44.44, 33.33, 38.89], [-7.08, -14.17, -7.08, -14.17])} />
+    </span>
+    <span class="round-btn" style="left:265.1px;top:45.63px">
+      <img src={more} alt="" style="left:8.77px;top:13.49px;width:10.78px;height:1.34px" />
+    </span>
+    <span class="c" style="top:51.92px;font-size:13.373px;font-weight:var(--fw-semibold);letter-spacing:-.157px">Subscription</span>
+    <AppIcon
+      brand="headspace"
+      size={50.346}
+      radius={12.587}
+      bg="#fff"
+      style="position:absolute;left:129.41px;top:84.96px;box-shadow:0 6.293px 14.16px -4.72px rgba(0,0,0,.1)"
+    />
+    <span class="c" style="top:144.75px;font-size:20.453px;font-weight:var(--fw-bold);letter-spacing:-.472px">Headspace</span>
+    <span class="c grey" style="top:169.92px;font-size:11.013px;font-weight:var(--fw-medium);letter-spacing:-.157px">
+      Wellness · Monthly · App Store
+    </span>
+    <span class="cwrap" style="top:191.95px"><span class="pill zp">Zombie 99 · not opened in 91 days</span></span>
+
+    <div class="card" style="top:224.99px;height:67.653px">
+      <span class="lbl">Next payment</span>
+      <span class="big">$12.99</span>
+      <span class="t-name" style="right:12.59px;top:17.31px">Fri, Nov 20</span>
+      <span class="t-meta" style="right:12.59px;top:34.61px;font-size:10.227px">in 17 days</span>
+    </div>
+
+    <div class="card" style="top:302.08px;height:117.999px">
+      <span class="t-name" style="left:12.59px;top:12.59px">Price history</span>
+      <span class="pill up">↑ 30% in Jan</span>
+      <img src={chart} alt="" style="left:12.59px;top:36.19px;width:252.518px;height:51.92px" />
+      {
+        [
+          ['Sep', 11.01],
+          ['Jan', 80.24],
+          ['May', 147.11],
+          ['Next', 249.37],
+        ].map(([m, x]) => (
+          <span class="mo" style={`left:${x}px`}>
+            {m}
+          </span>
+        ))
+      }
+    </div>
+
+    <div class="row-card" style="left:15.73px;top:429.52px;width:277.691px;height:113.279px">
+      {
+        details.map(([k, v], i) => (
+          <div class="drow" style={`top:${i * 37.76}px`}>
+            <span class="dk">{k}</span>
+            <span class="dv">{v}</span>
+            {i < 2 && <span class="hair" style="left:12.59px;top:37.37px;width:265.105px" />}
+          </div>
+        ))
+      }
+    </div>
+
+    <span class="cancel">Cancel Headspace</span>
+    <span class="c" style="top:610.45px;font-size:11.8px;font-weight:var(--fw-medium);letter-spacing:-.157px;color:var(--color-ink-2)">
+      Mark as used
+    </span>
+  </div>
+</ScreenFrame>
+
+<style>
+  .c {
+    left: 0;
+    right: 0;
+    text-align: center;
+  }
+  .cwrap {
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+  }
+  .zp {
+    padding: 3.933px 9.44px;
+    font-size: 9.44px;
+    background: var(--color-danger-soft);
+    color: var(--color-danger);
+  }
+  .card {
+    left: 15.73px;
+    width: 277.691px;
+    border-radius: 15.733px;
+    background: #fff;
+    box-shadow: 0 0.787px 2.36px rgba(0, 0, 0, 0.04);
+  }
+  .card > * {
+    position: absolute;
+  }
+  .lbl {
+    left: 12.59px;
+    top: 12.59px;
+    font-size: 10.227px;
+    font-weight: var(--fw-medium);
+    letter-spacing: -0.157px;
+    color: var(--color-ink-3);
+  }
+  .big {
+    left: 12.59px;
+    top: 28.32px;
+    font-size: 23.6px;
+    font-weight: var(--fw-bold);
+    letter-spacing: -0.629px;
+  }
+  .up {
+    right: 12.59px;
+    top: 11.8px;
+    padding: 2.36px 6.293px;
+    font-size: 9.44px;
+    background: var(--color-danger-soft);
+    color: var(--color-danger);
+  }
+  .mo {
+    top: 95.97px;
+    font-size: 8.653px;
+    font-weight: var(--fw-medium);
+    letter-spacing: -0.157px;
+    color: var(--color-ink-3);
+  }
+  .drow {
+    left: 0;
+    width: 277.691px;
+    height: 37.76px;
+  }
+  .drow > * {
+    position: absolute;
+    top: 11.01px;
+    font-size: 11.8px;
+    letter-spacing: -0.157px;
+  }
+  .dk {
+    left: 12.59px;
+    font-weight: var(--fw-medium);
+  }
+  .dv {
+    right: 12.59px;
+    color: var(--color-ink-2);
+  }
+  .cancel {
+    left: 15.73px;
+    top: 556.96px;
+    width: 277.691px;
+    height: 40.906px;
+    display: grid;
+    place-items: center;
+    border-radius: 12.587px;
+    background: var(--color-danger-soft);
+    color: var(--color-danger);
+    font-size: 12.587px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.157px;
+  }
+</style>

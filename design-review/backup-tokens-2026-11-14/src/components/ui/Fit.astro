@@ -1,0 +1,22 @@
+---
+/**
+ * Renders a fixed-size Figma illustration (w×h) that scales down to fit its
+ * container width, keeping the composition exact.
+ */
+interface Props {
+  w: number;
+  h: number;
+  class?: string;
+  max?: number;
+}
+const { w, h, class: className, max } = Astro.props;
+---
+
+<div class:list={['fit', className]} data-fit-w={w} data-fit-max={max} style={`--fit-w:${w};--fit-h:${h}`}>
+  <div class="fit-stage"><slot /></div>
+</div>
+
+<script>
+  import { initFit } from '../../scripts/fit';
+  initFit();
+</script>

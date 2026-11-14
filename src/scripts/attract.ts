@@ -10,7 +10,8 @@
  *    section is scrolled back into view (user, 2026-11-10).
  * No scroll-jacking. Reduced motion → static.
  */
-const ONCE = ['set-once', 'trail-once', 'pile-fall', 'appear', 'appear-late', 'halo-once', 'field-in'];
+// story-*: the phone screen's own beats (Screen2Subscriptions story), on the same 3.6s clock
+const ONCE = ['set-once', 'trail-once', 'pile-fall', 'appear', 'appear-late', 'halo-once', 'field-in', 'story-blip', 'story-blip-z', 'story-out', 'story-in', 'story-strike', 'story-fade'];
 const ENGAGE = 0.62; // play when the stage top is above 62% of the viewport
 
 export function initAttract() {

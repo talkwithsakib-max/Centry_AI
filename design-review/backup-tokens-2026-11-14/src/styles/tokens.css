@@ -1,0 +1,226 @@
+/*
+ * CentryAI design tokens — Figma "Home 2" (light) and "Home 2 — Dark".
+ * Light values live on :root and on .theme-light (phone app screens stay
+ * light in both themes, as in Figma). Dark overrides are at the bottom.
+ */
+:root,
+.theme-light {
+  color-scheme: light;
+  /* ---------- Colour: surfaces ---------- */
+  --color-page: #fefaf7;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f4f4f7;
+  /* raised tile on a card (icon tiles in mocks) */
+  --color-surface-raised: #ffffff;
+  /* text-field surface (waitlist email input) */
+  --surface-input: linear-gradient(180deg, #ffffff 0%, #f1f2f4 100%);
+  --color-dark-1: #22232a;
+  --color-dark-2: #0d0e11;
+  --gradient-dark-card: linear-gradient(141.43deg, var(--color-dark-1) 0%, var(--color-dark-2) 71.43%);
+  /* Store badge (Google Play) */
+  --gradient-dark-button: linear-gradient(180deg, #26262a 0%, #0b0b0c 100%);
+  --gradient-dark-button-hover: linear-gradient(180deg, #34343a 0%, #17171a 100%);
+  /* Standard dark button (latest Figma): 48px, 12px radius */
+  --gradient-btn: linear-gradient(180deg, #2a2a2e 0%, #111113 100%);
+  --gradient-btn-hover: linear-gradient(180deg, #3a3a3f 0%, #1c1c1f 100%);
+  --gradient-btn-mint: linear-gradient(180deg, #6bf0c0 0%, #2ad394 100%);
+  /* text on the primary (dark-in-light / light-in-dark) button and Google Play badge */
+  --color-btn-ink: #ffffff;
+  /* White control (App Store badge, email input) */
+  --gradient-control: linear-gradient(180deg, #ffffff 0%, #f1f2f4 100%);
+  --elevation-control:
+    0 0 1.5px 0 rgba(15, 20, 41, 0.07),
+    0 1px 2px 0 rgba(15, 20, 41, 0.1),
+    0 6px 14px -4px rgba(15, 20, 41, 0.1),
+    0 16px 28px -10px rgba(15, 20, 41, 0.06),
+    inset 0 1px 0 0 #fff,
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.05);
+  /* Glossy mint badge */
+  --gradient-badge: linear-gradient(180deg, #7af2c6 0%, #25cc8d 50%, #129a68 100%);
+  --gradient-nav-button: linear-gradient(180deg, #34343a 0%, #111113 100%);
+  --gradient-nav-button-hover: linear-gradient(180deg, #404047 0%, #1b1b1e 100%);
+  --gradient-mint: linear-gradient(135deg, #6bf0c0 0%, #22c98a 71.43%);
+
+  /* ---------- Colour: ink ---------- */
+  --color-ink: #1d1d1f;
+  /* body-strength ink: same as --color-ink in light, #D9D9DD in dark */
+  --color-ink-1: #1d1d1f;
+  --color-ink-2: #6e6e73;
+  --color-ink-3: #8a8a8e;
+  --color-ink-4: #b0b0b5;
+  /* grey second line of two-tone headings */
+  --color-heading-2: #8a8a8e;
+  --color-ink-soft: rgba(31, 32, 37, 0.6);
+  --color-link: rgba(29, 29, 31, 0.68);
+  --color-hairline: rgba(60, 60, 67, 0.16);
+  --color-fill-1: rgba(29, 29, 31, 0.05);
+  --color-fill-2: rgba(29, 29, 31, 0.06);
+  --color-fill-3: rgba(29, 29, 31, 0.1);
+  --color-fill-ios: rgba(118, 118, 128, 0.08);
+
+  /* ---------- Colour: brand + status ---------- */
+  --color-mint: #3fe3a6;
+  --color-mint-2: #22c98a;
+  --color-mint-ink: #13865c;
+  --color-mint-ink-2: #1a9e6e;
+  --color-mint-soft: rgba(63, 227, 166, 0.16);
+  --color-danger: #e5302a;
+  --color-danger-2: #ff3b30;
+  --color-danger-soft: rgba(255, 59, 48, 0.1);
+
+  /* ---------- Typography ---------- */
+  --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  /* Phone app screens (Figma: SF Pro). Apple devices get the real system SF Pro;
+     everything else falls back to Inter (user asked for 100% screen fidelity).
+     Figma renders SF Pro with its Display shapes at every size, so the screens set
+     'opsz' 32 (see .screen-frame) — measured within ~2% of Figma's text widths. */
+  --font-phone: system-ui, -apple-system, BlinkMacSystemFont, 'Inter Variable', 'Inter', ui-sans-serif, sans-serif;
+  /* Figma weights (SF Pro) carried over to Inter's variable axis */
+  --fw-regular: 400;
+  --fw-medium: 510;
+  --fw-semibold: 590;
+  --fw-bold: 700;
+
+  /* ---------- Radii ---------- */
+  --radius-pill: 999px;
+  --radius-section: 32px;
+  --radius-card: 28px;
+  --radius-tile: 24px;
+  --radius-panel: 22px;
+  --radius-inner: 20px;
+  --radius-button: 12px;
+
+  /* ---------- Product mock-ups (illustration cards) ---------- */
+  --mock-ink-rgb: 29, 29, 31;
+  --mock-hair: rgba(60, 60, 67, 0.14);
+  --mock-row: #f2f2f7;
+  --bar-past: rgba(29, 29, 31, 0.1);
+
+  /* ---------- Top-edge highlights (inner white line) ---------- */
+  --hl-100: #ffffff;
+  --hl-90: rgba(255, 255, 255, 0.9);
+  --hl-55: rgba(255, 255, 255, 0.55);
+  --hl-50: rgba(255, 255, 255, 0.5);
+  --hl-35: rgba(255, 255, 255, 0.35);
+
+  /* ---------- Elevation (Figma effect styles) ---------- */
+  --elevation-small:
+    0 1px 2px 0 rgba(28, 36, 70, 0.08),
+    0 4px 10px -3px rgba(28, 36, 70, 0.1),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.35);
+  --elevation-medium:
+    0 1px 3px 0 rgba(28, 36, 70, 0.05),
+    0 14px 32px -10px rgba(28, 36, 70, 0.11),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+  --elevation-large:
+    0 1px 2px 0 rgba(28, 36, 70, 0.05),
+    0 12px 28px -8px rgba(28, 36, 70, 0.08),
+    0 40px 70px -24px rgba(28, 36, 70, 0.07),
+    inset 0 1px 0 0 #fff,
+    inset 0 -3px 6px 0 rgba(28, 36, 70, 0.04);
+  /* hover target for interactive cards: Large, one step deeper */
+  --elevation-large-hover:
+    0 1px 2px 0 rgba(28, 36, 70, 0.06),
+    0 16px 34px -8px rgba(28, 36, 70, 0.11),
+    0 48px 80px -24px rgba(28, 36, 70, 0.1),
+    inset 0 1px 0 0 #fff,
+    inset 0 -3px 6px 0 rgba(28, 36, 70, 0.04);
+
+  /* ---------- Layout ---------- */
+  --container: 1224px;
+  --gutter: clamp(16px, 4.5vw, 100px);
+  --section-inset: 8px; /* sections sit 8px inside the page on desktop */
+
+  /* ---------- Motion ---------- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 160ms;
+  --dur-base: 200ms;
+  --dur-slow: 450ms;
+
+  /* ---------- Focus ---------- */
+  --focus-ring: 0 0 0 2px var(--color-page), 0 0 0 4px var(--color-mint);
+}
+
+/* ======================================================================
+ * Dark theme — Figma "Home 2 — Dark" (508:16894).
+ * Set by the inline script in BaseLayout (saved choice, else the OS
+ * preference) before first paint, so there is no light flash.
+ * ====================================================================== */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  /* Clean neutral blacks, no blue-grey cast (user, 2026-11-11; ref. slash.com) */
+
+  /* surfaces */
+  --color-page: #050506;
+  --color-surface: #111113;
+  --color-surface-muted: #18181b;
+  --color-surface-raised: #232326;
+  --surface-input: #111113;
+
+  /* buttons invert: light gradient, near-black label */
+  --gradient-btn: linear-gradient(180deg, #ffffff 0%, #e5e8eb 100%);
+  --gradient-btn-hover: linear-gradient(180deg, #ffffff 0%, #d6dade 100%);
+  --gradient-nav-button: linear-gradient(180deg, #ffffff 0%, #e5e8eb 100%);
+  --gradient-nav-button-hover: linear-gradient(180deg, #ffffff 0%, #d6dade 100%);
+  --gradient-dark-button: linear-gradient(180deg, #ffffff 0%, #e5e8eb 100%);
+  --gradient-dark-button-hover: linear-gradient(180deg, #ffffff 0%, #d6dade 100%);
+  --color-btn-ink: #121214;
+  /* App Store badge: graphite */
+  --gradient-control: linear-gradient(180deg, #353538 0%, #1d1d20 100%);
+  --elevation-control:
+    0 1px 2px 0 rgba(0, 0, 0, 0.45),
+    0 6px 14px -4px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.22);
+
+  /* ink */
+  --color-ink: #f5f5f7;
+  --color-ink-1: #d9d9dd;
+  --color-ink-2: #a1a1a6;
+  --color-heading-2: #8f8f94;
+  --color-ink-soft: rgba(214, 214, 218, 0.6);
+  --color-link: rgba(217, 217, 221, 0.68);
+  --color-hairline: rgba(255, 255, 255, 0.14);
+  --color-fill-1: rgba(255, 255, 255, 0.07);
+  --color-fill-2: rgba(255, 255, 255, 0.08);
+  --color-fill-3: rgba(255, 255, 255, 0.14);
+  --color-fill-ios: rgba(255, 255, 255, 0.05);
+
+  /* brand */
+  --color-mint-ink: #3ccf96;
+  --color-mint-ink-2: #3fe3a6;
+
+  /* mock-ups */
+  --mock-ink-rgb: 217, 217, 221;
+  --mock-hair: rgba(255, 255, 255, 0.14);
+  --mock-row: #18181b;
+  --bar-past: rgba(255, 255, 255, 0.14);
+
+  /* every inner white highlight drops to ~8–10% (Figma) */
+  --hl-100: rgba(255, 255, 255, 0.08);
+  --hl-90: rgba(255, 255, 255, 0.1);
+  --hl-55: rgba(255, 255, 255, 0.1);
+  --hl-50: rgba(255, 255, 255, 0.1);
+  --hl-35: rgba(255, 255, 255, 0.1);
+
+  /* elevation: black shadows, faint top highlight */
+  --elevation-small:
+    0 1px 2px 0 rgba(0, 0, 0, 0.4),
+    0 4px 10px -3px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  --elevation-medium:
+    0 1px 3px 0 rgba(0, 0, 0, 0.35),
+    0 14px 34px -10px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+  --elevation-large:
+    0 1px 2px 0 rgba(0, 0, 0, 0.4),
+    0 14px 30px -8px rgba(0, 0, 0, 0.45),
+    0 44px 80px -24px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+  --elevation-large-hover:
+    0 1px 2px 0 rgba(0, 0, 0, 0.45),
+    0 18px 36px -8px rgba(0, 0, 0, 0.55),
+    0 52px 90px -24px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+}

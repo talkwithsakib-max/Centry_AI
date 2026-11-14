@@ -1,0 +1,62 @@
+---
+/**
+ * Figma "Cancelled bubble" — glossy "Canceled" pill with a speech tail.
+ * Designed at 136×47 (pill) in the hero; the CTA uses it at 1.125×.
+ * Position/rotation come from the caller (Figma rotates about the top-left).
+ */
+interface Props {
+  scale?: number;
+  class?: string;
+  style?: string;
+}
+const { scale = 1, class: className, style = '' } = Astro.props;
+---
+
+<div class:list={['bubble', className]} style={`--s:${scale};${style}`} aria-hidden="true">
+  <svg class="tail" viewBox="0 0 18 12" preserveAspectRatio="none"><path d="M0 0H18L6 12L0 0Z"></path></svg>
+  <span class="pill">Canceled</span>
+</div>
+
+<style>
+  .bubble {
+    position: absolute;
+    width: calc(142px * var(--s));
+    height: calc(57px * var(--s));
+    transform-origin: 0 0;
+  }
+  .tail {
+    position: absolute;
+    left: calc(78.1px * var(--s));
+    top: calc(46px * var(--s));
+    width: calc(18px * var(--s));
+    height: calc(12px * var(--s));
+    fill: #e2dfe5;
+  }
+  /* Dark (Figma "Home 2 — Dark"): graphite pill, grey label */
+  :global([data-theme='dark']) .tail {
+    fill: #18181b;
+  }
+  :global([data-theme='dark']) .pill {
+    background: #18181b;
+    box-shadow:
+      0 calc(8px * var(--s)) calc(18px * var(--s)) calc(-4px * var(--s)) rgba(0, 0, 0, 0.42),
+      inset 0 calc(1.5px * var(--s)) 0 0 rgba(255, 255, 255, 0.1);
+    color: #a1a1a6;
+  }
+  .pill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: calc(11px * var(--s)) calc(20px * var(--s));
+    border-radius: var(--radius-pill);
+    background: linear-gradient(180deg, #f6f4f7 0%, #e2dfe5 100%);
+    box-shadow:
+      0 calc(8px * var(--s)) calc(18px * var(--s)) calc(-4px * var(--s)) rgba(26, 20, 38, 0.14),
+      inset 0 calc(1.5px * var(--s)) 0 0 rgba(255, 255, 255, 0.8);
+    font-size: calc(21px * var(--s));
+    font-weight: var(--fw-bold);
+    line-height: normal;
+    color: var(--color-ink);
+    white-space: nowrap;
+  }
+</style>

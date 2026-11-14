@@ -1,0 +1,36 @@
+---
+/** Figma component "Cancel badge" — 30px frosted grey circle with a white ✕. */
+import x from '../../assets/icons/cancel-x.svg?url';
+interface Props {
+  class?: string;
+  style?: string;
+}
+const { class: className, style } = Astro.props;
+---
+
+<span class:list={['cancel-badge', className]} style={style} aria-hidden="true">
+  <img src={x} alt="" width="26" height="26" />
+</span>
+
+<style>
+  .cancel-badge {
+    position: relative;
+    display: block;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    background: rgba(159, 158, 164, 0.86);
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.18);
+  }
+  :global([data-theme='dark']) .cancel-badge {
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.54);
+  }
+  img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 26px;
+    height: 26px;
+  }
+</style>

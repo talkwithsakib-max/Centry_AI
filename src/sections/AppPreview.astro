@@ -6,7 +6,7 @@
 import SectionHeading from '../components/ui/SectionHeading.astro';
 import IconBadge from '../components/ui/IconBadge.astro';
 import IPhone from '../components/devices/IPhone.astro';
-import Screen1Spending from '../components/screens/Screen1Spending.astro';
+import Screen1Glance from '../components/screens/Screen1Glance.astro';
 import Screen2Subscriptions from '../components/screens/Screen2Subscriptions.astro';
 import Screen3Calendar from '../components/screens/Screen3Calendar.astro';
 import Screen4Ask from '../components/screens/Screen4Ask.astro';
@@ -25,7 +25,7 @@ const tabs = [
   { label: 'Inbox, scanned', meta: 'Inbox scanner', big: '60', small: 'sec', desc: 'Connect Gmail or iCloud and every receipt is found in under a minute.', cta: 'Scan my inbox', note: 'Read-only. Nothing is stored.' },
   { label: 'Worth knowing', meta: 'Subscription detail', big: '99', small: '/100', desc: 'Zombie score, price history and the next charge for every single service.', cta: 'Check my zombie scores', note: 'Scores update as you use your apps.' },
 ];
-const screens = [Screen1Spending, Screen2Subscriptions, Screen3Calendar, Screen4Ask, Screen5Scan, Screen6Detail];
+const screens = [Screen1Glance, Screen2Subscriptions, Screen3Calendar, Screen4Ask, Screen5Scan, Screen6Detail];
 ---
 
 <section class="app-preview" id="app-preview" aria-labelledby="ap-title">
@@ -182,12 +182,12 @@ const screens = [Screen1Spending, Screen2Subscriptions, Screen3Calendar, Screen4
     background: var(--color-fill-2);
   }
   .tab[aria-selected='true'] {
-    background: linear-gradient(90deg, rgba(63, 227, 166, 0.28) 0%, rgba(124, 200, 240, 0.22) 100%);
+    background: linear-gradient(90deg, rgb(var(--brand-rgb) / 0.28) 0%, rgb(var(--brand-light-rgb) / 0.22) 100%);
   }
   .num {
     font-size: 15px;
     font-weight: var(--fw-medium);
-    color: var(--color-ink-3);
+    color: var(--color-ink-2);
   }
   .lab {
     font-size: 16px;
@@ -242,9 +242,8 @@ const screens = [Screen1Spending, Screen2Subscriptions, Screen3Calendar, Screen4
   }
   .desc {
     margin-top: 28px;
-    font-size: 20px;
-    line-height: 30px;
-    letter-spacing: -0.2px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
     color: var(--color-ink-2);
   }
   .cta {

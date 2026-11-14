@@ -1,0 +1,63 @@
+---
+/**
+ * Shared wrapper for the App-preview / CTA phone screens. Figma draws those
+ * screens on a 330px phone; this wrapper gives the slot that 330px coordinate
+ * space inside our 300px-based IPhone, so Figma coordinates are used as-is.
+ * Status bar and (optional) tab bar are rendered at 300px scale around it.
+ */
+import StatusBar from '../devices/StatusBar.astro';
+import PhoneTabBar from '../devices/PhoneTabBar.astro';
+
+interface Props {
+  tab?: 'home' | 'calendar' | 'insights' | 'settings';
+  bg?: string;
+}
+const { tab, bg = '#f2f2f7' } = Astro.props;
+---
+
+<div class="screen-frame" style={`background:${bg}`}>
+  <StatusBar />
+  <div class="s330"><slot /></div>
+  {tab && <PhoneTabBar active={tab} />}
+  {!tab && <span class="home-indicator"></span>}
+</div>
+
+<style>
+  .screen-frame {
+    position: absolute;
+    inset: 0;
+    font-family: var(--font-phone);
+    font-variation-settings: 'opsz' 32;
+    /* System SF Pro only has fixed faces in Chrome: in-between weights (510, 590)
+       get a fake bold. Figma's Medium 510 / Semibold 590 → the real 500 / 600 faces. */
+    --fw-medium: 500;
+    --fw-semibold: 600;
+    --fw-bold: 700;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: var(--color-ink);
+    white-space: nowrap;
+    line-height: normal;
+  }
+  .s330 {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 309.158px;
+    height: 670.235px;
+    transform: scale(0.909091);
+    transform-origin: 0 0;
+  }
+  .s330 :global(*) {
+    box-sizing: border-box;
+  }
+  .home-indicator {
+    position: absolute;
+    left: 90.47px;
+    top: 600.01px;
+    width: 100.121px;
+    height: 3.576px;
+    border-radius: 2.145px;
+    background: #111;
+  }
+</style>

@@ -45,7 +45,7 @@
   color: var(--color-mint-ink);
 }
 .scr .danger {
-  color: var(--color-danger);
+  color: var(--color-zombie-text);
 }
 .scr .mint {
   color: var(--color-mint-ink);
@@ -62,7 +62,7 @@
 }
 .scr .hair {
   height: 0.393px;
-  background: rgba(60, 60, 67, 0.14);
+  background: rgba(11, 16, 32, 0.14);
 }
 .scr .round-btn {
   width: 28.32px;
@@ -77,7 +77,7 @@
 .scr .seg {
   height: 26.746px;
   border-radius: 7.867px;
-  background: rgba(118, 118, 128, 0.12);
+  background: rgba(107, 115, 145, 0.12);
 }
 .scr .seg > * {
   position: absolute;

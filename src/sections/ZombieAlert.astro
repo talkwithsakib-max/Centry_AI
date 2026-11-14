@@ -14,6 +14,7 @@ const rows: { b: Brand; name: string; used: string; score: number; fill: number;
   { b: 'midjourney', name: 'Midjourney', used: 'Last used 47 days ago', score: 87, fill: 191, price: '$10.00/mo', zombie: true },
   { b: 'spotify', name: 'Spotify', used: 'Used 3 days ago', score: 8, fill: 18, price: '$9.99/mo', zombie: false },
 ];
+import { scoreTone } from '../data/score';
 ---
 
 <section class="split zombie" aria-labelledby="zombie-title" data-reveal>
@@ -49,7 +50,7 @@ const rows: { b: Brand; name: string; used: string; score: number; fill: number;
                     <span class="track">
                       <span class:list={['fill', !r.zombie && 'ok']} style={`width:${r.fill}px`} />
                     </span>
-                    <span class:list={['score', !r.zombie && 'ok']} data-count={r.score} data-at={(0.6 + i * 0.09).toFixed(2)} data-for="1.1">{r.score}</span>
+                    <span class:list={['score', scoreTone(r.score) !== 'zombie' && scoreTone(r.score)]} data-count={r.score} data-at={(0.6 + i * 0.09).toFixed(2)} data-for="1.1">{r.score}</span>
                     <span class="price">{r.price}</span>
                     {i < 3 && <span class="rule" />}
                   </div>
@@ -69,7 +70,7 @@ const rows: { b: Brand; name: string; used: string; score: number; fill: number;
     <div class="text">
       <SectionHeading
         eyebrow="Zombie alert"
-        eyebrowColor="var(--color-danger)"
+        eyebrowColor="var(--color-zombie-text)"
         line1="You’re paying for things"
         line2="you forgot exist."
         id="zombie-title"
@@ -109,9 +110,8 @@ const rows: { b: Brand; name: string; used: string; score: number; fill: number;
   }
   .body {
     margin-top: 24px;
-    font-size: 17px;
-    line-height: 26px;
-    letter-spacing: -0.15px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
     color: var(--color-ink-2);
   }
   .body.second {
@@ -169,7 +169,7 @@ const rows: { b: Brand; name: string; used: string; score: number; fill: number;
     padding: 3px 8px;
     font-size: 11px;
     background: var(--color-danger-soft);
-    color: var(--color-danger);
+    color: var(--color-zombie-text);
   }
   .row {
     left: 0;
@@ -194,7 +194,7 @@ const rows: { b: Brand; name: string; used: string; score: number; fill: number;
     color: var(--color-ink-3);
   }
   .u.danger {
-    color: var(--color-danger);
+    color: var(--color-zombie-text);
   }
   .track {
     left: 72px;
@@ -202,7 +202,7 @@ const rows: { b: Brand; name: string; used: string; score: number; fill: number;
     width: 220px;
     height: 6px;
     border-radius: 3px;
-    background: rgba(118, 118, 128, 0.12);
+    background: rgba(107, 115, 145, 0.12);
   }
   .fill {
     position: absolute;
@@ -210,22 +210,26 @@ const rows: { b: Brand; name: string; used: string; score: number; fill: number;
     top: 0;
     height: 6px;
     border-radius: 3px;
-    background: linear-gradient(90deg, #34c759 0%, #ff9500 60%, #ff3b30 100%);
+    background: linear-gradient(90deg, var(--color-success) 0%, var(--color-warning) 60%, var(--color-zombie) 100%);
     box-shadow: inset 0 1px 0 0 var(--hl-50);
   }
   .fill.ok {
-    background: #34c759;
+    background: var(--color-success);
   }
   .score {
+    font-family: var(--font-mono);
     right: 20px;
     top: 14px;
     font-size: 26px;
     font-weight: var(--fw-bold);
     letter-spacing: -1px;
-    color: var(--color-danger);
+    color: var(--color-zombie-text);
   }
   .score.ok {
-    color: var(--color-mint-ink);
+    color: var(--color-success-text);
+  }
+  .score.warn {
+    color: var(--color-warning-text);
   }
   .price {
     right: 20px;
@@ -240,7 +244,7 @@ const rows: { b: Brand; name: string; used: string; score: number; fill: number;
     top: 75.5px;
     width: 338px;
     height: 0.5px;
-    background: rgba(60, 60, 67, 0.12);
+    background: rgba(11, 16, 32, 0.12);
   }
   .hand {
     left: 286.57px;
@@ -258,7 +262,7 @@ const rows: { b: Brand; name: string; used: string; score: number; fill: number;
     height: 64px;
     border-radius: 18px;
     /* stays graphite in both themes (Figma) */
-    background: linear-gradient(180deg, #2a2a2e 0%, #111113 100%);
+    background: linear-gradient(180deg, #232c47 0%, #0e1424 100%);
     transform: rotate(-3deg);
     box-shadow:
       0 14px 32px -10px rgba(28, 36, 70, 0.11),
@@ -369,13 +373,13 @@ const rows: { b: Brand; name: string; used: string; score: number; fill: number;
   }
   @keyframes z-red-glow {
     from {
-      box-shadow: 0 0 0 0 rgba(255, 59, 48, 0);
+      box-shadow: 0 0 0 0 rgb(var(--zombie-rgb) / 0);
     }
     30% {
-      box-shadow: 0 0 28px 2px rgba(255, 59, 48, 0.38);
+      box-shadow: 0 0 28px 2px rgb(var(--zombie-rgb) / 0.38);
     }
     to {
-      box-shadow: 0 0 0 0 rgba(255, 59, 48, 0);
+      box-shadow: 0 0 0 0 rgb(var(--zombie-rgb) / 0);
     }
   }
   @keyframes z-hand-in {
